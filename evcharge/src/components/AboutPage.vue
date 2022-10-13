@@ -33,7 +33,7 @@
     <v-container>
       <v-row>
         <v-col cols=4>
-          <img v-bind:src="bg_car">
+          <img v-bind:src="bg_car" style = "border-radius: 20px">
         </v-col>
 
         <v-col cols=8>
