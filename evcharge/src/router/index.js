@@ -22,7 +22,7 @@ const router = createRouter({
         component: () => import('../views/LogIn.vue'),
     },
     {
-        path: '/',
+        path: '/TesterFile',
         name:'TesterFile',
         component: () => import('../views/TesterFile.vue'),
         meta: {
