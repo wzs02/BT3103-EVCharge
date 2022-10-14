@@ -1,15 +1,14 @@
 <template>
-<AboutPage/>
-</template>
+  <router-view/>
+ </template>
 
 <script>
-import AboutPage from './components/AboutPage.vue'
+
 
 export default {
   name: 'App',
 
   components: {
-    AboutPage
   },
 
   data: () => ({
@@ -17,3 +16,20 @@ export default {
   }),
 }
 </script>
+
+<style>
+
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #761818;
+}
+</style>
