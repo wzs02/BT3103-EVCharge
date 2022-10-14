@@ -25,7 +25,7 @@
 
         <div style="height: 120px"></div>
 
-        <div style="align-items: start; display: flex; justify-content: center;">
+        <div id="faq-div">
             <div>
                 <h1 id="faq-heading">FAQs</h1>
                 <div>
@@ -37,10 +37,9 @@
                                 </v-expansion-panel-title>
 
                                 <v-expansion-panel-text class="panel-text">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione
-                                    debitis
-                                    quis est
-                                    labore voluptatibus! Eaque cupiditate minima
+                                    EVCharge aims to promote a culture of respect and consideration, hence a deposit fee
+                                    is mandatory because a nominal sum will be imposed as a no-show fee for users who
+                                    have not adhered to the time slots that they have booked.
                                 </v-expansion-panel-text>
                             </v-expansion-panel>
 
@@ -50,10 +49,8 @@
                                 </v-expansion-panel-title>
 
                                 <v-expansion-panel-text class="panel-text">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione
-                                    debitis
-                                    quis est
-                                    labore voluptatibus! Eaque cupiditate minima
+                                    The no-show fee will be deducted from your account deposit. This deposit is to be
+                                    made before you can start booking EV charging slots using EVCharge.
                                 </v-expansion-panel-text>
                             </v-expansion-panel>
 
@@ -63,10 +60,8 @@
                                 </v-expansion-panel-title>
 
                                 <v-expansion-panel-text class="panel-text">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione
-                                    debitis
-                                    quis est
-                                    labore voluptatibus! Eaque cupiditate minima
+                                    EVCharge supports a wide variety of payment methods. In-application payments can be
+                                    made through a PayNow QR Code, or through a credit card of your choice.
                                 </v-expansion-panel-text>
                             </v-expansion-panel>
 
@@ -76,10 +71,13 @@
                                 </v-expansion-panel-title>
 
                                 <v-expansion-panel-text class="panel-text">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione
-                                    debitis
-                                    quis est
-                                    labore voluptatibus! Eaque cupiditate minima
+                                    Instances of irresponsible user behaviour or inadequate charging facilities can be
+                                    reported at our forum page. While we do appreciate user feedback, we urge all users
+                                    to remain tactful in their comments at all times and to refrain from disclosing
+                                    personal information about other users. To ensure that user behaviour adheres to
+                                    community guidelines, our forum channels are being regulated by our team on a
+                                    regular basis and EVCharge reserves the right to terminate the accounts of users who
+                                    repeatedly violate community guidelines.
                                 </v-expansion-panel-text>
                             </v-expansion-panel>
 
@@ -89,10 +87,8 @@
                                 </v-expansion-panel-title>
 
                                 <v-expansion-panel-text class="panel-text">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione
-                                    debitis
-                                    quis est
-                                    labore voluptatibus! Eaque cupiditate minima
+                                    You can verify your attendance by clicking on the confirmation button of the Booking
+                                    Page.
                                 </v-expansion-panel-text>
                             </v-expansion-panel>
                         </v-expansion-panels>
@@ -169,6 +165,12 @@ export default {
     font-size: 50px;
     margin-bottom: 40px;
     font-weight: bolder;
+}
+
+#faq-div {
+    align-items: flex-start;
+    display: flex;
+    justify-content: center;
 }
 
 a {
