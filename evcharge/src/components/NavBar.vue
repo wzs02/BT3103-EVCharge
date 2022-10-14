@@ -10,11 +10,13 @@
                     </v-col>
 
                     <v-col cols="3" class="menu-options">
-                        <div class="menu-op">About</div>
-                        <div class="menu-op">Book</div>
-                        <div class="menu-op">Plan</div>
-                        <div class="menu-op">Sign up</div>
-                        <v-btn class="btn-style">Log in</v-btn>
+                        <nav>
+                        <router-link to="/" class="menu-op">About</router-link>
+                        <router-link to="/login" class="menu-op">Book</router-link>
+                        <router-link to="/login" class="menu-op">Plan</router-link>
+                        <router-link to="/signup" class="menu-op">Sign Up</router-link>
+                        <v-btn @click="this.$router.push('/login')" class="btn-style">Log In</v-btn>
+                        </nav> 
                     </v-col>
                 </v-row>
             </v-container>
