@@ -1,24 +1,35 @@
 import { createRouter, createWebHashHistory } from "vue-router"
-import LogIn from '@/views/LogIn.vue'
-import SignUp from '@/views/SignUp.vue'
+// import LogIn from '@/views/LogIn.vue'
+// import SignUp from '@/views/SignUp.vue'
+// import TesterFile from '@/views/TesterFile.vue'
 
-
-const routes = [
+const router = createRouter({
+    history: createWebHashHistory(),
+    routes: [
     {
-        path: '/login',
-        name: 'Login',
-        component: LogIn
+        path: '/',
+        name: 'AboutPage',
+        component: () => import('../views/AboutPage.vue'),
     },
     {
         path: '/signup',
         name:'SignUp',
-        component:SignUp
+        component: () => import('../views/SignUp.vue'),
+    },
+    {
+        path: '/login',
+        name:'LogIn',
+        component: () => import('../views/LogIn.vue'),
+    },
+    {
+        path: '/',
+        name:'TesterFile',
+        component: () => import('../views/TesterFile.vue'),
+        meta: {
+            requireAuth: true
+        }
     }
-]
-
-const router = createRouter({
-    history: createWebHashHistory(),
-    routes
+],
 })
 
 export default router
