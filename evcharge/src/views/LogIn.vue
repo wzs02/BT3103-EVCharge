@@ -1,12 +1,13 @@
 <template>
-    <NavBar />
-
-    <h1>Log In</h1>
-    <p><input type="email" placeholder="Email" v-model="email" /></p>
-    <p><input type="password" placeholder="Password" v-model="password" /></p>
-    <p v-if="errMsg">{{ errMsg }}</p>
-    <p><button @click="register(email,password)">Submit</button></p>
-    <p><button @click="signInWithGoogle">Sign in with Google</button></p>
+    <v-app>
+        <NavBar />
+        <h1>Log In</h1>
+        <p><input type="email" placeholder="Email" v-model="email" /></p>
+        <p><input type="password" placeholder="Password" v-model="password" /></p>
+        <p v-if="errMsg">{{ errMsg }}</p>
+        <p><button @click="register(email,password)">Submit</button></p>
+        <p><button @click="signInWithGoogle">Sign in with Google</button></p>
+    </v-app>
 </template>
 
 

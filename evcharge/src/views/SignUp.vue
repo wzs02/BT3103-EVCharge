@@ -1,13 +1,13 @@
 <template>
-    <NavBar/>
-
-    <h1>Create an Account</h1>
-    <p><input type="email" placeholder="Email" v-model="email" /></p>
-    <p><input type="password" placeholder="Password" v-model="password" /></p>
-    <p><button @click="register">Submit</button></p>
-    <p><button @click="signInWithGoogle">Sign in with Google</button></p>
+    <v-app>
+        <NavBar/>
+        <h1>Create an Account</h1>
+        <p><input type="email" placeholder="Email" v-model="email" /></p>
+        <p><input type="password" placeholder="Password" v-model="password" /></p>
+        <p><button @click="register">Submit</button></p>
+        <p><button @click="signInWithGoogle">Sign in with Google</button></p>
+    </v-app>
 </template>
-
 
 <script>
 import { ref } from "vue";

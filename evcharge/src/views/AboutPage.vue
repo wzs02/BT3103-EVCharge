@@ -1,27 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar :elevation="0">
-      <v-container fluid>
-        <v-row>
-          <v-col cols="8">
-            <v-app-bar-nav-icon>
-              <v-img id="nav-logo" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img>
-            </v-app-bar-nav-icon>
-          </v-col>
-
-          <v-col cols="3" class="menu-options">
-            <nav>
-              <router-link to="/" class="menu-op">About</router-link>
-              <router-link to="/login" class="menu-op">Book</router-link>
-              <router-link to="/login" class="menu-op">Plan</router-link>
-              <router-link to="/signup" class="menu-op">Sign Up</router-link>
-              <v-btn @click="this.$router.push('/login')" class="btn-style">Log In</v-btn>
-            </nav>  
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-app-bar>
-
+    <NavBar/>
     <div class="bg-container">
       <img v-bind:src="bg_img" id="bg-ratio">
       <div id="bg-title">EMPOWER <br />YOUR RIDE</div>
@@ -81,12 +60,13 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 import TeamProfile from '@/components/TeamProfile.vue'
 import HowTo from '@/components/HowTo.vue'
 
 export default {
-  name: 'NavBar',
-  components: { TeamProfile, HowTo },
+  name: 'AboutPage',
+  components: { NavBar, TeamProfile, HowTo },
   data() {
     return {
       bg_img: require('../assets/AboutPage/About_Bg.png'),
