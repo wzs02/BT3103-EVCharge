@@ -12,8 +12,8 @@
           <v-col cols="3" class="menu-options">
             <nav>
               <router-link to="/" class="menu-op">About</router-link>
-              <router-link to="/login" class="menu-op">Book</router-link>
-              <router-link to="/login" class="menu-op">Plan</router-link>
+              <router-link to="/TesterFile" class="menu-op">Book</router-link>
+              <router-link to="/TesterFile" class="menu-op">Plan</router-link>
               <router-link to="/signup" class="menu-op">Sign Up</router-link>
               <v-btn @click="this.$router.push('/login')" class="btn-style">Log In</v-btn>
             </nav>  
