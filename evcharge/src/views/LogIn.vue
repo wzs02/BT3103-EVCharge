@@ -14,11 +14,10 @@
 <script>
 import { ref } from "vue";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import NavBar from "../components/NavBar.vue"; //import router
 // var email = ref("")
 // var password = ref("")
-const router = useRouter()
 const errMsg = ref() //ERROR message
 
 export default {
@@ -39,7 +38,7 @@ export default {
                 .then(
                     console.log("Successfully sign in!"),
                     console.log(auth.currentUser),
-                    router.push({ path: '/TesterFile' }))
+                    this.$router.push({ path: '/TesterFile' }))
                 .catch((error) => {
                     console.log(error.code);
                     switch (error.code) {

@@ -11,11 +11,11 @@
                 <v-col cols="3" class="menu-options">
                     <nav>
                     <router-link to="/" class="menu-op">About</router-link>
-                    <router-link to="/login" class="menu-op">Book</router-link>
-                    <router-link to="/login" class="menu-op">Plan</router-link>
+                    <router-link to="/TesterFile" class="menu-op">Book</router-link>
+                    <router-link to="/TesterFile" class="menu-op">Plan</router-link>
                     <router-link to="/signup" class="menu-op">Sign Up</router-link>
                     <v-btn @click="this.$router.push('/login')" class="btn-style">Log In</v-btn>
-                    </nav> 
+                </nav> 
                 </v-col>
             </v-row>
         </v-container>
@@ -23,8 +23,33 @@
 </template>
   
 <script>
+import { onMounted, ref } from "vue";
+import { signOut, getAuth, onAuthStateChanged } from '@firebase/auth';
+
+let isLoggedIn = ref(false);
+
+let auth;
+onMounted(() => {
+    auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            isLoggedIn.value = true;
+        } else {
+            isLoggedIn.value = false;
+        }
+    });
+});
+
 export default {
-    name: 'NavBar'
+    name: 'NavBar',
+    methods: {
+        signOutPress() {
+            signOut(auth).then(() => {
+                isLoggedIn.value = false;
+                this.$router.push("/")
+            })
+        }
+    }
 }
 </script>
   

@@ -22,17 +22,22 @@ const router = createRouter({
 			component: () => import("../views/LogIn.vue"),
 		},
 		{
-			path: "/view_bookings",
-			name: "ViewBookings",
-			component: () => import("../views/ViewBookings.vue"),
+			path: "/TesterFile",
+			name: "TesterFile",
+			component: () => import("../views/TesterFile.vue"),
 			meta: {
 				requireAuth: true,
 			},
 		},
 		{
-			path: "/TesterFile",
-			name: "TesterFile",
-			component: () => import("../views/TesterFile.vue"),
+			path: "/faq",
+			name: "FAQ",
+			component: () => import("../views/FAQPage.vue"),
+		},
+		{
+			path: "/view_bookings",
+			name: "ViewBookings",
+			component: () => import("../views/ViewBookings.vue"),
 			meta: {
 				requireAuth: true,
 			},

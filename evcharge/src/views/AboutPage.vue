@@ -14,7 +14,7 @@
     <v-container>
       <v-row>
         <v-col cols=4>
-          <img v-bind:src="bg_car" style = "border-radius: 20px">
+          <img v-bind:src="bg_car" style= "border-radius: 20px">
         </v-col>
 
         <v-col cols=8>
@@ -29,7 +29,9 @@
     </v-container>
 
     <div class="center-with-bottom-space">
-      <v-btn class="btn-style">FAQ Page</v-btn>
+      <router-link :to="{ path: '../faq' }">
+        <v-btn class="btn-style">FAQ Page</v-btn>
+      </router-link>
     </div>
 
     <div class="center-with-bottom-space">
@@ -48,10 +50,10 @@
       <TeamProfile imgSource="About_YY.png" memberName="Yang Yee" />
     </div>
 
-    <div id = "contact-details">
-      <h3 id = "contact-header">Contact Us: </h3> &emsp;
+    <div id="contact-details">
+      <h3 id="contact-header">Contact Us: </h3> &emsp;
       <img v-bind:src="icon_email" class="icon-img">
-      <span id = "contact-email">enquiries@evcharge.com</span> &emsp;&emsp;
+      <span id="contact-email">enquiries@evcharge.com</span> &emsp;&emsp;
       <img v-bind:src="icon_fb" class="icon-img">
       <img v-bind:src="icon_ig" class="icon-img">
       <img v-bind:src="icon_twitter" class="icon-img">
@@ -191,8 +193,8 @@ export default {
 }
 
 #contact-details {
-  display: flex; 
-  justify-content: flex-end; 
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -206,5 +208,10 @@ export default {
 #contact-email {
   font-family: 'Outfit';
   font-size: 15px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 </style>
