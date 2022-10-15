@@ -1,7 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router"
-// import LogIn from '@/views/LogIn.vue'
-// import SignUp from '@/views/SignUp.vue'
-// import TesterFile from '@/views/TesterFile.vue'
+import { getAuth, onAuthStateChanged} from "firebase/auth"
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -26,10 +24,36 @@ const router = createRouter({
         name:'TesterFile',
         component: () => import('../views/TesterFile.vue'),
         meta: {
-            requireAuth: true
+            requiresAuth: true,
         }
     }
 ],
 })
 
-export default router
+const getCurrentUser = () => {
+    return new Promise((resolve) => {
+        const removeListener = onAuthStateChanged(
+            getAuth(),
+            (user) => {
+                removeListener();
+                resolve(user);
+            }
+        )
+    })
+};
+
+
+router.beforeEach(async (to, from ,next) => {
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+        if (await getCurrentUser()) {
+            next();
+        } else{
+            alert("You are not signed in, please create an account!");
+            next("/signup");
+        }
+    } else {
+        next();
+    }
+});
+
+export default router;
