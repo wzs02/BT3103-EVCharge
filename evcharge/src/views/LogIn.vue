@@ -5,7 +5,7 @@
     <p><input type="email" placeholder="Email" v-model="email" /></p>
     <p><input type="password" placeholder="Password" v-model="password" /></p>
     <p v-if="errMsg">{{ errMsg }}</p>
-    <p><button @click="signin(email,password)">Submit</button></p>
+    <p><button @click="register(email,password)">Submit</button></p>
     <p><button @click="signInWithGoogle">Sign in with Google</button></p>
 </template>
 
@@ -17,7 +17,6 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import NavBar from "../components/NavBar.vue"; //import router
 // var email = ref("")
 // var password = ref("")
-// const router = useRouter()
 const errMsg = ref() //ERROR message
 
 export default {
@@ -29,7 +28,7 @@ export default {
         }
     },
     methods: {
-        signin(email, password) {
+        register(email, password) {
             console.log("Input fields")
             console.log(email)
             console.log(password)
