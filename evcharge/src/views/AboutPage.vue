@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <NavBar/>
+    <NavBar />
     <div class="bg-container">
       <img v-bind:src="bg_img" id="bg-ratio">
       <div id="bg-title">EMPOWER <br />YOUR RIDE</div>
@@ -14,7 +14,7 @@
     <v-container>
       <v-row>
         <v-col cols=4>
-          <img v-bind:src="bg_car" style= "border-radius: 20px">
+          <img v-bind:src="bg_car" style="border-radius: 20px">
         </v-col>
 
         <v-col cols=8>
@@ -68,7 +68,7 @@ import HowTo from '@/components/HowTo.vue'
 
 export default {
   name: 'AboutPage',
-  components: { NavBar, TeamProfile, HowTo },
+  components: { TeamProfile, HowTo, NavBar },
   data() {
     return {
       bg_img: require('../assets/AboutPage/About_Bg.png'),
