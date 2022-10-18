@@ -1,9 +1,13 @@
 <template>
-    <NavBar/>
-    <button @click="signOutPress" if="isLoggedIn">Sign out</button> 
+    <v-app>
+        <v-container>
+          <NavBar/>
+      </v-container>
+      <button @click="signOutPress" if="isLoggedIn">Sign out</button> 
     <h1>TESTER FILE</h1>
     <h1>TESTER FILE: used to test out firebase</h1>
     <h1>THIS FILE IS ONLY AVAILABLE TO THOSE THAT HAVE SIGN IN</h1>
+    </v-app>
 </template>
 
 <script>

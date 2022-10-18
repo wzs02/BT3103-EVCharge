@@ -6,7 +6,7 @@
 
       <v-container class="bg-container-sign-up">
           <v-img id="nav-logo-sign-up" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img>
-          <v-img id="girl-sign-up" src="../assets/AboutPage/Sign_Up.png"></v-img>
+          <!-- <v-img id="girl-sign-up" src="../assets/SignInPage/GirlCharging.png"></v-img> -->
           <v-content>
         <v-card width="500" class="mx-auto mt-16 rounded-card" elevation='5' height="750">
           <v-container>
@@ -26,15 +26,15 @@
           <v-card-text id="field-header">Enter your email address</v-card-text>
             <v-text-field type="text" label="Your Email" v-model="email"/>
             <v-card-text id="field-header">Your electic vehicle's license plate number</v-card-text>
-            <v-text-field type="text" label="License plate number" v-model="email"/>
+            <v-text-field type="text" label="License plate number" v-model="plateNo"/>
             <v-card-text id="field-header">Enter your password</v-card-text>
-            <v-text-field label="Password" type="password"/>
+            <v-text-field label="Password" type="password" v-model="password"/>
             <v-card-text id="field-header">Re-enter your password</v-card-text>
             <v-text-field label="Password" type="password"/>
           </v-card-text>
           <v-col class="text-center">
-              <v-btn class="sign-up-btn-style">                  
-                <span class="">Sign up</span>                  
+              <v-btn class="sign-up-btn-style" @click="register(email,password)">                  
+                <span>Sign up</span>                  
               </v-btn>
           </v-col>
           <v-col class="text-center pa-2 ma-0">
@@ -80,10 +80,12 @@ export default {
         register(email, password) {
             const auth = getAuth();
             createUserWithEmailAndPassword(auth, email, password)
-                .then(
+                .then((userCurrent) => {
+                    const user = userCurrent.user;
+                    console.log(user)
                     console.log("Sign Up Successful"),
                     console.log(auth.currentUser), 
-                    this.$router.push('/TesterFile'))
+                    this.$router.push('/TesterFile')})
                 .catch((error) => {
                     console.log(error.code);
                     switch (error.code) {
@@ -138,11 +140,18 @@ export default {
   margin-left: 150px;
 }
 
-#girl-sign-up {
+/* #girl-sign-up {
     margin-top: -450px;
-  width: 1500px;
+  width: 2000px;
   top: 450px;
-  left: 400px;
+  /* left: 400px; */
+  /* margin-left: 200px; */
+/* } */ */
+
+.bgimage {
+  background-image: src="../assets/AboutPage/Sign_Up.png";
+  background-size: cover;
+  background-position: center center;
 }
 
 #nav-logo-sign-up {

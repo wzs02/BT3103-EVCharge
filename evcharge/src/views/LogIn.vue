@@ -52,7 +52,7 @@ export default {
                             errMsg.value = "Email or password is incorrect";
                             break;
                     }
-                    alert(error.message);
+                    alert(errMsg.value);
                 });
         }
     },
