@@ -6,7 +6,7 @@
 
         <v-container> 
             <!-- <v-img id="nav-logo-sign-up" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img> -->
-            <v-card width="500" class="mx-auto mt-16 rounded-card1" elevation='5' height="550">
+            <v-card width="500" class="mx-auto mt-16 rounded-card1" elevation='5' height="520">
                 <v-container>
                     <v-row>
                         <v-col>
@@ -29,9 +29,12 @@
                     <v-row>
                     
                         <v-card-text id="no-account">Don't have an account?</v-card-text>
-                        <button type="button" id="click-signup">Sign Up</button>
-                        <button type="button" id="click-forgot">Forgot Password</button>
-                    
+                        <router-link :to="{ path: '../signup' }">
+                            <button type="button" id="click-signup">Sign Up</button>
+                        </router-link>
+                        <router-link :to="{ path: '../forgetpw' }">
+                            <button type="button" id="click-forgot">Forgot Password</button>
+                        </router-link>
                     </v-row>
                 </v-container>
 
@@ -181,7 +184,7 @@ export default {
     font-family: 'Outfit';
     font-weight: bolder;
     position: absolute;
-    left: 370px;
+    left: 360px;
     top: 315px;
     font-size: 14px;
     color:#4285f4;

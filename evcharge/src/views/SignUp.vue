@@ -35,7 +35,7 @@
           </v-card-text>
           <v-col class="text-center">
               <v-btn class="sign-up-btn-style" @click="register(email,password)">                  
-                <span>Sign Up</span>                  
+                <span>Sign Up</span>                 
               </v-btn>
           </v-col>
           <v-col class="text-center pa-2 ma-0">
@@ -99,7 +99,7 @@ export default {
                             errMsg.value = "Email or password is incorrect";
                             break;
                     }
-                    alert(error.message);
+                    alert(errMsg.value);
             });
         },
         signInWithGoogle() {
