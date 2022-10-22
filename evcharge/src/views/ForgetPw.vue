@@ -7,7 +7,7 @@
         <v-container> 
             <v-card width="500" class="mx-auto mt-16 rounded-card1" elevation='5' height="520">
                 <v-container>
-                    <v-img id="nav-logo-sign-up" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img>
+                    <v-img id="ev-logo" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img>
                     <v-row>
                         <v-col>
                             <div id="message">Enter the email address associated with your account and we will send you a link to reset your password.</div>
@@ -28,7 +28,7 @@
                 </v-container>
 
                 <v-col class="text-center">
-                    <v-btn id="sign-in-btn-style" @click="register(email,password)">                  
+                    <v-btn id="sign-in-btn-style" @click="resetpw(email)">                  
                     <span>Continue</span>                  
                     </v-btn>
                 </v-col>
@@ -41,21 +41,43 @@
 
 <script>
 import NavBar from "../components/NavBar.vue"; //import router
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 export default {
     data() {
         return {
             bg_img2: require('../assets/AboutPage/Sign_Up.png'),
+            errMsg: "",
         }
     },
-    components: { NavBar }
+    components: { NavBar },
+    methods: {
+        resetpw(email) {
+            const auth = getAuth();
+                sendPasswordResetEmail(auth, email)
+                .then(() => { 
+                    alert("An password reset email has been sent to your email.")
+                    this.$router.push('/')
+                })
+                .catch((error) => {
+                    switch (error.code) {
+                        case "auth/invalid-email":
+                            alert("The email that you have entered is invalid.")
+                            break;
+                        default:
+                        alert("User is not found.")
+                            break;
+                    }
+                })
+        }
+    }
 }
 </script>
 
 
 <style>
 
-#nav-logo-sign-up {
+#ev-logo {
     margin-top: 0px;
     width: 340px;
     top: 40px;

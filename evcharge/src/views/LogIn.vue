@@ -22,7 +22,7 @@
                     <v-card-text id="field-header-log">Enter your email address</v-card-text>
                     <v-text-field type="text" label="Your Email" v-model="email"/>
                     <v-card-text id="field-header-log">Enter your password</v-card-text>
-                    <v-text-field label="Password" type="password" v-model="password"/>
+                    <v-text-field label="Password" type="password" v-model="password" clearable/>
                 </v-card-text>
 
                 <v-container id="margin-tune">
@@ -39,7 +39,7 @@
                 </v-container>
 
                 <v-col class="text-center">
-                    <v-btn id="sign-in-btn-style" @click="register(email,password)">                  
+                    <v-btn id="sign-in-btn-style" @click="signIn(email, password)">                  
                     <span>Sign In</span>                  
                     </v-btn>
                 </v-col>
@@ -62,16 +62,57 @@
 <script>
 import NavBar from "../components/NavBar.vue"; //import router
 import { mdiMicrophone } from '@mdi/js'
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "@firebase/auth";
 
 export default {
     data() {
         return {
             icons: {
                 mdiMicrophone
-            }
+            },
+            email: "",
+            password: "",
         }
     },
-    components: { NavBar }
+    components: { NavBar },
+    methods: {
+        signIn(email, password) {
+            const auth = getAuth();
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log(user)
+                    this.$router.push('/TesterFile')})
+                .catch((error) => {
+                    console.log(error.code);
+                    alert("Email and password is invalid");
+            });
+            },
+            signInWithGoogle() {
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(getAuth(), provider)
+                .then((result) => {
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    console.log(token)
+                    // The signed-in user info.
+                    const user = result.user;
+                    console.log(user)
+                    this.$router.push('/TesterFile');
+                })
+                .catch((error) => {
+                    console.log(error.message)
+                    switch (error.code) {
+                        case "auth/account-exists-with-different-credential":
+                            alert("This email has been binded to an account.");
+                            break;
+                        case "auth/popup-blocked":
+                            alert("Please enable your browser pop up.");
+                            break;
+                    }
+                })
+        }
+        }
 }
 
 

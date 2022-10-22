@@ -1,5 +1,6 @@
 <template>
     <v-app>
+      
       <v-container>
           <NavBar/>
       </v-container>
@@ -24,17 +25,26 @@
           </v-container>
           
           <v-card-text>
-          <v-card-text id="field-header">Enter your email address</v-card-text>
-            <v-text-field type="text" label="Your Email" v-model="email"/>
+            <v-card-text id="field-header">Enter your email address</v-card-text>
+            <v-text-field type="text" label="Your Email" v-model="email" prepend-icon="search" clearable/>
+            <span v-if="v$.email.$error"> {{ v$.email.$errors[0].$message }} </span>
+
+
             <v-card-text id="field-header">Your electic vehicle's license plate number</v-card-text>
             <v-text-field type="text" label="License plate number" v-model="plateNo"/>
+
             <v-card-text id="field-header">Enter your password</v-card-text>
-            <v-text-field label="Password" type="password" v-model="password"/>
+            <v-text-field type="password" label="Password" clearable v-model="password.password"/>
+            <span v-if="v$.password.password.$error"> {{ "Your password must be more than 6 characters long" }} </span>
+
             <v-card-text id="field-header">Re-enter your password</v-card-text>
-            <v-text-field label="Password" type="password"/>
+            <v-text-field type="password" label="Confirm Password" v-model="password.confirm"/>
           </v-card-text>
+
+          <span v-if="v$.password.confirm.$error"> {{ "Passwords do not match" }}</span>
+
           <v-col class="text-center">
-              <v-btn class="sign-up-btn-style" @click="register(email,password)">                  
+              <v-btn class="sign-up-btn-style" @click="register(email, password.password)">                  
                 <span>Sign Up</span>                 
               </v-btn>
           </v-col>
@@ -52,6 +62,8 @@
 </template>
 
 <script>
+import useValidate from '@vuelidate/core'
+import { minLength, required, sameAs, email } from '@vuelidate/validators'
 import NavBar from "../components/NavBar.vue"
 import { ref } from "vue";
 import { getAuth, 
@@ -71,19 +83,25 @@ export default {
         return {
             bg_img: require('../assets/SignInPage/GirlCharging.png'),
             bg_img2: require('../assets/AboutPage/Sign_Up.png'),
+            v$: useValidate(),
             email: "",
-            password: "",
+            password: {
+              password: "",
+              confirm: "",
+            },
             errMsg: "",
         }
     },
     methods: {
         register(email, password) {
-            const auth = getAuth();
+            this.v$.$validate()
+            if (!this.v$.$error) {
+              const auth = getAuth();
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCurrent) => {
+                    alert("Sign Up Successful")
                     const user = userCurrent.user;
                     console.log(user)
-                    console.log("Sign Up Successful"),
                     console.log(auth.currentUser), 
                     this.$router.push('/TesterFile')})
                 .catch((error) => {
@@ -95,24 +113,52 @@ export default {
                         case "auth/user-not-found":
                             errMsg.value = "User NOT found";
                             break;
+                        case "auth/email-already-in-use":
+                            errMsg.value = "Email already in use";
+                            break;
                         default:
                             errMsg.value = "Email or password is incorrect";
                             break;
                     }
                     alert(errMsg.value);
             });
+            }
+            
         },
         signInWithGoogle() {
             const provider = new GoogleAuthProvider();
             signInWithPopup(getAuth(), provider)
                 .then((result) => {
-                    console.log(result.user);
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    console.log(token)
+                    // The signed-in user info.
+                    const user = result.user;
+                    console.log(user)
                     this.$router.push('/TesterFile');
                 })
                 .catch((error) => {
                     console.log(error.message)
+                    switch (error.code) {
+                        case "auth/account-exists-with-different-credential":
+                            errMsg.value = "This email has been binded to an account.";
+                            break;
+                        case "auth/popup-blocked":
+                            errMsg.value = "Please enable your browser pop up.";
+                            break;
+                    }
+                    alert(errMsg.value);
                 })
         }
+    },
+    validations() {
+      return {
+        email: { required, email },
+        password: {
+        password: { required, minLength: minLength(6) },
+        confirm: { required, sameAs: sameAs(this.password.password) },
+      },
+      }
     },
     components: { NavBar }
 }
