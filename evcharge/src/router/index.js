@@ -10,21 +10,33 @@ const router = createRouter({
 			path: "/",
 			name: "AboutPage",
 			component: () => import("../views/AboutPage.vue"),
+			meta: {
+				requireAuth: false,
+			},
 		},
 		{
 			path: "/signup",
 			name: "SignUp",
 			component: () => import("../views/SignUp.vue"),
+			meta: {
+				requireAuth: false,
+			},
 		},
 		{
 			path: "/login",
 			name: "LogIn",
 			component: () => import("../views/LogIn.vue"),
+			meta: {
+				requireAuth: false,
+			},
 		},
 		{
 			path: "/forgetpw",
 			name: "ForgetPassword",
 			component: () => import("../views/ForgetPw.vue"),
+			meta: {
+				requireAuth: false,
+			},
 		},
 		{
 			path: "/TesterFile",
@@ -38,11 +50,17 @@ const router = createRouter({
 			path: "/faq",
 			name: "FAQ",
 			component: () => import("../views/FAQPage.vue"),
+			meta: {
+				requireAuth: true,
+			},
 		},
 		{
 			path: "/Book",
 			name: "BookingPage",
-			component: () => import("../views/BookingPage.vue")
+			component: () => import("../views/BookingPage.vue"),
+			meta: {
+				requireAuth: true,
+			},
 		},
 		{
 			path: "/view_bookings",
