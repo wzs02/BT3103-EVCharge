@@ -7,12 +7,27 @@
 
       <!--Creating available Markers -->
       <GMapMarker :key="index" v-for="(m, index) in Available_Markers" :position="m.position"
-        :icon="require('@/assets/MapPage/availablePins.png')" @click="center = m.position" :clickable=true :draggable=false />
+        :icon="require('@/assets/MapPage/availablePins.png')" @click="center = m.position" :clickable=true
+        :draggable=false>
+        <GMapInfoWindow :opened="true" :options=" {
+               pixelOffset: {
+                 width: 10, height: 0
+               },
+               maxWidth: 320,
+               maxHeight: 320,
+        }">
+          <div>I am in info window
+            <MyComponent />
+          </div>
+        </GMapInfoWindow>
+      </GMapMarker>
 
       <!--Creating unavailable Markers -->
       <!---->
-      <GMapMarker :key="index" v-for="(m, index) in Unavailable_Markerss" :position="m.position"
-        :icon="require('@/assets/MapPage/unavailablePins.png')" @click="center = m.position" :clickable=true :draggable=false />
+      <GMapMarker :key="index" v-for="(m, index) in Unavailable_Markers" :position="m.position"
+        :icon="require('@/assets/MapPage/unavailablePins.png')" @click="center = m.position" :clickable=true
+        :draggable=false>
+      </GMapMarker>
     </GMapMap>
 
 
@@ -24,16 +39,22 @@
 
 </template>
 
-<script >
+<script>
+/* eslint-disable */
+import {locationVar} from "@/assets/MapPage/Locations.js"
+import firebaseApp from "../firebase.js"
+import { getFirestore,setDoc,doc } from "firebase/firestore"
 
+const db = getFirestore(firebaseApp)
 
 export default {
   name: 'MapPage',
+
   data() {
     return {
       count: 0,
 
-      //Deafult Center of the Map Once Loaded
+      //Defult Center of the Map Once Loaded
       center: { lat: 1.352083, lng: 103.819839 },
 
       markers: [
@@ -45,7 +66,7 @@ export default {
         }
       ],
 
-      Unavailable_Markerss: [
+      Unavailable_Markers: [
         {
           id: "rdn",
           position: {
@@ -89,10 +110,16 @@ export default {
 
     }
   },
+  methods: {
+    async createCollection() {
+      await setDoc(doc(db, "cities", "LA"),locationVar);
+    }
+  },
   test() {
     window.location.reload()
   },
   created() {
+    this.createCollection()
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
