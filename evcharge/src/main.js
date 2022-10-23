@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
 import App from './App.vue'
 import router from './router'
+import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 // Import the functions you need from the SDKs you need
 import firebase from 'firebase/compat/app';
@@ -47,5 +48,12 @@ const vuetify = createVuetify() // Replaces new Vuetify()
 app.use(router)
 
 app.use(vuetify)
+
+app.use(VueGoogleMaps, {
+  load: {
+      key: 'AIzaSyA5HqCAe1kXVPO5mTa4QGwl243GUWxMXDE',
+      libraries: "places"
+  },
+})
 
 app.mount('#app')

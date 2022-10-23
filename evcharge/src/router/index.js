@@ -70,6 +70,11 @@ const router = createRouter({
 				requireAuth: true,
 			},
 		},
+		{
+			path:'/map',
+			name:"MapPage",
+			component: () => import("../views/MapPage.vue")
+		}
 	],
 });
 
