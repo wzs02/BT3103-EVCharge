@@ -21,7 +21,7 @@
             </v-col>
             <v-col cols="2">
                 <div class="delete_booking_div">
-                    <button @click="deleteBooking" class="delete_booking_btn">Delete</button>
+                    <button @click="triggerDelete" class="delete_booking_btn">Delete</button>
                 </div>
             </v-col>
         </v-row>
@@ -34,9 +34,10 @@ export default {
     props: {
         bookingDetails: Object
     },
+    emits: ['deleteBooking'],
     methods: {
-        deleteBooking() {
-
+        triggerDelete() {
+            this.$emit('deleteBooking', this.bookingDetails.id)
         }
     }
 }
