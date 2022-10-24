@@ -6,10 +6,10 @@
     <GMapMap :center="center" :zoom="11.80" map-type-id="roadmap" style="width: 100vw; height: 35rem">
 
       <!--Creating available Markers -->
-      <GMapMarker :key="index" v-for="(m, index) in Available_Markers" :position="m.position"
+      <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
         :icon="require('@/assets/MapPage/availablePins.png')" @click="center = m.position" :clickable=true
         :draggable=false>
-        <GMapInfoWindow :opened="true" :options=" {
+        <GMapInfoWindow :opened="false" :options=" {
                pixelOffset: {
                  width: 10, height: 0
                },
@@ -33,7 +33,7 @@
 
   </div>
   <div class="icon">
-    <button class="dot circle link icon" @click="locatorButtonPressed"></button>
+    <button style = "background-color:red" @click="locatorButtonPressed">Check</button>
     <p>Count is: {{ count }}</p>
   </div>
 
@@ -41,9 +41,10 @@
 
 <script>
 /* eslint-disable */
-import {locationVar} from "@/assets/MapPage/Locations.js"
+import { locationVar } from "@/assets/MapPage/Locations.js"
 import firebaseApp from "../firebase.js"
-import { getFirestore,setDoc,doc } from "firebase/firestore"
+import { getFirestore, getDoc, setDoc, doc } from "firebase/firestore"
+import { ref } from 'vue'
 
 const db = getFirestore(firebaseApp)
 
@@ -87,32 +88,28 @@ export default {
         }
       ],
 
-      Available_Markers: [
-        {
-          id: "rdn",
-          position: {
-            lat: 1.300155, lng: 103.809850
-          },
-        },
-        {
-          id: "rdn1",
-          position: {
-            lat: 1.321435, lng: 103.772747
-          },
-        },
-        {
-          id: "rdn2",
-          position: {
-            lat: 1.365506, lng: 103.892679
-          },
-        }
-      ]
+      Available_Markers: ref([]),
 
     }
   },
   methods: {
     async createCollection() {
-      await setDoc(doc(db, "cities", "LA"),locationVar);
+      await setDoc(doc(db, "MapPage", "chargerLocations"), locationVar);
+    },
+    async getData() {
+      const docRef = doc(db, "MapPage", "chargerLocations");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const markerKeyValues = docSnap.data()
+        this.Available_Markers.value = Object.values(markerKeyValues)
+        .map(x => Object.assign({},x[0]))
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    },
+    locatorButtonPressed() {
+      console.log(this.Available_Markers.value)
     }
   },
   test() {
@@ -120,6 +117,7 @@ export default {
   },
   created() {
     this.createCollection()
+    this.getData()
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
