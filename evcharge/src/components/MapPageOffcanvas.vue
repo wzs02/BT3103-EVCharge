@@ -14,10 +14,6 @@
                     <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
                 </v-list>
             </v-navigation-drawer>
-            <v-main style="height: 250px">
-                <div class="d-flex justify-center align-center h-100">
-                </div>
-            </v-main>
         </v-layout>
     </v-card>
 </template>
@@ -36,5 +32,11 @@ export default {
     }
 }
 </script>
+
+<style>
+.v-navigation-drawer {
+    z-index: 100000 !important;
+}
+</style>
 
 

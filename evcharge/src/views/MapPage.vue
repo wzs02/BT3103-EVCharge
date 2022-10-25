@@ -1,17 +1,19 @@
 <template>
-  <div class=Map>
+  <v-app>
+    <div style="z-index: 100;">
+      <NavBarLogin />
+    </div>
     <!-- Specifying the Dimension/Specifications of the Google Map we using -->
     <!-- Check width and height for future deployment -->
-    <GMapMap :center="center" :zoom="11.80" map-type-id="roadmap" style="width: 100vw; height: 35rem">
+    <GMapMap :center="center" :zoom="11.80" map-type-id="roadmap" style="height: 705px; width: 100%;z-index:10;">
 
       <!--Creating available Markers -->
       <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
         @click="openMarkerInfoWindow(m.id)" :icon="require('@/assets/MapPage/availablePins.png')" :clickable=true
         :draggable=false>
-        <MapPageOffcanvas :drawer="showWindow(m.id)" :stationName="m.id" @closeWindows="openMarkerInfoWindow(null)"/>
-        <GMapInfoWindow :opened="showWindow(m.id)" 
-        @closeWindows="openMarkerInfoWindow(null)"
-        :options="{
+          <MapPageOffcanvas id="oc" :drawer="showWindow(m.id)" :stationName="m.id"
+            @closeWindows="openMarkerInfoWindow(null)" />
+        <GMapInfoWindow :opened="showWindow(m.id)" @closeWindows="openMarkerInfoWindow(null)" :options="{
           pixelOffset: {
             width: -1, height: 0
           },
@@ -33,18 +35,16 @@
         :draggable=false>
       </GMapMarker>
     </GMapMap>
-
-
-  </div>
-  <div class="icon">
+    <!-- <div class="icon">
     <button style="background-color:red" @click="locatorButtonPressed">Check</button>
     <p>Count is: {{ count }}</p>
-  </div>
-
+  </div> -->
+  </v-app>
 </template>
 
 <script>
 /* eslint-disable */
+import NavBarLogin from "@/components/NavBarLogin.vue"
 import { locationVar } from "@/assets/MapPage/Locations.js"
 import MapPageOffcanvas from "@/components/MapPageOffcanvas.vue"
 import firebaseApp from "../firebase.js"
@@ -55,7 +55,7 @@ const db = getFirestore(firebaseApp)
 
 export default {
   name: "MapPage",
-  components: { MapPageOffcanvas },
+  components: { MapPageOffcanvas, NavBarLogin },
   data() {
     return {
       markerToOpen: null,
