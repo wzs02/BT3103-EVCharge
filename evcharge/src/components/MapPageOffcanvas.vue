@@ -2,10 +2,11 @@
     <!-- <button>{{localData}}</button> -->
     <v-card>
         <v-layout>
-            <v-navigation-drawer v-model="showDrawer">
-                <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg" title="John Leider">
+            <v-navigation-drawer v-model="showDrawer" temporary :width = "400">
+                <v-list-item>{{stationName}}</v-list-item>
+                <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg">
                 </v-list-item>
-
+                <v-btn @click = "$emit('closeWindows')">Close</v-btn>
                 <v-divider></v-divider>
 
                 <v-list density="compact" nav>
@@ -25,7 +26,8 @@
 export default {
     name: 'MapPageOffcanvas',
     props: {
-        drawer: Boolean
+        drawer: Boolean,
+        stationName:String
     },
     computed: {
         showDrawer() {

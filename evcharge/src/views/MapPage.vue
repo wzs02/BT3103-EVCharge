@@ -8,8 +8,10 @@
       <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
         @click="openMarkerInfoWindow(m.id)" :icon="require('@/assets/MapPage/availablePins.png')" :clickable=true
         :draggable=false>
-        <MapPageOffcanvas :drawer="showWindow(m.id)" />
-        <GMapInfoWindow :opened="showWindow(m.id)" :options="{
+        <MapPageOffcanvas :drawer="showWindow(m.id)" :stationName="m.id" @closeWindows="openMarkerInfoWindow(null)"/>
+        <GMapInfoWindow :opened="showWindow(m.id)" 
+        @closeWindows="openMarkerInfoWindow(null)"
+        :options="{
           pixelOffset: {
             width: -1, height: 0
           },
