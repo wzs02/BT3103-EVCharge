@@ -1,6 +1,5 @@
 <template>
   <div class=Map>
-
     <!-- Specifying the Dimension/Specifications of the Google Map we using -->
     <!-- Check width and height for future deployment -->
     <GMapMap :center="center" :zoom="11.80" map-type-id="roadmap" style="width: 100vw; height: 35rem">
@@ -9,7 +8,8 @@
       <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
         @click="openMarkerInfoWindow(m.id)" :icon="require('@/assets/MapPage/availablePins.png')" :clickable=true
         :draggable=false>
-        <GMapInfoWindow :opened="markerToOpen == m.id" :options="{
+        <MapPageOffcanvas :drawer="showWindow(m.id)" />
+        <GMapInfoWindow :opened="showWindow(m.id)" :options="{
           pixelOffset: {
             width: -1, height: 0
           },
@@ -44,6 +44,7 @@
 <script>
 /* eslint-disable */
 import { locationVar } from "@/assets/MapPage/Locations.js"
+import MapPageOffcanvas from "@/components/MapPageOffcanvas.vue"
 import firebaseApp from "../firebase.js"
 import { getFirestore, getDoc, setDoc, doc } from "firebase/firestore"
 import { ref } from 'vue'
@@ -52,6 +53,7 @@ const db = getFirestore(firebaseApp)
 
 export default {
   name: "MapPage",
+  components: { MapPageOffcanvas },
   data() {
     return {
       markerToOpen: null,
@@ -93,6 +95,13 @@ export default {
       Available_Markers: ref([]),
     };
   },
+  computed: {
+    showWindow() {
+      return (inputId) => {
+        return this.markerToOpen == inputId
+      }
+    }
+  },
   methods: {
     async createCollection() {
       await setDoc(doc(db, "MapPage", "chargerLocations"), locationVar);
@@ -115,7 +124,7 @@ export default {
     },
     locatorButtonPressed() {
       console.log(this.Available_Markers.value);
-    }
+    },
   },
   test() {
     window.location.reload();
