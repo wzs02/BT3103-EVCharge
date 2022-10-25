@@ -7,19 +7,19 @@
 
       <!--Creating available Markers -->
       <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
-        :icon="require('@/assets/MapPage/availablePins.png')" @click="center = m.position" :clickable=true
+        @click="openMarkerInfoWindow(m.id)" :icon="require('@/assets/MapPage/availablePins.png')" :clickable=true
         :draggable=false>
-        <GMapInfoWindow :opened="true" :options=" {
-               pixelOffset: {
-                 width: 10, height: 0
-               },
-               maxWidth: 320,
-               maxHeight: 320,
-        }">
+        <GMapInfoWindow :opened="markerToOpen == m.id" :options="{
+          pixelOffset: {
+            width: -1, height: 0
+          },
+          maxWidth: 320,
+          maxHeight: 320,
+        }" @closeclick="openMarkerInfoWindow(null)">
           <div>
-            <h5 id="stationName">{{m.id}}</h5>
-            <h6 class="stationDetails">{{m.street}},</h6>
-            <h6 class="stationDetails">{{m.postalCode}}</h6>
+            <h5 id="stationName">{{ m.id }}</h5>
+            <h6 class="stationDetails">{{ m.street }},</h6>
+            <h6 class="stationDetails">{{ m.postalCode }}</h6>
           </div>
         </GMapInfoWindow>
       </GMapMarker>
@@ -54,6 +54,7 @@ export default {
   name: "MapPage",
   data() {
     return {
+      markerToOpen: null,
       count: 0,
       //Defult Center of the Map Once Loaded
       center: { lat: 1.352083, lng: 103.819839 },
@@ -109,6 +110,9 @@ export default {
         console.log("No such document!");
       }
     },
+    openMarkerInfoWindow(markerId) {
+      this.markerToOpen = markerId
+    },
     locatorButtonPressed() {
       console.log(this.Available_Markers.value);
     }
@@ -152,18 +156,17 @@ body {
 }
 
 #stationName {
-    font-family: 'Outfit', 'sans-serif';
-    font-size: 12px;
-    font-weight: 800px;
-    color: #4285F4;
-    text-decoration: underline;
+  text-align: center;
+  font-family: 'Outfit', 'sans-serif';
+  font-size: 12px;
+  font-weight: 800px;
+  color: #4285F4;
+  text-decoration: underline;
 }
 
 .stationDetails {
-    font-family: 'Outfit', 'sans-serif';
-    font-size: 9px;
-    text-align: center;
+  font-family: 'Outfit', 'sans-serif';
+  font-size: 9px;
+  text-align: center;
 }
-
-
 </style>
