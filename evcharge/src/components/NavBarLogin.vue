@@ -67,7 +67,7 @@ onMounted(() => {
 });
 
 export default {
-    name: 'NavBar',
+    name: 'NavBarLogin',
     data() {
         return {
             mdiBellOutline,

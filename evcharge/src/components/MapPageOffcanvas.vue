@@ -1,25 +1,20 @@
 <template>
     <!-- <button>{{localData}}</button> -->
-    <v-card>
-        <v-layout>
-            <v-navigation-drawer v-model="showDrawer" temporary :width = "400">
-                <v-list-item>{{stationName}}</v-list-item>
-                <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg">
-                </v-list-item>
-                <v-btn @click = "$emit('closeWindows')">Close</v-btn>
-                <v-divider></v-divider>
+    <div v-if="showDrawer" id="div-style">
+        <div style = "height: 70px"></div>
+        <v-card style="height: 750px">
+            <v-list-item>{{ stationName }}</v-list-item>
+            <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg">
+            </v-list-item>
+            <v-btn @click="$emit('closeWindows')">Close</v-btn>
+            <v-divider></v-divider>
 
-                <v-list density="compact" nav>
-                    <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home"></v-list-item>
-                    <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
-                </v-list>
-            </v-navigation-drawer>
-            <v-main style="height: 250px">
-                <div class="d-flex justify-center align-center h-100">
-                </div>
-            </v-main>
-        </v-layout>
-    </v-card>
+            <v-list density="compact" nav>
+                <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home"></v-list-item>
+                <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
+            </v-list>
+        </v-card>
+    </div>
 </template>
 
 <script>
@@ -27,7 +22,7 @@ export default {
     name: 'MapPageOffcanvas',
     props: {
         drawer: Boolean,
-        stationName:String
+        stationName: String
     },
     computed: {
         showDrawer() {
@@ -36,5 +31,13 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+#div-style {
+    background-color: red;
+    width: 400px;
+    height: 700px;
+}
+</style>
 
 
