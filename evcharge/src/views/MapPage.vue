@@ -9,9 +9,11 @@
 
         <!--Creating available Markers -->
         <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
-          @click="openMarkerInfoWindow(m.id)" :icon="require('@/assets/MapPage/availablePins.png')" :clickable=true
+          @click="logInput(m.id)" :icon="require('@/assets/MapPage/availablePins.png')" :clickable=true
           :draggable=false>
-          <MapPageOffcanvas :drawer="showWindow(m.id)" :stationName="m.id" @closeWindows="openMarkerInfoWindow(null)" />
+          <MapPageOffcanvas :drawer="showWindow(m.id)" :stationName="m.id" 
+          :imgExtension="m.imgName"
+          @closeWindows="openMarkerInfoWindow(null)" />
           <GMapInfoWindow :opened="showWindow(m.id)" @closeWindows="openMarkerInfoWindow(null)" :options="{
             pixelOffset: {
               width: -1, height: 0
@@ -129,6 +131,10 @@ export default {
     locatorButtonPressed() {
       console.log(this.Available_Markers.value);
     },
+    logInput(id) {
+      console.log(id)
+      this.openMarkerInfoWindow(id)
+    }
   },
   test() {
     window.location.reload();
@@ -155,7 +161,7 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@400;700&display=swap');
 
 body {
   margin: 0;
@@ -171,15 +177,16 @@ body {
 #stationName {
   text-align: center;
   font-family: 'Outfit', 'sans-serif';
-  font-size: 12px;
-  font-weight: 800px;
+  font-size: 16px;
+  font-weight: 700;
   color: #4285F4;
   text-decoration: underline;
 }
 
 .stationDetails {
   font-family: 'Outfit', 'sans-serif';
-  font-size: 9px;
+  font-size: 13px;
   text-align: center;
+  font-weight: 400;
 }
 </style>

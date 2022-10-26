@@ -1,28 +1,46 @@
 <template>
-    <!-- <button>{{localData}}</button> -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
     <div v-if="showDrawer" id="div-style">
-        <div style = "height: 70px"></div>
+        <div style="height: 70px"></div>
         <v-card style="height: 750px">
-            <v-list-item>{{ stationName }}</v-list-item>
-            <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg">
-            </v-list-item>
-            <v-btn @click="$emit('closeWindows')">Close</v-btn>
-            <v-divider></v-divider>
+            <div style="position: relative">
+                <img :src="require(`@/assets/MapPage/${imgExtension}.jpeg`)" id="bg-ratio">
+                <v-btn id="close-btn" @click="$emit('closeWindows')">
+                    <v-icon>mdi-close-thick</v-icon>
+                </v-btn>
+            </div>
+            <div id="details-grey-div">
+                <v-list-item id="grey-div-title"><b>{{ stationName }}</b></v-list-item>
+                <v-row style="display: flex; align-items: center;">
+                    <v-col cols=8>
+                        <v-list-item>
+                            <p class="grey-div-type">Type 1</p>
+                        </v-list-item>
+                        <v-list-item>
+                            <p class="grey-div-type" style="color: #4285F4">CCS</p>
+                        </v-list-item>
+                    </v-col>
 
-            <v-list density="compact" nav>
-                <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home"></v-list-item>
-                <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
-            </v-list>
+                    <v-col cols=4>
+                        <v-btn id="book-btn">Book</v-btn>
+                    </v-col>
+                </v-row>
+                <v-list-item><span id="service-provider-bold">Service-provider: </span><span
+                        id="service-provider-grey">Total Energies</span></v-list-item>
+            </div>
+            <v-divider></v-divider>
         </v-card>
     </div>
 </template>
 
 <script>
+
 export default {
     name: 'MapPageOffcanvas',
     props: {
         drawer: Boolean,
-        stationName: String
+        stationName: String,
+        imgExtension: String
     },
     computed: {
         showDrawer() {
@@ -33,10 +51,76 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@400;700&display=swap');
+
 #div-style {
-    background-color: red;
     width: 400px;
     height: 700px;
+}
+
+#bg-ratio {
+    width: 400px;
+    height: 220px;
+    margin-bottom: 0px;
+    display: block;
+}
+
+#details-grey-div {
+    background-color: #d9d9d9;
+    width: 400px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+
+#grey-div-title {
+    font-family: 'Outfit', 'sans-serif';
+    font-size: 16px;
+    font-weight: 700px;
+}
+
+.grey-div-type {
+    font-family: 'Outfit', 'sans-serif';
+    font-size: 14px;
+    font-weight: 400px;
+}
+
+.v-list-item {
+    margin-bottom: -20px !important;
+}
+
+#service-provider-bold {
+    font-family: 'Outfit', 'sans-serif';
+    font-weight: 400;
+    font-size: 14px;
+}
+
+#service-provider-grey {
+    font-weight: 'Outfit', 'sans-serif';
+    font-weight: 400px;
+    font-size: 14px;
+    color: #808080;
+}
+
+#book-btn {
+    background: #000000;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+    width: 80px;
+    height: 30px;
+    color: white;
+    text-transform: none;
+    font-family: 'Outfit', 'sans-serif';
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+#close-btn {
+    background: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    outline: none;
+    box-shadow: none;
 }
 </style>
 
