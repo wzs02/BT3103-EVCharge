@@ -1,7 +1,7 @@
 <template>
     <v-container class="booking_record_container"> 
         <v-row>
-            <v-col cols="10">
+            <v-col>
                 <table>
                     <thead class="bookings_record_headings">
                         <th>Location</th>
@@ -19,27 +19,16 @@
                     </tbody>
                 </table>
             </v-col>
-            <v-col cols="2">
-                <div class="delete_booking_div">
-                    <button @click="triggerDelete" class="delete_booking_btn">Delete</button>
-                </div>
-            </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script>
 export default {
-    name: 'BookingRecord',
+    name: 'PastBookingRecord',
     props: {
         bookingDetails: Object
     },
-    emits: ['deleteBooking'],
-    methods: {
-        triggerDelete() {
-            this.$emit('deleteBooking', this.bookingDetails.id)
-        }
-    }
 }
 </script>
 
@@ -66,7 +55,7 @@ td.svc_pdr_value {
   margin-left: 0;
   margin-bottom: 20px;
   border-radius: 20px;
-  max-width: 1200px;
+  max-width: 1000px;
 }
 
 .bookings_record_headings {
@@ -80,22 +69,5 @@ td.svc_pdr_value {
   font-family: 'Nunito', sans-serif;
   font-weight: 400;
   font-size: 22px;
-}
-
-.delete_booking_div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.delete_booking_btn {
-    background-color: #FF7575;
-    color: #FFFFFF;
-    font-family: 'Nunito', sans-serif;
-    font-weight: bold;
-    font-size: 22px;
-    border-radius: 20px;
-    width: 128px;
-    height: 50px;
 }
 </style>
