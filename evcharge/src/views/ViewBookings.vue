@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <NavBar />
-    <div class="view_bookings">
+    <div class="view_bookings" v-if="showDisplay">
       <h1 class="view_bookings_header">My Bookings</h1>
       <div v-if="uid">
         <p class="view_bookings_subheadings">Upcoming</p>
@@ -46,11 +46,14 @@ export default {
         this.uid = user.uid;
         this.getBookingData(this.uid)
       }
+      // only render display after checking for user
+      this.showDisplay = true;
     })
   },
   data() {
     return {
       uid: false,
+      showDisplay: false,
       hasUpcomingBooking: false,
       upcomingBookingDetails: {},
       hasPastBooking: false,
