@@ -16,6 +16,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "SP Group",
+        hours: "Open 24/7",
+        lots: ["5"],
+        cost: "$0.4366/kWh"
       },
     },
   ],
@@ -35,6 +38,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "SP Group",
+        hours: "Open 24/7",
+        lots: ["6"],
+        cost: "$0.50/kWh"
       },
     },
   ],
@@ -54,6 +60,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "BlueSG",
+        hours: "Open 24/7",
+        lots: ["3"],
+        cost: "$1 for first 3 hours, $2/h after"
       },
     },
   ],
@@ -73,6 +82,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "Solacharge",
+        hours: "Open 24/7",
+        lots: ["2"],
+        cost: "$0.60/kWh"
       },
     },
   ],
@@ -89,9 +101,12 @@ var locationVar = {
       postalCode: "Singapore 529540",
       imgName: "Map_529540",
       chargerDetails: {
-        type: ["Type 2", "CCS/SAE Combo"],
+        type: ["Type 2", "CCS/SAE"],
         system: "CCS",
         provider: "TotalEnergies",
+        hours: "Open 24/7",
+        lots: ["4", "4"],
+        cost: "$0.3930/kWh"
       },
     },
   ],
@@ -111,6 +126,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "BlueSG",
+        hours: "Open 24/7",
+        lots: ["4"],
+        cost: "$1 for first 3 hours, $2/h after"
       },
     },
   ],
@@ -130,6 +148,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "IKEA",
+        hours: "7am - 11pm",
+        lots: ["4"],
+        cost: "Free for 2 hours"
       },
     },
   ],
@@ -149,6 +170,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "SP Group",
+        hours: "Open 24/7",
+        lots: ["2"],
+        cost: "$0.4366/kWh"
       },
     },
   ],
@@ -165,9 +189,12 @@ var locationVar = {
       postalCode: "Singapore 417818",
       imgName: "Map_417818",
       chargerDetails: {
-        type: ["Type 2", "CCS/SAE Combo"],
+        type: ["Type 2", "CCS/SAE"],
         system: "CCS",
         provider: "SP Group",
+        hours: "Open 24/7",
+        lots: ["1","1"],
+        cost: "$0.50/kWh"
       },
     },
   ],
@@ -187,6 +214,9 @@ var locationVar = {
         type: ["Type 2, CCS/SAE"],
         system: "CCS",
         provider: "Shell",
+        hours: "Open 24/7",
+        lots: ["1","1"],
+        cost: "$0.55/kWh"
       },
     },
   ],
@@ -207,6 +237,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "Charge+",
+        hours: "Open 24/7",
+        lots: ["3"],
+        cost: "$0.50/kWh"
       },
     },
   ],
@@ -224,6 +257,9 @@ var locationVar = {
         type: ["CCS/SAE"],
         system: "CCS",
         provider: "Juice+",
+        hours: "Open 24/7",
+        lots: ["1"],
+        cost: "$0.50/kWh"
       },
       // price:not stated
       // 1 lot CCS/SAE
@@ -245,6 +281,9 @@ var locationVar = {
         type: ["Type 2", "CCS/SAE"],
         system: "CCS",
         provider: "Shell",
+        hours: "Open 24/7",
+        lots: ["1","1"],
+        cost: "$0.55/kWh"
       },
     },
   ],
@@ -264,6 +303,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "LHN Energy",
+        hours: "Open 24/7",
+        lots: ["4"],
+        cost: "$0.50/kWh"
       },
     },
   ],
@@ -283,6 +325,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "CDG Energie",
+        hours: "Open 24/7",
+        lots: ["3"],
+        cost: "$0.52/kWh"
       },
     },
   ],
@@ -302,6 +347,9 @@ var locationVar = {
         type: ["CCS/SAE"],
         system: "CCS",
         provider: "TotalEnergies",
+        hours: "7am - 7pm",
+        lots: ["2"],
+        cost: "$0.55/kWh"
       },
     },
   ],
@@ -321,6 +369,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "TotalEnergies",
+        hours: "Open 24/7",
+        lots: ["1"],
+        cost: "$3/h"
       },
     },
   ],
@@ -338,6 +389,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "Charge+",
+        hours: "Open 24/7",
+        lots: ["3"],
+        cost: "$0.4926/kWh"
       },
       // $0.4926/kWh
       // 3 lots type 2 mennekes
@@ -359,6 +413,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "BlueSG",
+        hours: "Open 24/7",
+        lots: ["4"],
+        cost: "$1 for first 3 hours, $2/h after"
       },
     },
   ],
@@ -378,6 +435,9 @@ var locationVar = {
         type: ["Type 2", "CCS/SAE"],
         system: "CCS",
         provider: "Shell",
+        hours: "Open 24/7",
+        lots: ["1","1"],
+        cost: "$0.55/kWh"
       },
     },
   ],
@@ -397,6 +457,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "Solacharge",
+        hours: "Open 24/7",
+        lots: ["5"],
+        cost: "$0.60/kWh"
       },
     },
   ],
@@ -416,6 +479,9 @@ var locationVar = {
         type: ["Type 2", "CCS/SAE"],
         system: "CCS",
         provider: "Shell",
+        hours: "Open 24/7",
+        lots: ["1","1"],
+        cost: "$0.55/kWh"
       },
     },
   ],
@@ -435,6 +501,9 @@ var locationVar = {
         type: ["Type 2", "CCS/SAE"],
         system: "CCS",
         provider: "Total Energies",
+        hours: "Open 24/7",
+        lots: ["2","2"],
+        cost: "$0.393/kWh"
       },
     },
   ],
@@ -454,6 +523,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "BlueCharge",
+        hours: "Open 24/7",
+        lots: ["4"],
+        cost: "$1 for first 3 hours, $2/h after"
       },
     },
   ],
@@ -473,6 +545,9 @@ var locationVar = {
         type: ["Type 2"],
         system: "CCS",
         provider: "CDG Engie",
+        hours: "Open 24/7",
+        lots: ["3"],
+        cost: "$0.50/kWh"
       },
     },
   ],
@@ -492,6 +567,9 @@ var locationVar = {
         type: ["Commando"],
         system: "CCS",
         provider: "TotalEnergies",
+        hours: "Open 24/7",
+        lots: ["2"],
+        cost: "$0.50/kWh"
       },
     },
   ],
@@ -511,6 +589,9 @@ var locationVar = {
         type: ["J-1772"],
         system: "ChadeMO",
         provider: "Shell",
+        hours: "Open 24/7",
+        lots: ["1"],
+        cost: "$0.50/kWh"
       },
     },
   ],
@@ -530,6 +611,9 @@ var locationVar = {
         type: ["Type 2", "CCS/SAE"],
         system: "CCS",
         provider: "TotalEnergies",
+        hours: "Open 24/7",
+        lots: ["8","2"],
+        cost: "$0.4725/kWh"
       },
     },
   ],
@@ -549,6 +633,9 @@ var locationVar = {
         type: ["Type 2", "CCS/SAE"],
         system: "CCS",
         provider: "SP Group",
+        hours: "Open 24/7",
+        lots: ["1","1"],
+        cost: "$0.4153/kWh"
       },
     },
   ],
@@ -568,6 +655,9 @@ var locationVar = {
         type: ["CCS/SAE"],
         system: "CCS",
         provider: "TotalEnergies",
+        hours: "Open 24/7",
+        lots: ["2"],
+        cost: "$0.42/kWh"
       },
     },
   ],

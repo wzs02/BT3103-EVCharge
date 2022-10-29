@@ -14,6 +14,12 @@
           <MapPageOffcanvas :drawer="showWindow(m.id)" :stationName="m.id" :imgExtension="m.imgName"
             :chargerType="parseChargerType(Object.values({ ...m.chargerDetails.type }))"
             :chargerSystem="m.chargerDetails.system" :chargerProvider="m.chargerDetails.provider"
+            :chargerAddress="getFullChargerAddress(m.street, m.postalCode)" :chargerHours="m.chargerDetails.hours"
+            :chargerLots="getChargerLots(Object.values({ ...m.chargerDetails.type }), Object.values({ ...m.chargerDetails.lots }))"
+            :chargerCost="m.chargerDetails.cost" :hasT2="checkT2(Object.values({ ...m.chargerDetails.type }))"
+            :hasCommando="checkCommando(Object.values({ ...m.chargerDetails.type }))"
+            :hasCombo="checkCombo(Object.values({ ...m.chargerDetails.type }))"
+            :hasJ1772="checkJ1772(Object.values({ ...m.chargerDetails.type }))"
             @closeWindows="openMarkerInfoWindow(null)" />
           <GMapInfoWindow :opened="showWindow(m.id)" @closeWindows="openMarkerInfoWindow(null)" :options="{
             pixelOffset: {
@@ -135,6 +141,43 @@ export default {
       } else {
         return typeArray.join(", ")
       }
+    },
+    getFullChargerAddress(street, postalCode) {
+      return street + ', ' + postalCode
+    },
+    getChargerLots(plugObj, plugNumObj) {
+      let finalString = ""
+      let keyLength = Object.keys(plugObj).length
+      let plugArray = Object.values(plugObj)
+      let plugNumArray = Object.values(plugNumObj)
+      if (keyLength == 1) {
+        return plugNumArray[0]
+      } else {
+        for (let i = 0; i < keyLength; i++) {
+          if (i < keyLength - 1) {
+            finalString += plugNumArray[i] + " for " + plugArray[i] + ", "
+          } else {
+            finalString += plugNumArray[i] + " for " + plugArray[i]
+          }
+        }
+        return finalString
+      }
+    },
+    checkT2(typeObj) {
+      let typeArray = Object.values(typeObj)
+      return typeArray.includes("Type 2")
+    },
+    checkCommando(typeObj) {
+      let typeArray = Object.values(typeObj)
+      return typeArray.includes("Commando")
+    },
+    checkCombo(typeObj) {
+      let typeArray = Object.values(typeObj)
+      return typeArray.includes("CCS/SAE")
+    },
+    checkJ1772(typeObj) {
+      let typeArray = Object.values(typeObj)
+      return typeArray.includes("J-1772")
     },
     locatorButtonPressed() {
       console.log(this.Available_Markers.value);
