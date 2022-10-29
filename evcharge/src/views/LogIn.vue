@@ -107,7 +107,7 @@ export default {
                             alert("This email has been binded to an account.");
                             break;
                         case "auth/popup-blocked":
-                            alert("Please enable your browser pop up.");
+                            alert("Please enable your browser pop up. hihi");
                             break;
                     }
                 })

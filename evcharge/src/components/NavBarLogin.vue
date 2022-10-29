@@ -33,8 +33,10 @@
                             </template>
 
                             <v-list>
-                                <v-list-item v-for="(item, index) in items" :key="index">
-                                    <v-list-item-title class="dropdownItem">{{ item.title }}</v-list-item-title>
+                                <v-list-item v-for="(item, index) in items" :key="index" @click="$router.push(item.route)">
+                                    <v-list-item-title class="dropdownItem">
+                                        {{ item.title }}
+                                    </v-list-item-title>
                                 </v-list-item>
                             </v-list>
                         </v-menu>
@@ -75,19 +77,23 @@ export default {
             items: [
                 {
                     title: "Profile",
-                    value: 1
+                    value: 1,
+                    route: {name: 'TesterFile'} // to edit
                 },
                 {
-                    title: "Bookings",
-                    value: 2
+                    title: "My Bookings",
+                    value: 2,
+                    route: {name: 'ViewBookings'}
                 },
                 {
                     title: "Account Balance",
-                    value: 3
+                    value: 3,
+                    route: {name: 'TesterFile'} // to edit
                 },
                 {
                     title: "Log out",
-                    value: 4
+                    value: 4,
+                    route: {name: 'TesterFile'} // to edit
                 }
             ]
         }

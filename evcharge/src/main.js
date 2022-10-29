@@ -5,6 +5,8 @@ import { createVuetify } from 'vuetify'
 import App from './App.vue'
 import router from './router'
 import VueGoogleMaps from '@fawmi/vue-google-maps'
+import 'v-calendar/dist/style.css'
+import VCalendar from 'v-calendar'
 
 // Import the functions you need from the SDKs you need
 import firebase from 'firebase/compat/app';
@@ -55,5 +57,7 @@ app.use(VueGoogleMaps, {
       libraries: "places"
   },
 })
+
+app.use(VCalendar, {})
 
 app.mount('#app')
