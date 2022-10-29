@@ -11,7 +11,12 @@ var locationVar = {
       },
       street: "50 Tanah Merah Ferry Road",
       postalCode: "Singapore 498833",
-      imgName: "Map_498833"
+      imgName: "Map_498833",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "SP Group",
+      },
     },
   ],
   sp_group_jewel: [
@@ -25,7 +30,12 @@ var locationVar = {
       },
       street: "78 Airport Boulevard",
       postalCode: "Singapore 819666",
-      imgName: "Map_819666"
+      imgName: "Map_819666",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "SP Group",
+      },
     },
   ],
   blue_sg_simei_s1: [
@@ -39,7 +49,12 @@ var locationVar = {
       },
       street: "132 Simei Street 1",
       postalCode: "Singapore 520132",
-      imgName: "Map_520132"
+      imgName: "Map_520132",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "BlueSG",
+      },
     },
   ],
   hedges_solacharge: [
@@ -53,7 +68,12 @@ var locationVar = {
       },
       street: "89 Flora Drive",
       postalCode: "Singapore 506890",
-      imgName: "Map_506890"
+      imgName: "Map_506890",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "Solacharge",
+      },
     },
   ],
   tamp_plaza: [
@@ -67,7 +87,12 @@ var locationVar = {
       },
       street: "3 Tampines Central 1",
       postalCode: "Singapore 529540",
-      imgName: "Map_529540"
+      imgName: "Map_529540",
+      chargerDetails: {
+        type: ["Type 2", "CCS/SAE Combo"],
+        system: "CCS",
+        provider: "TotalEnergies",
+      },
     },
   ],
   bedok_south: [
@@ -81,12 +106,17 @@ var locationVar = {
       },
       street: "69 Bedok South Avenue 3",
       postalCode: "Singapore 460069",
-      imgName: "Map_460069"
+      imgName: "Map_460069",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "BlueSG",
+      },
     },
   ],
   ikea_tampines: [
     {
-      id: "Ikea Tampines",
+      id: "IKEA Tampines",
       position: {
         lat: 1.3740664,
         lng: 103.9323985,
@@ -95,7 +125,12 @@ var locationVar = {
       },
       street: "60 Tampines North Drive 2",
       postalCode: "Singapore 528764",
-      imgName: "Map_528764"
+      imgName: "Map_528764",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "IKEA",
+      },
     },
   ],
   i12_katong: [
@@ -109,7 +144,12 @@ var locationVar = {
       },
       street: "512 Joo Chiat Road",
       postalCode: "Singapore 427695",
-      imgName: "Map_427695"
+      imgName: "Map_427695",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "SP Group",
+      },
     },
   ],
   ent_biz_center: [
@@ -123,7 +163,12 @@ var locationVar = {
       },
       street: "18 Kaki Bukit Road 3",
       postalCode: "Singapore 417818",
-      imgName: "Map_417818"
+      imgName: "Map_417818",
+      chargerDetails: {
+        type: ["Type 2", "CCS/SAE Combo"],
+        system: "CCS",
+        provider: "SP Group",
+      },
     },
   ],
   shell_pl: [
@@ -137,7 +182,12 @@ var locationVar = {
       },
       street: "98 Paya Lebar Road",
       postalCode: "Singapore 409008",
-      imgName: "Map_409008"
+      imgName: "Map_409008",
+      chargerDetails: {
+        type: ["Type 2, CCS/SAE"],
+        system: "CCS",
+        provider: "Shell",
+      },
     },
   ],
 
@@ -152,7 +202,12 @@ var locationVar = {
       },
       street: "260 Ang Mo Kio Street 21",
       postalCode: "Singapore 560260",
-      imgName: "Map_560260"
+      imgName: "Map_560260",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "Charge+",
+      },
     },
   ],
   juice_plus_bishan: [
@@ -164,7 +219,12 @@ var locationVar = {
       },
       street: "35 Jalan Pemimpin",
       postalCode: "Singapore 577176",
-      imgName: "Map_577176"
+      imgName: "Map_577176",
+      chargerDetails: {
+        type: ["CCS/SAE"],
+        system: "CCS",
+        provider: "Juice+",
+      },
       // price:not stated
       // 1 lot CCS/SAE
     },
@@ -180,7 +240,12 @@ var locationVar = {
       },
       street: "324 Thomson Road",
       postalCode: "Singapore 307672",
-      imgName: "Map_307672"
+      imgName: "Map_307672",
+      chargerDetails: {
+        type: ["Type 2", "CCS/SAE"],
+        system: "CCS",
+        provider: "Shell",
+      },
     },
   ],
   lhn_energy_btsc: [
@@ -194,7 +259,12 @@ var locationVar = {
       },
       street: "170 Upper Bukit Timah Road",
       postalCode: "Singapore 588179",
-      imgName: "Map_588179"
+      imgName: "Map_588179",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "LHN Energy",
+      },
     },
   ],
   cdg_energie_clementi_ave4: [
@@ -208,7 +278,12 @@ var locationVar = {
       },
       street: "311 Clementi Avenue 4",
       postalCode: "Singapore 120311",
-      imgName: "Map_120311"
+      imgName: "Map_120311",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "CDG Energie",
+      },
     },
   ],
   ura_centre_east_wing: [
@@ -222,7 +297,12 @@ var locationVar = {
       },
       street: "70 Amoy Street",
       postalCode: "Singapore 069889",
-      imgName: "Map_069889"
+      imgName: "Map_069889",
+      chargerDetails: {
+        type: ["CCS/SAE"],
+        system: "CCS",
+        provider: "TotalEnergies",
+      },
     },
   ],
   the_concourse: [
@@ -236,7 +316,12 @@ var locationVar = {
       },
       street: "300 Beach Road",
       postalCode: "Singapore 199555",
-      imgName: "Map_199555"
+      imgName: "Map_199555",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "TotalEnergies",
+      },
     },
   ],
   charge_plus_fernvale: [
@@ -248,7 +333,12 @@ var locationVar = {
       },
       street: "440 Fernvale Link",
       postalCode: "Singapore 790440",
-      imgName: "Map_790440"
+      imgName: "Map_790440",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "Charge+",
+      },
       // $0.4926/kWh
       // 3 lots type 2 mennekes
     },
@@ -264,7 +354,12 @@ var locationVar = {
       },
       street: "966A Hougang Avenue 9",
       postalCode: "Singapore 531966",
-      imgName: "Map_531966"
+      imgName: "Map_531966",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "BlueSG",
+      },
     },
   ],
   shell_serangoon_garden: [
@@ -278,7 +373,12 @@ var locationVar = {
       // 1 lot CCS/SAE, 1 lot type 2 mennekes
       street: "49 Serangoon Garden Way",
       postalCode: "Singapore 555944",
-      imgName: "Map_555944"
+      imgName: "Map_555944",
+      chargerDetails: {
+        type: ["Type 2", "CCS/SAE"],
+        system: "CCS",
+        provider: "Shell",
+      },
     },
   ],
   boathouse_residence_solacharge: [
@@ -292,7 +392,12 @@ var locationVar = {
       },
       street: "29 Upper Serangoon View",
       postalCode: "Singapore 534046",
-      imgName: "Map_534046"
+      imgName: "Map_534046",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "Solacharge",
+      },
     },
   ],
   shell_punggol: [
@@ -306,7 +411,12 @@ var locationVar = {
       },
       street: "821 Punggol Road",
       postalCode: "Singapore 829169",
-      imgName: "Map_829169"
+      imgName: "Map_829169",
+      chargerDetails: {
+        type: ["Type 2", "CCS/SAE"],
+        system: "CCS",
+        provider: "Shell",
+      },
     },
   ],
   westpark_biz_central: [
@@ -320,7 +430,12 @@ var locationVar = {
       },
       street: "32 Pioneer Crescent",
       postalCode: "Singapore 628561",
-      imgName: "Map_628561"
+      imgName: "Map_628561",
+      chargerDetails: {
+        type: ["Type 2", "CCS/SAE"],
+        system: "CCS",
+        provider: "Total Energies",
+      },
     },
   ],
   bluecharge_lot1: [
@@ -334,7 +449,12 @@ var locationVar = {
       },
       street: "347 Choa Chu Kang Avenue 4",
       postalCode: "Singapore 680442",
-      imgName: "Map_680442"
+      imgName: "Map_680442",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "BlueCharge",
+      },
     },
   ],
   cdg_engie_bukit_batok: [
@@ -348,7 +468,12 @@ var locationVar = {
       },
       street: "Blk 451 Bukit Batok West Avenue 6",
       postalCode: "Singapore 650451",
-      imgName: "Map_650451"
+      imgName: "Map_650451",
+      chargerDetails: {
+        type: ["Type 2"],
+        system: "CCS",
+        provider: "CDG Engie",
+      },
     },
   ],
   jurong_point: [
@@ -362,7 +487,12 @@ var locationVar = {
       },
       street: "1 Jurong West Central 2",
       postalCode: "Singapore 648886",
-      imgName: "Map_648886"
+      imgName: "Map_648886",
+      chargerDetails: {
+        type: ["Commando"],
+        system: "CCS",
+        provider: "TotalEnergies",
+      },
     },
   ],
   shell_dunearn_uni: [
@@ -376,7 +506,12 @@ var locationVar = {
       },
       street: "15 Woodlands Loop",
       postalCode: "Singapore 738322",
-      imgName: "Map_738322"
+      imgName: "Map_738322",
+      chargerDetails: {
+        type: ["J-1772"],
+        system: "ChadeMO",
+        provider: "Shell",
+      },
     },
   ],
   sg_zoo: [
@@ -390,7 +525,12 @@ var locationVar = {
       },
       street: "80 Mandai Lake Road",
       postalCode: "Singapore 729826",
-      imgName: "Map_729826"
+      imgName: "Map_729826",
+      chargerDetails: {
+        type: ["Type 2", "CCS/SAE"],
+        system: "CCS",
+        provider: "TotalEnergies",
+      },
     },
   ],
   ascent_building_sp_group: [
@@ -404,7 +544,12 @@ var locationVar = {
       },
       street: "10 Science Park Drive",
       postalCode: "Singapore 118224",
-      imgName: "Map_118224"
+      imgName: "Map_118224",
+      chargerDetails: {
+        type: ["Type 2", "CCS/SAE"],
+        system: "CCS",
+        provider: "SP Group",
+      },
     },
   ],
   one_at_redhill_centre: [
@@ -418,7 +563,12 @@ var locationVar = {
       },
       street: "1 Jalan Kilang Barat",
       postalCode: "Singapore 159345",
-      imgName: "Map_159345"
+      imgName: "Map_159345",
+      chargerDetails: {
+        type: ["CCS/SAE"],
+        system: "CCS",
+        provider: "TotalEnergies",
+      },
     },
   ],
 };

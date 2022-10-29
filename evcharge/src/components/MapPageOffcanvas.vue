@@ -14,10 +14,10 @@
                 <v-row style="display: flex; align-items: center;">
                     <v-col cols=8>
                         <v-list-item>
-                            <p class="grey-div-type">Type 1</p>
+                            <p class="grey-div-type">{{chargerType}}</p>
                         </v-list-item>
                         <v-list-item>
-                            <p class="grey-div-type" style="color: #4285F4">CCS</p>
+                            <p class="grey-div-type" style="color: #4285F4">{{chargerSystem}}</p>
                         </v-list-item>
                     </v-col>
 
@@ -26,7 +26,13 @@
                     </v-col>
                 </v-row>
                 <v-list-item><span id="service-provider-bold">Service-provider: </span><span
-                        id="service-provider-grey">Total Energies</span></v-list-item>
+                        id="service-provider-grey">{{chargerProvider}}</span></v-list-item>
+            </div>
+            <div id = "charger-details">
+                <v-list-item><v-icon>mdi-map-marker-radius</v-icon>Test second</v-list-item>
+                <v-list-item><v-icon>mdi-clock-time-three-outline</v-icon>Test second</v-list-item>
+                <v-list-item><v-icon>mdi-information</v-icon>Test second</v-list-item>
+                <v-list-item><v-icon>mdi-currency-usd</v-icon>Test second</v-list-item>
             </div>
             <v-divider></v-divider>
         </v-card>
@@ -40,7 +46,10 @@ export default {
     props: {
         drawer: Boolean,
         stationName: String,
-        imgExtension: String
+        imgExtension: String,
+        chargerType: String,
+        chargerSystem: String,
+        chargerProvider: String
     },
     computed: {
         showDrawer() {
@@ -121,6 +130,11 @@ export default {
     right: 0;
     outline: none;
     box-shadow: none;
+}
+
+#charger-details {
+    background: #F2F2F2;
+    border-bottom:#000000 solid 1px;
 }
 </style>
 

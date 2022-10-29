@@ -5,15 +5,16 @@
       <!-- Specifying the Dimension/Specifications of the Google Map we using -->
       <!-- Check width and height for future deployment -->
       <GMapMap :center="center" :zoom="11.80" map-type-id="roadmap"
-        style="width: 100vw; height: 790px; position: fixed;">
+        style="position: fixed;top: 0;left: 0;min-width: 100%; min-height: 100%;">
 
         <!--Creating available Markers -->
         <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
           @click="logInput(m.id)" :icon="require('@/assets/MapPage/availablePins.png')" :clickable=true
           :draggable=false>
-          <MapPageOffcanvas :drawer="showWindow(m.id)" :stationName="m.id" 
-          :imgExtension="m.imgName"
-          @closeWindows="openMarkerInfoWindow(null)" />
+          <MapPageOffcanvas :drawer="showWindow(m.id)" :stationName="m.id" :imgExtension="m.imgName"
+            :chargerType="parseChargerType(Object.values({ ...m.chargerDetails.type }))"
+            :chargerSystem="m.chargerDetails.system" :chargerProvider="m.chargerDetails.provider"
+            @closeWindows="openMarkerInfoWindow(null)" />
           <GMapInfoWindow :opened="showWindow(m.id)" @closeWindows="openMarkerInfoWindow(null)" :options="{
             pixelOffset: {
               width: -1, height: 0
@@ -127,6 +128,13 @@ export default {
     },
     openMarkerInfoWindow(markerId) {
       this.markerToOpen = markerId
+    },
+    parseChargerType(typeArray) {
+      if (typeArray.length == 1) {
+        return typeArray[0]
+      } else {
+        return typeArray.join(", ")
+      }
     },
     locatorButtonPressed() {
       console.log(this.Available_Markers.value);
