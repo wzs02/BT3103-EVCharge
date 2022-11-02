@@ -14,12 +14,29 @@
       <v-row>
         <v-col cols=6>
           <BookingCalendar />
+          <div class="legend">
+            <div class="legendindiv">
+              <span class="dot1"></span>
+              <p class="legendtext">Available</p>
+            </div>
+            <div class="legendindiv">
+              <span class="dot2"></span>
+              <p class="legendtext">Limited</p>
+            </div>
+            <div class="legendindiv">
+              <span class="dot3"></span>
+              <p class="legendtext">Unavailable</p>
+            </div>
+            <div class="legendindiv">
+              <span class="dot4"></span>
+              <p class="legendtext">Selected</p>
+            </div>
+          </div>
         </v-col>
 
         <v-col cols=6>
           <div class="dayview">
             <v-card color="#F5F5F5" height=500px>
-              <BookingCalendarDay />
               <v-card-text>You are booking for </v-card-text>
               <v-btn class="btn" rounded elevation="5">Book</v-btn>
             </v-card>
@@ -35,11 +52,10 @@
 import NavBar from "@/components/NavBar.vue";
 import BookingCalendar from "@/components/BookingCalendar.vue"
 import FilterBar from "@/components/FilterBar.vue";
-import BookingCalendarDay from "@/components/BookingCalendarDay.vue"
 
 export default {
   name: 'BookingPage',
-  components: { NavBar, BookingCalendar, FilterBar, BookingCalendarDay },
+  components: { NavBar, BookingCalendar, FilterBar },
   data() {
     return {
       //
@@ -67,6 +83,64 @@ export default {
   font-style: normal;
   font-weight: 100;
   font-size: 18px;
+}
+
+.dot1 {
+  background-color: #D9ED92;
+  margin-right: 10px;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+  float: left;
+}
+
+.dot2 {
+  background-color: #FFE28C;
+  margin-right: 10px;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+  float: left;
+}
+
+.dot3 {
+  background-color: #FF7575;
+  margin-right: 10px;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+  float: left;
+}
+
+.dot4 {
+  background-color: #B1DCFF;
+  margin-right: 10px;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+  float: left;
+}
+
+.legend {
+  margin-top: 10%;
+}
+
+.legendindiv {
+  vertical-align: middle;
+  float: left;
+}
+
+.legendtext {
+  margin-right: 25px;
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 100;
+  font-size: 15px;
+  float: left;
 }
 
 .dayview {
