@@ -21,6 +21,7 @@
     "roboto-fontface": "*",
     "v-calendar": "^3.0.0-alpha.8",
     "vue": "^3.2.13",
+    "vue-multiselect": "^3.0.0-alpha.2",
     "vue-router": "^4.1.5",
     "vue-textarea-autosize": "^1.1.1",
     "vuetify": "^3.0.0-beta.0",
