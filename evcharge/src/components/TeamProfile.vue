@@ -1,7 +1,9 @@
 <template>
     <div id="center-content">
         <div>
-            <img :src="require(`@/assets/AboutPage/${imgSource}`)">
+            <a :href="linkedIn">
+                <img :src="require(`@/assets/AboutPage/${imgSource}`)">
+            </a>
             <b><p id="name">{{memberName}}</p></b>
             <p id="position">Business Analyst</p>
         </div>
@@ -12,6 +14,7 @@
 export default {
     name: 'TeamProfile',
     props: {
+        linkedIn: String,
         imgSource: String,
         memberName: String
     }

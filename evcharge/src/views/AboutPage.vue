@@ -43,11 +43,11 @@
     </div>
 
     <div id="team-profile">
-      <TeamProfile imgSource="About_TZ.png" memberName="Lai Tzu Zheng" />
-      <TeamProfile imgSource="About_QY.png" memberName="Loh Qian Yi" />
-      <TeamProfile imgSource="About_NH.png" memberName="Nathaniel Han" />
-      <TeamProfile imgSource="About_SS.png" memberName="Shanice Sng" />
-      <TeamProfile imgSource="About_YY.png" memberName="Yang Yee" />
+      <TeamProfile linkedIn="https://www.linkedin.com/in/tzu-zheng-lai-6aa92a229/" imgSource="About_TZ.png" memberName="Lai Tzu Zheng" />
+      <TeamProfile linkedIn="https://www.linkedin.com/in/qianyiloh/" imgSource="About_QY.png" memberName="Loh Qian Yi" />
+      <TeamProfile linkedIn="https://www.linkedin.com/in/nathanielhansy/" imgSource="About_NH.png" memberName="Nathaniel Han" />
+      <TeamProfile linkedIn="https://www.linkedin.com/" imgSource="About_SS.png" memberName="Shanice Sng" />
+      <TeamProfile linkedIn="https://www.linkedin.com/in/yang-yee-a88a9821a/" imgSource="About_YY.png" memberName="Yang Yee" />
     </div>
 
     <div id="contact-details">
