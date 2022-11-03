@@ -69,9 +69,11 @@
         </v-card>
       </v-container>
   </v-app>
+  <Child :email = "emailpass"/>
 </template>
 
 <script>
+import Child from '@/views/UserDetails.vue'
 import { doc, setDoc, getFirestore } from "firebase/firestore"
 import app from "../firebase.js"
 import useValidate from '@vuelidate/core'
@@ -178,7 +180,7 @@ export default {
       },
       }
     },
-    components: { NavBar }
+    components: { NavBar, Child }
 }
 </script>
 
@@ -321,7 +323,7 @@ export default {
   color: red;
   position: absolute;
   line-height: 0px;
-  top: 200px;
+  top: 220px;
   left: 30px;
 }
 
@@ -330,7 +332,7 @@ export default {
   color: red;
   position: absolute;
   line-height: 0px;
-  top: 310px;
+  top: 330px;
   left: 30px;
 }
 
@@ -339,7 +341,7 @@ export default {
   color: red;
   position: absolute;
   line-height: 0px;
-  top: 420px;
+  top: 440px;
   left: 30px;
 }
 
@@ -348,7 +350,7 @@ export default {
   color: red;
   position: absolute;
   line-height: 0px;
-  top: 530px;
+  top: 550px;
   left: 30px;
 }
 
