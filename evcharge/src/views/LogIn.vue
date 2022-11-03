@@ -1,11 +1,12 @@
 <template>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
     <v-app>
         <v-container>
             <NavBar/>
         </v-container>
 
-        <v-container> 
-            <!-- <v-img id="nav-logo-sign-up" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img> -->
+        <v-container class="bg-container-login"> 
+            <v-img id="nav-logo-login" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img>
             <v-card width="500" class="mx-auto mt-16 rounded-card1" elevation='5' height="520">
                 <v-container>
                     <v-row>
@@ -20,9 +21,9 @@
                 <br>
                 <v-card-text id="margin-tune">
                     <v-card-text id="field-header-log">Enter your email address</v-card-text>
-                    <v-text-field type="text" label="Your Email" v-model="email"/>
+                    <v-text-field type="text" label="Your Email" v-model="email" clearable color='#0D47A1'/>
                     <v-card-text id="field-header-log">Enter your password</v-card-text>
-                    <v-text-field label="Password" type="password" v-model="password" clearable/>
+                    <v-text-field label="Password" type="password" v-model="password" clearable color='#0D47A1'/>
                 </v-card-text>
 
                 <v-container id="margin-tune">
@@ -119,6 +120,22 @@ export default {
 </script>
 
 <style>
+.bg-container-login{
+    max-width: 100%;
+    height: 900px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background-image: linear-gradient(to bottom left, rgb(68, 161, 248), white);
+    position: fixed;top: 0;left: 0;min-width: 100%; min-height: 100%;
+}
+
+#nav-logo-login {
+    margin-top: -80px;
+  width: 340px;
+  top: 450px;
+  left: 60px;
+}
+
 .rounded-card1{
     border-radius:30px;
 }
@@ -231,5 +248,6 @@ export default {
     color:#4285f4;
     text-decoration: underline;
 }
+
 
 </style>

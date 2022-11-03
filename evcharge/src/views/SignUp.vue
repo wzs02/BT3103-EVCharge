@@ -1,6 +1,6 @@
 <template>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
     <v-app>
-      
       <v-container>
           <NavBar/>
       </v-container>
@@ -19,32 +19,41 @@
               </v-col>
               
               <v-col offset="3">
-                  <v-card-text>Have an account? <br /> Sign In</v-card-text>
+                <v-card-text id="have-account">Have an account?</v-card-text>
+                        <router-link :to="{ path: '../login' }">
+                            <button type="button" id="click-signIN">Log In</button>
+                        </router-link>
               </v-col>
           </v-row>
           </v-container>
           
           <v-card-text>
             <v-card-text id="field-header">Enter your email address</v-card-text>
-            <v-text-field type="text" label="Your Email" v-model="email" prepend-icon="search" clearable/>
-            <span v-if="v$.email.$error"> {{ v$.email.$errors[0].$message }} </span>
+            <!-- <v-text-field type="text" label="Your Email" v-model="email" prepend-icon=mdi-bell-outline clearable/> -->
+            <v-text-field type="text" label="Your Email" v-model="email" clearable color='#0D47A1' id='email'/>
+            <!--  v$.email.$errors[0].$message -->
+            <span v-if="v$.email.$error" id="email-error"> {{ "Please enter a valid email." }} </span>
 
 
             <v-card-text id="field-header">Your electic vehicle's license plate number</v-card-text>
-            <v-text-field type="text" label="License plate number" v-model="plateNo"/>
+            <v-text-field type="text" label="License plate number" v-model="vehno" clearable color='#0D47A1' id='vehno'/>
+            <span v-if="v$.password.password.$error" id="vehicle-number"> {{ "Please enter your vehicle number." }} </span>
 
             <v-card-text id="field-header">Enter your password</v-card-text>
-            <v-text-field type="password" label="Password" clearable v-model="password.password"/>
-            <span v-if="v$.password.password.$error"> {{ "Your password must be more than 6 characters long" }} </span>
+            <v-text-field type="password" label="Password" clearable v-model="password.password" color='#0D47A1' id='password'/>
+            <span v-if="v$.password.password.$error" id="password-length"> {{ "Your password must be more than 6 characters long" }} </span>
 
             <v-card-text id="field-header">Re-enter your password</v-card-text>
-            <v-text-field type="password" label="Confirm Password" v-model="password.confirm"/>
+            <v-text-field label="Confirm Password" clearable v-model="password.confirm" color='#0D47A1' type="password"/>
+
           </v-card-text>
 
-          <span v-if="v$.password.confirm.$error"> {{ "Passwords do not match" }}</span>
+          <span v-if="v$.password.confirm.$error" id='password-match'> {{ "Passwords do not match" }}</span>
 
           <v-col class="text-center">
-              <v-btn class="sign-up-btn-style" @click="register(email, password.password)">                  
+              <v-btn class="sign-up-btn-style" @click="
+              register(email, password.password); 
+              createUseronFirebase(email, vehno);">                  
                 <span>Sign Up</span>                 
               </v-btn>
           </v-col>
@@ -52,16 +61,21 @@
               OR
           </v-col>
           <v-col class="text-center">
-              <v-btn class="sign-google-btn-style" @click="signInWithGoogle(email,password)">                  
+              <v-btn class="sign-google-btn-style" @click="
+                signInWithGoogle(email, password)">                  
                 <span class="">Sign up with Google</span>                  
               </v-btn>
           </v-col>
         </v-card>
       </v-container>
   </v-app>
+  <Child :email = "emailpass"/>
 </template>
 
 <script>
+import Child from '@/views/UserDetails.vue'
+import { doc, setDoc, getFirestore } from "firebase/firestore"
+import app from "../firebase.js"
 import useValidate from '@vuelidate/core'
 import { minLength, required, sameAs, email } from '@vuelidate/validators'
 import NavBar from "../components/NavBar.vue"
@@ -71,12 +85,8 @@ import { getAuth,
     GoogleAuthProvider, 
     signInWithPopup 
 } from "firebase/auth"
-// import { useRouter } from 'vue-router'
-// import NavBar from "../components/NavBar.vue"; //import router
-// const email = ref("")
-// const password = ref("")
-// const router = useRouter()
 const errMsg = ref() //ERROR message
+const db = getFirestore(app);
 
 export default {
     data() {
@@ -85,14 +95,23 @@ export default {
             bg_img2: require('../assets/AboutPage/Sign_Up.png'),
             v$: useValidate(),
             email: "",
+            vehno: "",
             password: {
               password: "",
               confirm: "",
             },
             errMsg: "",
+            emailpass : "Data from Parent to Child"
         }
     },
     methods: {
+        async createUseronFirebase(email, vehno) {
+          console.log(email)
+          console.log(vehno)
+          await setDoc(doc(db, "USERS", email), {
+            user_email : vehno
+          })
+        },
         register(email, password) {
             this.v$.$validate()
             if (!this.v$.$error) {
@@ -103,7 +122,7 @@ export default {
                     const user = userCurrent.user;
                     console.log(user)
                     console.log(auth.currentUser), 
-                    this.$router.push('/TesterFile')})
+                    this.$router.push('/userdetails')})
                 .catch((error) => {
                     console.log(error.code);
                     switch (error.code) {
@@ -135,7 +154,7 @@ export default {
                     // The signed-in user info.
                     const user = result.user;
                     console.log(user)
-                    this.$router.push('/TesterFile');
+                    this.$router.push('/userdetails');
                 })
                 .catch((error) => {
                     console.log(error.message)
@@ -154,25 +173,46 @@ export default {
     validations() {
       return {
         email: { required, email },
+        vehno: { required },
         password: {
         password: { required, minLength: minLength(6) },
         confirm: { required, sameAs: sameAs(this.password.password) },
       },
       }
     },
-    components: { NavBar }
+    components: { NavBar, Child }
 }
 </script>
 
 
 <style>
 
+#no-account{
+    margin: 0;
+    padding-top: 0px;
+    padding-bottom: 40px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: normal;
+    /* position: absolute; */
+    font-size: 14px;
+}
+
+#click-signIN{
+    font-family: 'Outfit';
+    font-weight: bolder;
+    position: absolute;
+    left: 340px;
+    top: 50px;
+    font-size: 14px;
+    color:#4285f4;
+    text-decoration: underline;
+}
+
 #bg-ratio-signup {
   position:fixed;
-  width: 51%;
   height: 885px;
-  margin-left:840px;
   padding-bottom: 0px;
+  top: 0; right: 0;min-width: 50%; min-height: 100%;
 }
 
 #details {
@@ -184,11 +224,10 @@ export default {
     height: 900px;
     margin-top: 0px;
     margin-bottom: 0px;
-    background-image: linear-gradient(to right, rgb(129, 194, 254), white),
-    url('../assets/AboutPage/About_Bg.png');
-    background-position: left, right;
-    background-repeat: no-repeat, no-repeat; 
+    background-image: linear-gradient(to bottom left, rgb(68, 161, 248), white);
+    position: fixed;top: 0;left: 0;min-width: 100%; min-height: 100%;
 }
+
 #field-header {
     line-height: 0px;
 }
@@ -277,6 +316,42 @@ export default {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+#email-error{
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  line-height: 0px;
+  top: 220px;
+  left: 30px;
+}
+
+#vehicle-number{
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  line-height: 0px;
+  top: 330px;
+  left: 30px;
+}
+
+#password-length{
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  line-height: 0px;
+  top: 440px;
+  left: 30px;
+}
+
+#password-match{
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  line-height: 0px;
+  top: 550px;
+  left: 30px;
 }
 
     

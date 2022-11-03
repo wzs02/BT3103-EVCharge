@@ -39,9 +39,9 @@ const router = createRouter({
 			},
 		},
 		{
-			path: "/TesterFile",
-			name: "TesterFile",
-			component: () => import("../views/TesterFile.vue"),
+			path: "/userdetails",
+			name: "UserDetails",
+			component: () => import("../views/UserDetails.vue"),
 			meta: {
 				requireAuth: true,
 			},
@@ -74,7 +74,7 @@ const router = createRouter({
 			path:'/map',
 			name:"MapPage",
 			component: () => import("../views/MapPage.vue")
-		}
+		},
 	],
 });
 
