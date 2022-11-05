@@ -1,6 +1,6 @@
 <template>
     <h1>Payment successful</h1>
-    <a href="http://localhost:8080/payment/">Buy again</a>
+    <a href="http://localhost:8080/#/payment">Buy again</a>
 </template>
 
 <script>

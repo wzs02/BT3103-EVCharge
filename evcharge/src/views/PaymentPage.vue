@@ -22,8 +22,8 @@ export default {
                     quantity: 1
                 }
             ],
-            successURL: 'http://localhost:8080/payment-success',
-            cancelURL: 'http://localhost:8080/payment-error'
+            successURL: 'http://localhost:8080/#/payment-success',
+            cancelURL: 'http://localhost:8080/#/payment-error'
         }
     },
     methods: {
