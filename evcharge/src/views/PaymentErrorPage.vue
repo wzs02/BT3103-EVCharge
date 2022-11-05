@@ -10,8 +10,8 @@
                 <div style="margin-top: 70px;">
                     <p id="status-text">Payment Failed</p>
                     <div class="center-div">
-                        <router-link :to="{ path: '../payment' }">
-                            <v-btn class="btn-style">Back to Payment Page</v-btn>
+                        <router-link :to="{ path: '../account-balance' }">
+                            <v-btn class="btn-style">Back to Account Balance</v-btn>
                         </router-link>
                     </div>
                 </div>
@@ -75,8 +75,8 @@ export default {
     font-weight: 600;
     text-align: center;
     font-size: 40px;
-    color: red;
     margin-bottom: 10px;
+    color: red;
 }
 
 .center-div {

@@ -76,9 +76,9 @@ const router = createRouter({
       component: () => import("../views/MapPage.vue"),
     },
     {
-      path: "/payment",
-      name: "PaymentPage",
-      component: () => import("../views/PaymentPage.vue"),
+      path: "/account-balance",
+      name: "AccountBalancePage",
+      component: () => import("../views/AccountBalancePage.vue"),
     },
     {
       path: "/payment-success",
