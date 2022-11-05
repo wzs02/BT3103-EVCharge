@@ -8,13 +8,12 @@
         <div class="center">
             <v-card elevation id="card">
                 <div style="margin-top: 70px;">
-                    <p id="status-text">Payment failed</p>
-                    <p style="text-align:center">
-                        <v-btn>
-                            buy again
-                        </v-btn>
-                        <!-- <a id="back-to-payment" href="http://localhost:8080/#/payment">Buy again</a> -->
-                    </p>
+                    <p id="status-text">Payment Failed</p>
+                    <div class="center-div">
+                        <router-link :to="{ path: '../payment' }">
+                            <v-btn class="btn-style">Back to Payment Page</v-btn>
+                        </router-link>
+                    </div>
                 </div>
             </v-card>
         </div>
@@ -55,7 +54,6 @@ export default {
     width: 500px;
     height: 400px;
     position: absolute;
-    /*Can also be `fixed`*/
     left: 0;
     right: 0;
     top: 0;
@@ -81,17 +79,21 @@ export default {
     margin-bottom: 10px;
 }
 
-#back-to-payment {
-    font-family: 'Outfit', 'sans-serif';
-    font-weight: 100;
-    text-align: center;
-    font-size: 18px;
-    color: grey;
-    text-decoration: none;
+.center-div {
+    display: flex;
+    justify-content: center
 }
 
-#back-to-payment:hover {
-    color: blue;
-    text-decoration: underline;
+.btn-style {
+    background-color: #fff;
+    color: #000;
+    font-family: 'Outfit', sans-serif;
+    font-weight: bold;
+    text-transform: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
 </style>
