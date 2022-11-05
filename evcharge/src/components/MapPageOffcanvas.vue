@@ -22,7 +22,7 @@
                     </v-col>
 
                     <v-col cols=4>
-                        <v-btn id="book-btn">Book</v-btn>
+                        <v-btn id="book-btn" @click="handleBookClick($router)">Book</v-btn>
                     </v-col>
                 </v-row>
                 <v-list-item><span id="service-provider-bold">Service-provider: </span><span
@@ -105,6 +105,7 @@ export default {
     components: { MapType2Info, MapCommandoInfo, MapComboInfo, MapJ1772Info },
     props: {
         drawer: Boolean,
+        stationID: String,
         stationName: String,
         imgExtension: String,
         chargerType: String,
@@ -125,6 +126,13 @@ export default {
             commando: this.hasCommando,
             combo: this.hasCombo,
             J1772: this.hasJ1772
+        }
+    },
+    methods:{
+        handleBookClick(router) {
+            // store the stationID for retrieval in the booking page
+            localStorage.setItem("stationID", this.stationID)
+            router.push('/Book')
         }
     },
     computed: {
