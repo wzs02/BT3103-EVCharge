@@ -28,7 +28,7 @@ export default {
     components: { NavBarLogin },
     data() {
         return {
-            bg_img: require('../assets/PaymentStatusPage/Allura.png')
+            bg_img: require('../assets/AccountBalancePage/Allura.png')
         }
     }
 }
