@@ -11,7 +11,7 @@
         <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
           @click="logInput(m.id)" :icon="require('@/assets/MapPage/availablePins.png')" :clickable=true
           :draggable=false>
-          <MapPageOffcanvas :drawer="showWindow(m.id)" :stationName="m.id" :imgExtension="m.imgName"
+          <MapPageOffcanvas :drawer="showWindow(m.id)" :stationID="m.station_id" :stationName="m.id" :imgExtension="m.imgName"
             :chargerType="parseChargerType(Object.values({ ...m.chargerDetails.type }))"
             :chargerSystem="m.chargerDetails.system" :chargerProvider="m.chargerDetails.provider"
             :chargerAddress="getFullChargerAddress(m.street, m.postalCode)" :chargerHours="m.chargerDetails.hours"
@@ -124,7 +124,13 @@ export default {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const markerKeyValues = docSnap.data();
-        this.Available_Markers.value = Object.values(markerKeyValues)
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+        for (let i = 0; i < station_id_list.length; ++i) {
+          // add station_id as an attribute of the station object
+          station_values[i][0]["station_id"] = station_id_list[i];
+        }
+        this.Available_Markers.value = Object.values(station_values)
           .map(x => Object.assign({}, x[0]));
       }
       else {

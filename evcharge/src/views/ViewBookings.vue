@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <NavBar />
+    <NavBarLogin />
     <div class="view_bookings" v-if="showDisplay">
       <h1 class="view_bookings_header">My Bookings</h1>
       <div v-if="uid">
@@ -32,9 +32,9 @@
 
 <script>
 import firebaseApp from '../firebase.js';
-import { getFirestore, doc, collection,  getDocs, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { getFirestore, doc, collection,  getDocs, deleteDoc, query, where, orderBy } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
-import NavBar from "../components/NavBar.vue";
+import NavBarLogin from "../components/NavBarLogin.vue";
 import BookingRecord from "../components/BookingRecord.vue";
 import PastBookingRecord from "../components/PastBookingRecord.vue";
 
@@ -60,15 +60,15 @@ export default {
       pastBookingDetailsList: [],
     }
   },
-  components: { NavBar, BookingRecord, PastBookingRecord },
+  components: { NavBarLogin, BookingRecord, PastBookingRecord },
   methods: {
     async getBookingData(uid) {
       const db = getFirestore(firebaseApp);
-      const userBookingRef = collection(db, "users", uid, "bookings")
+      const userBookingRef = collection(db, "bookings")
       // Cut-off time for booking deletion. 15 min before booking start time. 
       let cutOffTimestamp = new Date(Date.now() - 15 * 60000); 
       // Get all booking records for the user
-      let z = await getDocs(query(userBookingRef, orderBy("date", "desc")));
+      let z = await getDocs(query(userBookingRef, where("user_id", "==", uid), orderBy("date", "desc")));
       z.forEach((docs) => {
         let data = docs.data();
         // Process time display
@@ -100,7 +100,7 @@ export default {
     async deleteBooking(bookingId) {
       alert("You are going to delete your upcoming booking.")
       const db = getFirestore(firebaseApp);
-      await deleteDoc(doc(db, "users", this.uid, "bookings", bookingId));
+      await deleteDoc(doc(db, "bookings", bookingId));
       alert("Booking successfully deleted.");
       this.hasUpcomingBooking = false;
     }

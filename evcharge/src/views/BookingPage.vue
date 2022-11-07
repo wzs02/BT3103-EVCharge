@@ -40,6 +40,8 @@
               <BookingCalendarDay />
               <p>You are booking for </p>
               <v-btn class="btn" rounded elevation="5">Book</v-btn>
+              <v-card-text>You are booking for <b>{{ this.selected_station_name }}</b></v-card-text>
+              <v-btn class="btn" rounded elevation="5" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
           </div>
         </v-col>
@@ -50,18 +52,88 @@
 </template>
 
 <script>
+import firebaseApp from "../firebase.js"
+import { getFirestore, getDoc, addDoc, doc, collection } from "firebase/firestore"
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBar from "@/components/NavBar.vue";
 import BookingCalendar from "@/components/BookingCalendar.vue"
 import BookingCalendarDay from "@/components/BookingCalendarDay.vue"
 import FilterBar from "@/components/FilterBar.vue";
 
+const db = getFirestore(firebaseApp)
+
 export default {
   name: 'BookingPage',
   components: { NavBar, BookingCalendar, FilterBar, BookingCalendarDay },
+  components: { NavBar, BookingCalendar, FilterBar },
+  created(){
+    let station_id = localStorage.getItem("stationID");
+    if (station_id != null) {
+     this.getStationData(station_id);
+     localStorage.removeItem("stationID")
+    }
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.uid = user.uid;
+      }
+    })
+  },
+  mounted() {
+    this.isBookingDisabled = this.checkBookingFields();
+  },
+  updated() {
+    this.isBookingDisabled = this.checkBookingFields();
+  },
   data() {
     return {
-      //
+      uid: false,
+      isBookingDisabled: true,
+      selected_station_id: "",
+      selected_station_name: "", 
+      selected_station_provider: "",
+      selected_station_charger_type: "",
+      selected_station_address: "",
     } 
+  },
+  methods: {
+    async getStationData(station_id) {
+      const docRef = doc(db, "MapPage", "chargerLocations");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const station_data = docSnap.data()[station_id][0];
+        this.selected_station_id = station_id;
+        this.selected_station_name = station_data.id;
+        this.selected_station_provider = station_data.chargerDetails["provider"];
+        this.selected_station_charger_type = station_data.chargerDetails["type"][0]; // assume that each station only offers 1 charging type
+        this.selected_station_address = {"street": station_data.street, "postalCode": station_data.postalCode};
+      }
+    },
+    checkBookingFields() {
+      // TO EDIT bookingFieldValues
+      //let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address];
+      //return bookingFieldValues.some((x) => x == "");
+      return false;
+    },
+    async makeBooking() {
+      if (this.uid) {
+        const booking_rec = {
+          user_id: this.uid,
+          station_id: this.selected_station_id,
+          location: this.selected_station_name,
+          charger_type: this.selected_station_charger_type,
+          provider: this.selected_station_provider,
+          date: new Date('November 1, 2022 09:30:00'), // TO EDIT
+          duration: 60,
+          street: this.selected_station_address["street"],
+          postal_code: this.selected_station_address["postalCode"],
+        }
+        await addDoc(collection(db, "bookings"), booking_rec);
+        alert("Booking Success. Please view under My Bookings.")
+      } else {
+        this.$router.push('/login');
+      }
+    }
   }
 }
 </script>
