@@ -20,10 +20,6 @@
               <p class="legendtext">Available</p>
             </div>
             <div class="legendindiv">
-              <span class="dot2"></span>
-              <p class="legendtext">Limited</p>
-            </div>
-            <div class="legendindiv">
               <span class="dot3"></span>
               <p class="legendtext">Unavailable</p>
             </div>
