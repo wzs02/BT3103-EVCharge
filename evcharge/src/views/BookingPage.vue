@@ -38,7 +38,7 @@
           <div class="dayview">
             <v-card color="#F5F5F5" height=500px>
               <v-card-text>You are booking for <b>{{ this.selected_station_name }}</b></v-card-text>
-              <v-btn class="btn" rounded elevation="5">Book</v-btn>
+              <v-btn class="btn" rounded elevation="5" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
           </div>
         </v-col>
@@ -49,11 +49,12 @@
 </template>
 
 <script>
+import firebaseApp from "../firebase.js"
+import { getFirestore, getDoc, addDoc, doc, collection } from "firebase/firestore"
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBar from "@/components/NavBar.vue";
 import BookingCalendar from "@/components/BookingCalendar.vue"
 import FilterBar from "@/components/FilterBar.vue";
-import firebaseApp from "../firebase.js"
-import { getFirestore, getDoc, doc } from "firebase/firestore"
 
 const db = getFirestore(firebaseApp)
 
@@ -64,16 +65,30 @@ export default {
     let station_id = localStorage.getItem("stationID");
     if (station_id != null) {
      this.getStationData(station_id);
-     localStorage.setItem("stationID", null)
+     localStorage.removeItem("stationID")
     }
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.uid = user.uid;
+      }
+    })
+  },
+  mounted() {
+    this.isBookingDisabled = this.checkBookingFields();
+  },
+  updated() {
+    this.isBookingDisabled = this.checkBookingFields();
   },
   data() {
     return {
+      uid: false,
+      isBookingDisabled: true,
       selected_station_id: "",
       selected_station_name: "", 
       selected_station_provider: "",
       selected_station_charger_type: "",
-      selected_station_address: ""
+      selected_station_address: "",
     } 
   },
   methods: {
@@ -87,6 +102,31 @@ export default {
         this.selected_station_provider = station_data.chargerDetails["provider"];
         this.selected_station_charger_type = station_data.chargerDetails["type"][0]; // assume that each station only offers 1 charging type
         this.selected_station_address = {"street": station_data.street, "postalCode": station_data.postalCode};
+      }
+    },
+    checkBookingFields() {
+      // TO EDIT bookingFieldValues
+      //let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address];
+      //return bookingFieldValues.some((x) => x == "");
+      return false;
+    },
+    async makeBooking() {
+      if (this.uid) {
+        const booking_rec = {
+          user_id: this.uid,
+          station_id: this.selected_station_id,
+          location: this.selected_station_name,
+          charger_type: this.selected_station_charger_type,
+          provider: this.selected_station_provider,
+          date: new Date('November 1, 2022 09:30:00'), // TO EDIT
+          duration: 60,
+          street: this.selected_station_address["street"],
+          postal_code: this.selected_station_address["postalCode"],
+        }
+        await addDoc(collection(db, "bookings"), booking_rec);
+        alert("Booking Success. Please view under My Bookings.")
+      } else {
+        this.$router.push('/login');
       }
     }
   }

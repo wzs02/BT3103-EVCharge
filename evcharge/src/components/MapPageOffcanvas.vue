@@ -22,7 +22,7 @@
                     </v-col>
 
                     <v-col cols=4>
-                        <v-btn id="book-btn" @click="handleBookClick($router)">Book</v-btn>
+                        <v-btn id="book-btn" @click="handleBookClick">Book</v-btn>
                     </v-col>
                 </v-row>
                 <v-list-item><span id="service-provider-bold">Service-provider: </span><span
@@ -129,10 +129,10 @@ export default {
         }
     },
     methods:{
-        handleBookClick(router) {
+        handleBookClick() {
             // store the stationID for retrieval in the booking page
             localStorage.setItem("stationID", this.stationID)
-            router.push('/Book')
+            this.$router.push('/Book')
         }
     },
     computed: {
