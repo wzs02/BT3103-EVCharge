@@ -11,6 +11,7 @@
 
                 <v-col cols="4" class="menu-options">
                     <button @click="$router.push('/')" class="menu-op">About</button>
+                    <button @click="$router.push('/map')" class="menu-op">Find</button>
                     <button @click="$router.push('/Book')" class="menu-op">Book</button>
                     <button @click="$router.push('/TesterFile')" class="menu-op">Plan</button>
                     <v-icon style="font-size: 23px;">
@@ -33,7 +34,7 @@
                             </template>
 
                             <v-list>
-                                <v-list-item v-for="(item, index) in items" :key="index" @click="$router.push(item.route)">
+                                <v-list-item v-for="(item, index) in items" :key="index" @click="handleDropdownClick(item)">
                                     <v-list-item-title class="dropdownItem">
                                         {{ item.title }}
                                     </v-list-item-title>
@@ -93,18 +94,28 @@ export default {
                 {
                     title: "Log out",
                     value: 4,
-                    route: {name: 'TesterFile'} // to edit
                 }
             ]
         }
     },
     methods: {
-        signOutPress() {
-            signOut(auth).then(() => {
-                isLoggedIn.value = false;
-                this.$router.push("/")
-            })
-        }
+        handleDropdownClick(item) {
+            if (item.title != "Log out") {
+                this.$router.push(item.route)
+            } else {
+                auth = getAuth();
+                signOut(auth).then(() => {
+                    isLoggedIn.value = false;
+                    this.$router.push("/")
+                })
+            }
+        },
+        // signOutPress() {
+        //     signOut(auth).then(() => {
+        //         isLoggedIn.value = false;
+        //         this.$router.push("/")
+        //     })
+        // }
     }
 }
 </script>
