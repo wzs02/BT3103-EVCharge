@@ -65,7 +65,6 @@ const db = getFirestore(firebaseApp)
 export default {
   name: 'BookingPage',
   components: { NavBar, BookingCalendar, FilterBar, BookingCalendarDay },
-  components: { NavBar, BookingCalendar, FilterBar },
   created(){
     let station_id = localStorage.getItem("stationID");
     if (station_id != null) {
