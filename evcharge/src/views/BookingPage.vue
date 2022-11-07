@@ -37,7 +37,8 @@
         <v-col cols=6>
           <div class="dayview">
             <v-card color="#F5F5F5" height=500px>
-              <v-card-text>You are booking for </v-card-text>
+              <BookingCalendarDay />
+              <p>You are booking for </p>
               <v-btn class="btn" rounded elevation="5">Book</v-btn>
             </v-card>
           </div>
@@ -51,11 +52,12 @@
 <script>
 import NavBar from "@/components/NavBar.vue";
 import BookingCalendar from "@/components/BookingCalendar.vue"
+import BookingCalendarDay from "@/components/BookingCalendarDay.vue"
 import FilterBar from "@/components/FilterBar.vue";
 
 export default {
   name: 'BookingPage',
-  components: { NavBar, BookingCalendar, FilterBar },
+  components: { NavBar, BookingCalendar, FilterBar, BookingCalendarDay },
   data() {
     return {
       //
@@ -145,17 +147,22 @@ export default {
 
 .dayview {
   margin: auto;
-  font-family: "Outfit";
+  text-align: center;
+  font-family: "Nunito";
   font-style: normal;
+  font-weight: 100;
+  font-size: 15px;
   height: 50px;
 }
 
 .btn {
-    background-color: #4285f4;
-    color: #FFFFFF;
-    font-family: 'Outfit', sans-serif;
-    font-weight: bold;
-    border-radius: 20px;
+  width: 40%;
+  background-color: #4285f4;
+  color: #FFFFFF;
+  font-family: 'Outfit';
+  font-weight: bold;
+  font-size: 10px;
+  border-radius: 15px;
 }
 
 </style>
