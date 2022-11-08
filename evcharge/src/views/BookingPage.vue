@@ -32,10 +32,8 @@
 
         <v-col cols=6>
           <div class="dayview">
-            <v-card color="#F5F5F5" height=500px>
+            <v-card height="600px" color="#F5F5F5">
               <BookingCalendarDay />
-              <p>You are booking for </p>
-              <v-btn class="btn" rounded elevation="5">Book</v-btn>
               <v-card-text>You are booking for <b>{{ this.selected_station_name }}</b></v-card-text>
               <v-btn class="btn" rounded elevation="5" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
