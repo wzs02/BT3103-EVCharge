@@ -11,8 +11,7 @@
 
                 <v-col cols="4" class="menu-options">
                     <button @click="$router.push('/')" class="menu-op">About</button>
-                    <button @click="$router.push('/map')" class="menu-op">Find</button>
-                    <button @click="$router.push('/Book')" class="menu-op">Book</button>
+                    <button @click="$router.push('/map')" class="menu-op">Book</button>
                     <button @click="$router.push('/TesterFile')" class="menu-op">Plan</button>
                     <v-icon style="font-size: 23px;">
                         mdi-bell-outline
