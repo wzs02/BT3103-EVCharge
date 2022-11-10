@@ -11,16 +11,13 @@
         <h3>{{ numChargerAvailable }} chargers available:</h3>
       </v-row>
 
-      <v-row class="availablechargers">
-        <div v-for="charger in chargersMatching" :key="charger.id" class="chargermenu">
-          <p>EVC{{ charger.id }}</p>
-          <p>Location: {{ charger.location }}</p>
-          <p>Type: {{ charger.type }}</p> <br>
-          <v-btn class="btn" rounded elevation="5">Book</v-btn>
+      <v-row style="height: 20%">
+        <div v-for="charger in chargersMatching" :key="charger.id">
+          <v-btn class="btncharger" rounded elevation="3" @click="displayMonth(charger.id)">EVC{{ charger.id }}</v-btn>
         </div>
       </v-row>
 
-      <v-row class="bookingcalendar">
+      <v-row style="height: 60%">
         <v-col cols=6>
           <BookingCalendar />
           <div class="legend">
@@ -44,7 +41,7 @@
             <v-card height="600px" color="#F5F5F5">
               <BookingCalendarDay />
               <v-card-text>You are booking for <b>{{ this.selected_station_name }}</b></v-card-text>
-              <v-btn class="btn" rounded elevation="5" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
+              <v-btn class="btn" rounded elevation="3" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
           </div>
         </v-col>
@@ -127,6 +124,20 @@ export default {
       })
       this.numChargerAvailable = this.chargersMatching.length
     },
+    async displayMonth(id) {
+      // Display monthly calendar of selected EV charger
+      // Retrieve availabilities from db
+      const bookingsRef = collection(db, "testBookings")
+      const q = query(bookingsRef, where("id", "==", id))
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+        console.log(doc)
+        // For charger of that id, find availabilities of all days within the month
+        // If a day has at least one free slot => avail
+        // If a day has no free slot => not avail
+        // Pass list of availabilities to child BookingCalendar component for colour coding
+      })
+    },
     checkBookingFields() {
       // TO EDIT bookingFieldValues
       //let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address];
@@ -151,7 +162,7 @@ export default {
       } else {
         this.$router.push('/login');
       }
-    }
+    },
   }
 }
 </script>
@@ -175,19 +186,17 @@ export default {
   font-size: 18px;
 }
 
-.chargermenu {
-  display: inline-block;
-  padding: 2%;
-  margin-right: 10%;
-  margin-bottom: 5%;
+.btncharger {
+  height: 50%;
+  width: 200px;
+  margin-right: 50px;
+  margin-bottom: 20px;
   background-color: black;
-  border-radius: 20px;
-  font-size: 15px;
-  color: white;
-}
-
-.bookingcalendar {
-  height: 60%;
+  color: #FFFFFF;
+  font-family: 'Outfit';
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 15px;
 }
 
 .dot1 {
