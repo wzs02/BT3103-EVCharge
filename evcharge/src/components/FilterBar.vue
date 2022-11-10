@@ -3,7 +3,7 @@
         <v-row>
 
             <v-col cols=4 class="filter">
-                <h4>Filter by location</h4>
+                <h4>Filter By Region</h4>
                 <Multiselect
                     v-model="selected1"
                     :options="locations"
@@ -16,7 +16,7 @@
             </v-col>
 
             <v-col cols=4 class="filter">
-                <h4>Filter by charger type</h4>
+                <h4>Filter By Charger Type</h4>
                 <Multiselect
                     v-model="selected2"
                     :options="chargertype"
@@ -29,7 +29,7 @@
             </v-col>
 
             <v-col cols=4 class="filter">
-                <h4>Filter by timing</h4>
+                <h4>Filter By Timing</h4>
                 <Multiselect
                     v-model="selected3"
                     :options="timing"
@@ -72,8 +72,9 @@ export default {
         }
     },
 
+
     methods:{
-        //Specify the event to happen when we close the first filter bar
+        //Specify the event when we close the filter bar
 
         regionClose () {
             this.$emit('selectRegion',this.selected1)
@@ -84,17 +85,19 @@ export default {
             this.$emit("selectCharger",this.selected2)
             //console.log(this.selected2)
         },
+
+        //Specify the event when we remove options in the filter bar
         regionRemove(name) {
-            var arr = this.selected1.findIndex(x=>x == name)
-            var removed = this.selected1.splice(arr,1)
-            console.log(removed)
-            this.$emit('removeRegion',this.selected1)
-        },
+            var index = this.selected1.findIndex(x=>x == name)
+            var arr = structuredClone(this.selected1)
+            arr.splice(index,1)
+            this.$emit('removeRegion',arr)
+        }, 
         chargerRemove(name){
-            var arr = this.selected2.findIndex(x=>x == name)
-            var removed = this.selected2.splice(arr,1)
-            console.log(removed)
-            this.$emit('removeCharger',this.selected2)
+            var index = this.selected2.findIndex(x=>x == name)
+            var arr = structuredClone(this.selected2)
+            arr.splice(index,1)
+            this.$emit('removeCharger',arr)
         },
 
     }

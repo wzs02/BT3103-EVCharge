@@ -206,6 +206,7 @@ export default {
 
     async chargerFilter (charger) {
       console.log("Charger Bar closed")
+      console.log(charger)
       const docRef = doc(db, "MapPage", "chargerLocations");
       const docSnap = await getDoc(docRef);
       if (docSnap.exists() && charger.length > 0) {
