@@ -76,12 +76,17 @@
                     <v-text-field label="Model (eg. Model 3, ZS)" type="text" v-model="model" clearable color='#0D47A1'/>
                     <span v-if="v$.model.$error" id='model'> {{ "Please enter your vehicle's model." }}</span>
 
+                    <v-card-text id="field-header-details">How should we address you?</v-card-text>
+                    <v-text-field label="Your username" type="text" v-model="username" clearable color='#0D47A1'/>
+                    <span v-if="v$.model.$error" id='username'> {{ "Please enter your name." }}</span>
+
                 </v-card-text>
 
                 <v-col class="text-center">
                   <v-btn class="sign-up-btn-style" @click="
                   register(email, password.password); 
-                  createUseronFirebase(email, vehno, contact, brand, model);">                  
+                  // createUseronFirebase(email, vehno, contact, brand, model, username);
+                  ">                  
                     <span>Sign Up</span>                 
                   </v-btn>
                 </v-col>
@@ -91,7 +96,8 @@
               <v-col class="text-center">
                   <v-btn class="sign-google-btn-style" @click="
                     signInWithGoogle();
-                    createUseronFirebase(email, vehno, contact, brand, model);">                  
+                    // createUseronFirebase(email, vehno, contact, brand, model, username);
+                    ">                  
                     <span class="">Sign up with Google</span>                  
                   </v-btn>
                 </v-col>
@@ -124,6 +130,7 @@ export default {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        this.user = user
         this.uid = user.uid;
       }
     })
@@ -138,36 +145,54 @@ export default {
             contact: "",
             brand: "",
             model: "",
+            username: "",
             password: {
               password: "",
               confirm: "",
             },
             errMsg: "",
-            uid: false,
+            uid: "",
+            user: "",
         }
     },
     methods: {
-        async createUseronFirebase(email, vehno, contact, brand, model) {
+        async createUseronFirebase(email, vehno, contact, brand, model, username) {
           console.log("ADADFAODIFADUBFAIUDFAIUDNHEEE")
           console.log(this.uid)
-          await setDoc(doc(db, "USERS", this.uid), {
+          this.uid = this.user.uid
+          this.email = this.user.email
+          this.v$.$validate()
+            if (!this.v$.$error) {
+            await setDoc(doc(db, "USERS", this.uid), {
             user_email : email,
             user_vehno : vehno,
             user_contact : contact,
             user_brand : brand,
             user_model : model,
+            user_name : username,
+            user_uid : this.uid
           })
+        }
         },
         register(email, password) {
             this.v$.$validate()
             if (!this.v$.$error) {
+            setDoc(doc(db, "USERS", this.uid), {
+            user_email : email,
+            user_vehno : this.vehno,
+            user_contact : this.contact,
+            user_brand : this.brand,
+            user_model : this.model,
+            user_name : this.username,
+            user_uid : this.uid
+          })
               const auth = getAuth();
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCurrent) => {
                     alert("Sign Up Successful")
                     const user = userCurrent.user;
                     console.log(user)
-                    console.log(auth.currentUser), 
+                    console.log(auth.currentUser),
                     this.$router.push('/map')})
                 .catch((error) => {
                     console.log(error.code);
@@ -185,41 +210,74 @@ export default {
                             errMsg.value = "Email or password is incorrect";
                             break;
                     }
-                    alert(errMsg.value);
+                    
+                  alert(errMsg.value);
             });
+            
             }
             
         },
         signInWithGoogle() {
-          this.v$.$validate()
-          this.email = 'Field_Not_Required@gmail.com'
-          this.password.password = "Not Required"
-          this.password.confirm = "Not Required"
-          if (!this.v$.$error) {
-
             const provider = new GoogleAuthProvider();
+            // this.email = "Not_Requried@gmail.com"
+            this.password.password = "Not Required"
+            this.password.confirm = "Not Required"
+            this.v$.$validate()
+            if (!this.v$.$error) {
+              signInWithPopup(getAuth(), provider)
+                  .then((result) => {
+                      // The signed-in user info
+                      const user = result.user;
+                      this.user = user
+                      this.email = user.email
+                      this.uid = user.uid
+                      console.log(this.email)
+                      console.log(this.uid)
+                      console.log(this.vehno)
+                      console.log(this.contact)
+                      console.log(this.brand)
+                      console.log(this.model)
+                      console.log(this.username)
 
-            signInWithPopup(getAuth(), provider)
-                .then((result) => {
-                    // The signed-in user info
-                    const user = result.user;
-                    console.log(user.email);
-                    this.email = user.email
-                    this.$router.push('/map');
-                })
-                .catch((error) => {
-                    console.log(error.message)
-                    switch (error.code) {
-                        case "auth/account-exists-with-different-credential":
-                            errMsg.value = "This email has been binded to an account.";
-                            break;
-                        case "auth/popup-blocked":
-                            errMsg.value = "Please enable your browser pop up.";
-                            break;
-                    }
-                    alert(errMsg.value);
-                })
-        }
+                      setDoc(doc(db, "USERS", this.uid), {
+                      user_email : this.email,
+                      user_vehno : this.vehno,
+                      user_contact : this.contact,
+                      user_brand : this.brand,
+                      user_model : this.model,
+                      user_name : this.username,
+                      user_uid : this.uid
+                      })
+                      this.$router.push('/map')
+                  })
+                  // .then( function() {
+                  //   this.createUseronFirebase(this.email, this.vehno, this.contact, this.brand, this.model);
+                  // })
+                  .catch((error) => {
+                      console.log(error.message)
+                      switch (error.code) {
+                          case "auth/account-exists-with-different-credential":
+                              errMsg.value = "This email has been binded to an account.";
+                              break;
+                          case "auth/popup-blocked":
+                              errMsg.value = "Please enable your browser pop up.";
+                              break;
+                      }
+                      alert(errMsg.value);
+                  })
+              }
+              else{
+                signInWithPopup(getAuth(), provider)
+                    .then((result) => {
+                        // The signed-in user info
+                        const user = result.user;
+                        this.user = user
+                        this.email = user.email
+                        // this.uid = user.uid
+                        })
+                this.email = this.user.email
+                alert("Please address the Google Pop up before filling up necessary fields.")
+                }
         }
     },
     validations() {
@@ -229,6 +287,7 @@ export default {
         contact: { required },
         brand: { required },
         model: { required }, 
+        username: { required },
         password: {
         password: { required, minLength: minLength(6) },
         confirm: { required, sameAs: sameAs(this.password.password) },
@@ -487,6 +546,15 @@ export default {
   position: absolute;
   line-height: 0px;
   top: 410px;
+  left: 30px;
+}
+
+#username{
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  line-height: 0px;
+  top: 520px;
   left: 30px;
 }
     
