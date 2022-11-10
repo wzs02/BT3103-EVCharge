@@ -1,11 +1,17 @@
 <template>
   <v-app>
     <NavBarLogin />
+    <v-container>
+      <v-row class="filterbar">
+        <FilterBar />
+      </v-row>
+    
+    
     <div class=Map>
       <!-- Specifying the Dimension/Specifications of the Google Map we using -->
       <!-- Check width and height for future deployment -->
       <GMapMap :center="center" :zoom="11.80" map-type-id="roadmap"
-        style="position: fixed;top: 0;left: 0;min-width: 100%; min-height: 100%;">
+        style="position: fixed;top: 10;left: 0;min-width: 100%; min-height: 100%;">
 
         <!--Creating available Markers -->
         <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
@@ -45,6 +51,7 @@
       </GMapMap>
 
     </div>
+  </v-container>
   </v-app>
   <!-- <div class="icon">
     <button style="background-color:red" @click="locatorButtonPressed">Check</button>
@@ -61,12 +68,12 @@ import MapPageOffcanvas from "@/components/MapPageOffcanvas.vue"
 import firebaseApp from "../firebase.js"
 import { getFirestore, getDoc, setDoc, doc } from "firebase/firestore"
 import { ref } from 'vue'
+import FilterBar from "@/components/FilterBar.vue";
 
 const db = getFirestore(firebaseApp)
-
 export default {
   name: "MapPage",
-  components: { MapPageOffcanvas, NavBarLogin },
+  components: { FilterBar,MapPageOffcanvas, NavBarLogin },
   data() {
     return {
       markerToOpen: null,
@@ -214,23 +221,19 @@ export default {
     }
   },
 }
-
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@400;700&display=swap');
-
 body {
   margin: 0;
 }
-
 .gm-style .gm-style-iw-d::-webkit-scrollbar-track,
 .gm-style .gm-style-iw-d::-webkit-scrollbar-track-piece,
 .gm-style .gm-style-iw-c,
 .gm-style .gm-style-iw-t::after {
   border-radius: 20px;
 }
-
 #stationName {
   text-align: center;
   font-family: 'Outfit', 'sans-serif';
@@ -239,11 +242,22 @@ body {
   color: #4285F4;
   text-decoration: underline;
 }
-
 .stationDetails {
   font-family: 'Outfit', 'sans-serif';
   font-size: 13px;
   text-align: center;
   font-weight: 400;
 }
+
+.filterbar {
+  margin: auto;
+  margin-top:35px; 
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 100;
+  font-size: 18px;
+  z-index: -1;
+  
+}
+
 </style>

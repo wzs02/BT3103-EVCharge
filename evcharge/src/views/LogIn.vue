@@ -83,7 +83,7 @@ export default {
                 .then((userCredential) => {
                     const user = userCredential.user;
                     console.log(user)
-                    this.$router.go(-1)})
+                    this.$router.push("/map")})
                 .catch((error) => {
                     console.log(error.code);
                     alert("Email and password is invalid");
@@ -99,7 +99,7 @@ export default {
                     // The signed-in user info.
                     const user = result.user;
                     console.log(user)
-                    this.$router.go(-1);
+                    this.$router.push("/map");
                 })
                 .catch((error) => {
                     console.log(error.message)
