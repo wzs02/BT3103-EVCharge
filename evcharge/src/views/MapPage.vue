@@ -3,7 +3,8 @@
     <NavBarLogin />
     <v-container>
       <v-row class="filterbar">
-        <FilterBar />
+        <FilterBar @selectRegion = "locationFilter($event)" @selectCharger="chargerFilter($event)" 
+        @removeRegion = "locationFilter($event)" @removeCharger =  "chargerFilter($event)"/>
       </v-row>
     
     
@@ -115,6 +116,9 @@ export default {
       Available_Markers: ref([]),
     };
   },
+
+
+
   computed: {
     showWindow() {
       return (inputId) => {
@@ -122,10 +126,11 @@ export default {
       }
     }
   },
+
+
+
+
   methods: {
-    async createCollection() {
-      await setDoc(doc(db, "MapPage", "chargerLocations"), locationVar);
-    },
     async getData() {
       const docRef = doc(db, "MapPage", "chargerLocations");
       const docSnap = await getDoc(docRef);
@@ -136,14 +141,120 @@ export default {
         for (let i = 0; i < station_id_list.length; ++i) {
           // add station_id as an attribute of the station object
           station_values[i][0]["station_id"] = station_id_list[i];
+          console.log(station_values[i][0]["station_id"])
         }
         this.Available_Markers.value = Object.values(station_values)
           .map(x => Object.assign({}, x[0]));
+        console.log(this.Available_Markers.value)
       }
       else {
         // doc.data() will be undefined in this case
         console.log("No such document!");
       }
+    },
+
+
+    async locationFilter(region) {
+      console.log("Search Bar closed")
+      const docRef = doc(db, "MapPage", "chargerLocations");
+      const docSnap = await getDoc(docRef);
+      
+      //When there is more than one field in the seach bar
+      if (docSnap.exists() && region.length > 0) {
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+        //console.log(station_id_list);
+        // ['bluecharge_lot1', 'ascent_building_sp_group', 'charge_plus_fernvale', 'the_concourse', 'ura_centre_east_wing', 'cdg_engie_bukit_batok', 'westpark_biz_central', 'shell_serangoon_garden', 'tamp_plaza', 'blue_sg_simei_s1', 'amk_charge_plus', 'shell_punggol', 'jurong_point', 'shell_dunearn_uni', 'shell_pl', 'hedges_solacharge', 'boathouse_residence_solacharge', 'blue_sg_hougang', 'ent_biz_center', 'i12_katong', 'tanah_merah_ft', 'juice_plus_bishan', 'ikea_tampines', 'sg_zoo', 'cdg_energie_clementi_ave4', 'sp_group_jewel', 'lhn_energy_btsc', 'shell_thomson', 'one_at_redhill_centre', 'bedok_south']
+        console.log(station_values);
+        let result = []
+        for (let i = 0; i < station_id_list.length; ++i) {
+          console.log("Here")
+          //console.log(station_values[i][0]["region"])
+          if(region.includes(station_values[i][0]["region"])){
+            console.log(station_values[i][0]["region"])
+            console.log(station_values[i])
+            result.push(station_values[i])
+            result[result.length - 1][0]["station_id"] = station_id_list[i];
+          }
+        }
+        console.log("The result is")
+        console.log(result.length)
+        this.Available_Markers.value = Object.values(result)
+        .map(x => Object.assign({}, x[0]));
+      }
+
+      //When there is no field in the search bar return map with all markers
+      else if (docSnap.exists() && region.length == 0) {
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+        for (let i = 0; i < station_id_list.length; ++i) {
+          // add station_id as an attribute of the station object
+          station_values[i][0]["station_id"] = station_id_list[i];
+          console.log(station_values[i][0]["station_id"])
+        }
+        this.Available_Markers.value = Object.values(station_values)
+          .map(x => Object.assign({}, x[0]));
+        console.log(this.Available_Markers.value)
+      } 
+      else{
+        console.log("No such document!");
+      }
+      
+    },
+
+    async chargerFilter (charger) {
+      console.log("Charger Bar closed")
+      const docRef = doc(db, "MapPage", "chargerLocations");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists() && charger.length > 0) {
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues)
+        let result = []
+        console.log(station_values[0][0]["chargerDetails"]["type"])
+        for (let i = 0; i < station_id_list.length; ++i) {
+          console.log("filtering charger")
+          console.log(station_values[i][0]["chargerDetails"]["type"])
+
+          for (let j = 0; j < station_values[i][0]["chargerDetails"]["type"].length; ++j)
+            //console.log(station_values[i][0]["chargerDetails"]["type"][j])
+            if(charger.includes(station_values[i][0]["chargerDetails"]["type"][j])) {
+              console.log("Include Charger")
+              result.push(station_values[i])
+              result[result.length - 1][0]["station_id"] = station_id_list[i]
+              break
+          }
+        }
+        console.log("The result is")
+        console.log(result.length)
+        this.Available_Markers.value = Object.values(result)
+        .map(x => Object.assign({}, x[0]));
+      } 
+
+            //When there is no field in the search bar return map with all markers
+      else if (docSnap.exists() && charger.length == 0) {
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+        for (let i = 0; i < station_id_list.length; ++i) {
+          // add station_id as an attribute of the station object
+          station_values[i][0]["station_id"] = station_id_list[i];
+          console.log(station_values[i][0]["station_id"])
+        }
+        this.Available_Markers.value = Object.values(station_values)
+          .map(x => Object.assign({}, x[0]));
+        console.log(this.Available_Markers.value)
+      } 
+      else{
+        console.log("No such document!");
+      }
+      
+    },
+
+    async createCollection() {
+      await setDoc(doc(db, "MapPage", "chargerLocations"), locationVar);
     },
     openMarkerInfoWindow(markerId) {
       this.markerToOpen = markerId
