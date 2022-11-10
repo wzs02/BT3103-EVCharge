@@ -3,8 +3,8 @@
     <NavBarLogin />
     <v-container>
       <v-row class="filterbar">
-        <FilterBar @selectRegion = "locationFilter($event)" @selectCharger="chargerFilter($event)" 
-        @removeRegion = "locationFilter($event)" @removeCharger =  "chargerFilter($event)"/>
+        <FilterBar @selectRegion = "totalFilter($event)" @selectCharger="totalFilter($event)" 
+        @removeRegion = "totalFilter($event)" @removeCharger =  "totalFilter($event)"/>
       </v-row>
     
     
@@ -205,10 +205,12 @@ export default {
     },
 
     async chargerFilter (charger) {
+
       console.log("Charger Bar closed")
       console.log(charger)
       const docRef = doc(db, "MapPage", "chargerLocations");
       const docSnap = await getDoc(docRef);
+      
       if (docSnap.exists() && charger.length > 0) {
         const markerKeyValues = docSnap.data();
         let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
@@ -234,7 +236,7 @@ export default {
         .map(x => Object.assign({}, x[0]));
       } 
 
-            //When there is no field in the search bar return map with all markers
+      //When there is no field in the search bar return map with all markers
       else if (docSnap.exists() && charger.length == 0) {
         const markerKeyValues = docSnap.data();
         let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
@@ -252,6 +254,66 @@ export default {
         console.log("No such document!");
       }
       
+    },
+
+    //Filtering base on location + charger
+    async totalFilter(filterBarInput) {
+
+      console.log(filterBarInput)
+      const docRef = doc(db, "MapPage", "chargerLocations");
+      const docSnap = await getDoc(docRef);
+
+
+      //When both the location and charger fields are empty
+      if (docSnap.exists() && filterBarInput[0].length == 0 && filterBarInput[1].length == 0 ) {
+        await this.getData()
+      }
+
+      //When the charger field is empty filter base on location only
+      if (docSnap.exists() && filterBarInput[0].length > 0 && filterBarInput[1].length == 0 ) {
+        await this.locationFilter(filterBarInput[0])
+        console.log("Only location")
+      }
+
+      //when the location field is empty filter base on charger only
+      if (docSnap.exists() && filterBarInput[0].length == 0 && filterBarInput[1].length > 0 ) {
+        await this.chargerFilter(filterBarInput[1])
+        console.log("Only charger")
+      }
+
+      //When first two input fields are not empty
+      if (docSnap.exists() && filterBarInput[0].length > 0 && filterBarInput[1].length > 0 ) {
+        console.log("Hee")
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+    
+        let result = []
+
+        //Filtering the station first
+        for (let i = 0; i < station_id_list.length; ++i) {
+          console.log("Here")
+          //console.log(station_values[i][0]["region"])
+          if(filterBarInput[0].includes(station_values[i][0]["region"])){
+            result.push(station_values[i])
+            result[result.length - 1][0]["station_id"] = station_id_list[i];
+          }
+        }
+
+        let result2 = []
+        //Filtering the result after base above base charger type
+        for (let i = 0; i < result.length; ++i) {
+          for (let j = 0; j < filterBarInput[1].length; ++j) {
+            if(result[i][0]["chargerDetails"]["type"].includes(filterBarInput[1][j])) {
+              result2.push(result[i])
+              break 
+            }
+          }
+        }
+        console.log(result2)
+        this.Available_Markers.value = Object.values(result2)
+          .map(x => Object.assign({}, x[0]));
+        }
     },
 
     async createCollection() {

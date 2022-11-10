@@ -72,32 +72,42 @@ export default {
         }
     },
 
+    computed:{
+        filterBarInput() {
+            return [this.selected1,this.selected2]
+        }
+    },
 
     methods:{
-        //Specify the event when we close the filter bar
 
+        //Specify the events when we close the filter bar
         regionClose () {
-            this.$emit('selectRegion',this.selected1)
+            this.$emit("selectRegion",this.filterBarInput)
             //console.log(this.selected1[0]) 
             
         },
         chargerClose () {
-            this.$emit("selectCharger",this.selected2)
-            //console.log(this.selected2)
+            this.$emit("selectCharger",this.filterBarInput)
+            console.log(this.selected1)
+            console.log(this.selected2)
+            console.log(this.filterBarInput[0][0])
+            console.log(this.filterBarInput[1])
         },
 
-        //Specify the event when we remove options in the filter bar
+        //Specify the events when we remove options in the filter bar
         regionRemove(name) {
             var index = this.selected1.findIndex(x=>x == name)
             var arr = structuredClone(this.selected1)
             arr.splice(index,1)
-            this.$emit('removeRegion',arr)
+            this.selected1 = arr
+            this.$emit('removeRegion',this.filterBarInput)
         }, 
         chargerRemove(name){
             var index = this.selected2.findIndex(x=>x == name)
             var arr = structuredClone(this.selected2)
             arr.splice(index,1)
-            this.$emit('removeCharger',arr)
+            this.selected2 = arr
+            this.$emit('removeCharger',this.filterBarInput)
         },
 
     }

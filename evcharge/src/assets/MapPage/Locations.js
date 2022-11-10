@@ -604,8 +604,8 @@ var locationVar = {
       id: "Shell Dunearn University",
       region:"Woodlands",
       position: {
-        lat: 1.3233424,
-        lng: 103.8180094,
+        lat: 1.44861,
+        lng: 103.80914,
         // price not stated
         // 1 lot J-1772
       },
