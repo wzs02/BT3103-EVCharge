@@ -7,11 +7,20 @@
         <h1>Book a Charger</h1>
       </v-row>
 
-      <v-row class="filterbar">
-        <FilterBar />
+      <v-row class="availablechargers" style="height: 10%">
+        <h3>{{ numChargerAvailable }} chargers available:</h3>
       </v-row>
 
-      <v-row>
+      <v-row class="availablechargers">
+        <div v-for="charger in chargersMatching" :key="charger.id" class="chargermenu">
+          <p>EVC{{ charger.id }}</p>
+          <p>Location: {{ charger.location }}</p>
+          <p>Type: {{ charger.type }}</p> <br>
+          <v-btn class="btn" rounded elevation="5">Book</v-btn>
+        </div>
+      </v-row>
+
+      <v-row class="bookingcalendar">
         <v-col cols=6>
           <BookingCalendar />
           <div class="legend">
@@ -47,18 +56,17 @@
 
 <script>
 import firebaseApp from "../firebase.js"
-import { getFirestore, getDoc, addDoc, doc, collection } from "firebase/firestore"
+import { getFirestore, getDoc, getDocs, addDoc, doc, collection, query, where, orderBy } from "firebase/firestore"
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBar from "@/components/NavBar.vue";
 import BookingCalendar from "@/components/BookingCalendar.vue"
 import BookingCalendarDay from "@/components/BookingCalendarDay.vue"
-import FilterBar from "@/components/FilterBar.vue";
 
 const db = getFirestore(firebaseApp)
 
 export default {
   name: 'BookingPage',
-  components: { NavBar, BookingCalendar, FilterBar, BookingCalendarDay },
+  components: { NavBar, BookingCalendar, BookingCalendarDay },
   created(){
     let station_id = localStorage.getItem("stationID");
     if (station_id != null) {
@@ -71,6 +79,7 @@ export default {
         this.uid = user.uid;
       }
     })
+    this.matchingChargers(this.chargerFromMap)
   },
   mounted() {
     this.isBookingDisabled = this.checkBookingFields();
@@ -80,6 +89,10 @@ export default {
   },
   data() {
     return {
+      //chargerFromMap: this.$router.params.charger,
+      chargerFromMap: ["Jalan Kayu", "DC50"],
+      numChargerAvailable: 0,
+      chargersMatching: [],
       uid: false,
       isBookingDisabled: true,
       selected_station_id: "",
@@ -101,6 +114,18 @@ export default {
         this.selected_station_charger_type = station_data.chargerDetails["type"][0]; // assume that each station only offers 1 charging type
         this.selected_station_address = {"street": station_data.street, "postalCode": station_data.postalCode};
       }
+    },
+    async matchingChargers(chargerFromMap) {
+      const chargerLocation = chargerFromMap[0]
+      const chargerType = chargerFromMap[1]
+
+      const chargersRef = collection(db, "testCal")
+      const q = query(chargersRef, where("location", "==", chargerLocation), where("type", "==", chargerType), orderBy("id"))
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+        this.chargersMatching.push({ id: doc.data()["id"], location: doc.data()["location"], type: doc.data()["type"] })
+      })
+      this.numChargerAvailable = this.chargersMatching.length
     },
     checkBookingFields() {
       // TO EDIT bookingFieldValues
@@ -135,21 +160,34 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@300&display=swap');
 
 .header {
-  margin: auto;
-  margin-top: 10%;
+  margin-top: 8%;
+  height: 20%;
   font-family: "Outfit";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
 }
 
-.filterbar {
-  margin: auto;
-  margin-bottom: 5%;
+.availablechargers {
   font-family: "Outfit";
   font-style: normal;
   font-weight: 100;
   font-size: 18px;
+}
+
+.chargermenu {
+  display: inline-block;
+  padding: 2%;
+  margin-right: 10%;
+  margin-bottom: 5%;
+  background-color: black;
+  border-radius: 20px;
+  font-size: 15px;
+  color: white;
+}
+
+.bookingcalendar {
+  height: 60%;
 }
 
 .dot1 {

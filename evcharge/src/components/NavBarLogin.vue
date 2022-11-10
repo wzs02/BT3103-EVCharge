@@ -22,11 +22,11 @@
                         <v-menu>
                             <template v-slot:activator="{ props }">
                                 <v-btn id="profile-btn" v-bind="props">
-                                    <v-avatar size="20">
+                                    <!-- <v-avatar size="20">
                                         <v-img src='../assets/AboutPage/About_Ellipse.png'>
                                         </v-img>
-                                    </v-avatar>
-                                    <span id="userName">&emsp;John Doe</span>
+                                    </v-avatar> -->
+                                    <span id="userName">&emsp;{{ username }}</span>
                                     <v-icon id="menu-down-icon">
                                         mdi-menu-down
                                     </v-icon>
@@ -50,29 +50,35 @@
 </template>
   
 <script>
-import { onMounted, ref } from "vue";
 import { signOut, getAuth, onAuthStateChanged } from '@firebase/auth';
 import { mdiBellOutline } from '@mdi/js';
 import { mdiMenuDown } from '@mdi/js';
+import firebaseApp from '../firebase.js';
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 
-let isLoggedIn = ref(false);
-
-let auth;
-onMounted(() => {
-    auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            isLoggedIn.value = true;
-        } else {
-            isLoggedIn.value = false;
-        }
-    });
-});
 
 export default {
-    name: 'NavBarLogin',
+    created() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("ADOAIDFAJODIFADOIFAJDI")
+        console.log(this.username)
+        this.isLoggedIn = true;
+        this.uid = user.uid;
+        this.getUsername(user.uid)
+        console.log("ADOAIDFAJODIFADOIFAJDI")
+        console.log(user.uid)
+      } else{
+        this.isLoggedIn = false;
+      }
+    })
+    },
     data() {
         return {
+            isLoggedIn: false,
+            uid: false,
+            username: "",
             mdiBellOutline,
             mdiMenuDown,
             items: [
@@ -103,16 +109,29 @@ export default {
             if (item.title != "Log out") {
                 this.$router.push(item.route)
             } else {
-                auth = getAuth();
+                const auth = getAuth();
                 signOut(auth).then(() => {
-                    isLoggedIn.value = false;
+                    this.isLoggedIn= false;
                     this.$router.push("/")
                 })
             }
         },
+        async getUsername(uid) {
+        // const auth = getAuth()
+        const db = getFirestore(firebaseApp);
+        const userRef = collection(db, "USERS")
+        let z = await getDocs(query(userRef, where('user_uid', "==", uid)))
+        z.forEach((docs) => {
+            let data = docs.data();
+            this.username = data.user_name
+            console.log(data.user_uid)
+        }
+        )
+    }
     }
 }
 </script>
+
   
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300&display=swap');
