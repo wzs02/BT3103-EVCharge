@@ -161,7 +161,8 @@ export default {
 
 #card-dimensions {
     position: fixed;
-    top: 70px;
+    top: 141px;
+    left: 0px;
     bottom: 0;
     min-height: 100%;
 }
