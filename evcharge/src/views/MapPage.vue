@@ -69,12 +69,9 @@ import MapPageOffcanvas from "@/components/MapPageOffcanvas.vue"
 import firebaseApp from "../firebase.js"
 import { getFirestore, getDoc, setDoc, doc } from "firebase/firestore"
 import { ref } from 'vue'
-<<<<<<< HEAD
- 
-=======
 import FilterBar from "@/components/FilterBar.vue";
 
->>>>>>> 80adb08576be6ac62bad996bce6b710ca7406cc4
+
 const db = getFirestore(firebaseApp)
 export default {
   name: "MapPage",
