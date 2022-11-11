@@ -1,17 +1,24 @@
 <template>
   <v-app>
     <NavBarLogin />
+    <v-container>
+      <v-row class="filterbar">
+        <FilterBar @selectRegion = "totalFilter($event)" @selectCharger="totalFilter($event)" 
+        @removeRegion = "totalFilter($event)" @removeCharger =  "totalFilter($event)"/>
+      </v-row>
+    
+    
     <div class=Map>
       <!-- Specifying the Dimension/Specifications of the Google Map we using -->
       <!-- Check width and height for future deployment -->
       <GMapMap :center="center" :zoom="11.80" map-type-id="roadmap"
-        style="position: fixed;top: 0;left: 0;min-width: 100%; min-height: 100%;">
+        style="position: fixed;top: 10;left: 0;min-width: 100%; min-height: 100%;">
 
         <!--Creating available Markers -->
         <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
           @click="logInput(m.id)" :icon="require('@/assets/MapPage/availablePins.png')" :clickable=true
           :draggable=false>
-          <MapPageOffcanvas :drawer="showWindow(m.id)" :stationName="m.id" :imgExtension="m.imgName"
+          <MapPageOffcanvas :drawer="showWindow(m.id)" :stationID="m.station_id" :stationName="m.id" :imgExtension="m.imgName"
             :chargerType="parseChargerType(Object.values({ ...m.chargerDetails.type }))"
             :chargerSystem="m.chargerDetails.system" :chargerProvider="m.chargerDetails.provider"
             :chargerAddress="getFullChargerAddress(m.street, m.postalCode)" :chargerHours="m.chargerDetails.hours"
@@ -45,6 +52,7 @@
       </GMapMap>
 
     </div>
+  </v-container>
   </v-app>
   <!-- <div class="icon">
     <button style="background-color:red" @click="locatorButtonPressed">Check</button>
@@ -61,12 +69,16 @@ import MapPageOffcanvas from "@/components/MapPageOffcanvas.vue"
 import firebaseApp from "../firebase.js"
 import { getFirestore, getDoc, setDoc, doc } from "firebase/firestore"
 import { ref } from 'vue'
+<<<<<<< HEAD
  
-const db = getFirestore(firebaseApp)
+=======
+import FilterBar from "@/components/FilterBar.vue";
 
+>>>>>>> 80adb08576be6ac62bad996bce6b710ca7406cc4
+const db = getFirestore(firebaseApp)
 export default {
   name: "MapPage",
-  components: { MapPageOffcanvas, NavBarLogin },
+  components: { FilterBar,MapPageOffcanvas, NavBarLogin },
   data() {
     return {
       markerToOpen: null,
@@ -108,6 +120,9 @@ export default {
       Available_Markers: ref([]),
     };
   },
+
+
+
   computed: {
     showWindow() {
       return (inputId) => {
@@ -115,22 +130,198 @@ export default {
       }
     }
   },
+
+
+
+
   methods: {
-    async createCollection() {
-      await setDoc(doc(db, "MapPage", "chargerLocations"), locationVar);
-    },
     async getData() {
       const docRef = doc(db, "MapPage", "chargerLocations");
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const markerKeyValues = docSnap.data();
-        this.Available_Markers.value = Object.values(markerKeyValues)
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+        for (let i = 0; i < station_id_list.length; ++i) {
+          // add station_id as an attribute of the station object
+          station_values[i][0]["station_id"] = station_id_list[i];
+          console.log(station_values[i][0]["station_id"])
+        }
+        this.Available_Markers.value = Object.values(station_values)
           .map(x => Object.assign({}, x[0]));
+        console.log(this.Available_Markers.value)
       }
       else {
         // doc.data() will be undefined in this case
         console.log("No such document!");
       }
+    },
+
+
+    async locationFilter(region) {
+      console.log("Search Bar closed")
+      const docRef = doc(db, "MapPage", "chargerLocations");
+      const docSnap = await getDoc(docRef);
+      
+      //When there is more than one field in the seach bar
+      if (docSnap.exists() && region.length > 0) {
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+        //console.log(station_id_list);
+        // ['bluecharge_lot1', 'ascent_building_sp_group', 'charge_plus_fernvale', 'the_concourse', 'ura_centre_east_wing', 'cdg_engie_bukit_batok', 'westpark_biz_central', 'shell_serangoon_garden', 'tamp_plaza', 'blue_sg_simei_s1', 'amk_charge_plus', 'shell_punggol', 'jurong_point', 'shell_dunearn_uni', 'shell_pl', 'hedges_solacharge', 'boathouse_residence_solacharge', 'blue_sg_hougang', 'ent_biz_center', 'i12_katong', 'tanah_merah_ft', 'juice_plus_bishan', 'ikea_tampines', 'sg_zoo', 'cdg_energie_clementi_ave4', 'sp_group_jewel', 'lhn_energy_btsc', 'shell_thomson', 'one_at_redhill_centre', 'bedok_south']
+        console.log(station_values);
+        let result = []
+        for (let i = 0; i < station_id_list.length; ++i) {
+          console.log("Here")
+          //console.log(station_values[i][0]["region"])
+          if(region.includes(station_values[i][0]["region"])){
+            console.log(station_values[i][0]["region"])
+            console.log(station_values[i])
+            result.push(station_values[i])
+            result[result.length - 1][0]["station_id"] = station_id_list[i];
+          }
+        }
+        console.log("The result is")
+        console.log(result.length)
+        this.Available_Markers.value = Object.values(result)
+        .map(x => Object.assign({}, x[0]));
+      }
+
+      //When there is no field in the search bar return map with all markers
+      else if (docSnap.exists() && region.length == 0) {
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+        for (let i = 0; i < station_id_list.length; ++i) {
+          // add station_id as an attribute of the station object
+          station_values[i][0]["station_id"] = station_id_list[i];
+          console.log(station_values[i][0]["station_id"])
+        }
+        this.Available_Markers.value = Object.values(station_values)
+          .map(x => Object.assign({}, x[0]));
+        console.log(this.Available_Markers.value)
+      } 
+      else{
+        console.log("No such document!");
+      }
+      
+    },
+
+    async chargerFilter (charger) {
+
+      console.log("Charger Bar closed")
+      console.log(charger)
+      const docRef = doc(db, "MapPage", "chargerLocations");
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists() && charger.length > 0) {
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues)
+        let result = []
+        console.log(station_values[0][0]["chargerDetails"]["type"])
+        for (let i = 0; i < station_id_list.length; ++i) {
+          console.log("filtering charger")
+          console.log(station_values[i][0]["chargerDetails"]["type"])
+
+          for (let j = 0; j < station_values[i][0]["chargerDetails"]["type"].length; ++j)
+            //console.log(station_values[i][0]["chargerDetails"]["type"][j])
+            if(charger.includes(station_values[i][0]["chargerDetails"]["type"][j])) {
+              console.log("Include Charger")
+              result.push(station_values[i])
+              result[result.length - 1][0]["station_id"] = station_id_list[i]
+              break
+          }
+        }
+        console.log("The result is")
+        console.log(result.length)
+        this.Available_Markers.value = Object.values(result)
+        .map(x => Object.assign({}, x[0]));
+      } 
+
+      //When there is no field in the search bar return map with all markers
+      else if (docSnap.exists() && charger.length == 0) {
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+        for (let i = 0; i < station_id_list.length; ++i) {
+          // add station_id as an attribute of the station object
+          station_values[i][0]["station_id"] = station_id_list[i];
+          console.log(station_values[i][0]["station_id"])
+        }
+        this.Available_Markers.value = Object.values(station_values)
+          .map(x => Object.assign({}, x[0]));
+        console.log(this.Available_Markers.value)
+      } 
+      else{
+        console.log("No such document!");
+      }
+      
+    },
+
+    //Filtering base on location + charger
+    async totalFilter(filterBarInput) {
+
+      console.log(filterBarInput)
+      const docRef = doc(db, "MapPage", "chargerLocations");
+      const docSnap = await getDoc(docRef);
+
+
+      //When both the location and charger fields are empty
+      if (docSnap.exists() && filterBarInput[0].length == 0 && filterBarInput[1].length == 0 ) {
+        await this.getData()
+      }
+
+      //When the charger field is empty filter base on location only
+      if (docSnap.exists() && filterBarInput[0].length > 0 && filterBarInput[1].length == 0 ) {
+        await this.locationFilter(filterBarInput[0])
+        console.log("Only location")
+      }
+
+      //when the location field is empty filter base on charger only
+      if (docSnap.exists() && filterBarInput[0].length == 0 && filterBarInput[1].length > 0 ) {
+        await this.chargerFilter(filterBarInput[1])
+        console.log("Only charger")
+      }
+
+      //When first two input fields are not empty
+      if (docSnap.exists() && filterBarInput[0].length > 0 && filterBarInput[1].length > 0 ) {
+        console.log("Hee")
+        const markerKeyValues = docSnap.data();
+        let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
+        let station_values = Object.values(markerKeyValues) 
+    
+        let result = []
+
+        //Filtering the station first
+        for (let i = 0; i < station_id_list.length; ++i) {
+          console.log("Here")
+          //console.log(station_values[i][0]["region"])
+          if(filterBarInput[0].includes(station_values[i][0]["region"])){
+            result.push(station_values[i])
+            result[result.length - 1][0]["station_id"] = station_id_list[i];
+          }
+        }
+
+        let result2 = []
+        //Filtering the result after base above base charger type
+        for (let i = 0; i < result.length; ++i) {
+          for (let j = 0; j < filterBarInput[1].length; ++j) {
+            if(result[i][0]["chargerDetails"]["type"].includes(filterBarInput[1][j])) {
+              result2.push(result[i])
+              break 
+            }
+          }
+        }
+        console.log(result2)
+        this.Available_Markers.value = Object.values(result2)
+          .map(x => Object.assign({}, x[0]));
+        }
+    },
+
+    async createCollection() {
+      await setDoc(doc(db, "MapPage", "chargerLocations"), locationVar);
     },
     openMarkerInfoWindow(markerId) {
       this.markerToOpen = markerId
@@ -208,23 +399,19 @@ export default {
     }
   },
 }
-
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@400;700&display=swap');
-
 body {
   margin: 0;
 }
-
 .gm-style .gm-style-iw-d::-webkit-scrollbar-track,
 .gm-style .gm-style-iw-d::-webkit-scrollbar-track-piece,
 .gm-style .gm-style-iw-c,
 .gm-style .gm-style-iw-t::after {
   border-radius: 20px;
 }
-
 #stationName {
   text-align: center;
   font-family: 'Outfit', 'sans-serif';
@@ -233,11 +420,22 @@ body {
   color: #4285F4;
   text-decoration: underline;
 }
-
 .stationDetails {
   font-family: 'Outfit', 'sans-serif';
   font-size: 13px;
   text-align: center;
   font-weight: 400;
 }
+
+.filterbar {
+  margin: auto;
+  margin-top:35px; 
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 100;
+  font-size: 18px;
+  z-index: -1;
+  
+}
+
 </style>

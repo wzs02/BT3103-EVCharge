@@ -2,15 +2,15 @@
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
     <v-app>
       <v-container>
-          <NavBar/>
+          <NavBar />
       </v-container>
 
       <v-container class="bg-container-sign-up">
-          <v-img id="nav-logo-sign-up" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img>
+          <!-- <v-img id="nav-logo-sign-up" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img> -->
           <!-- <img v-bind:src="bg_img" id="bg-ratio"> -->
-          <img v-bind:src="bg_img2" id="bg-ratio-signup">
-
-        <v-card width="500" class="mx-auto mt-16 rounded-card" elevation='5' height="750" id="details">
+        <img v-bind:src="bg_img2" id="bg-ratio-signup">
+        <v-col id="first-col">
+        <v-card width="500" class="mx-auto mt-16 rounded-card" elevation='5' height="700" id="details">
           <v-container>
           <v-row>
               <v-col>
@@ -31,13 +31,11 @@
             <v-card-text id="field-header">Enter your email address</v-card-text>
             <!-- <v-text-field type="text" label="Your Email" v-model="email" prepend-icon=mdi-bell-outline clearable/> -->
             <v-text-field type="text" label="Your Email" v-model="email" clearable color='#0D47A1' id='email'/>
-            <!--  v$.email.$errors[0].$message -->
             <span v-if="v$.email.$error" id="email-error"> {{ "Please enter a valid email." }} </span>
-
 
             <v-card-text id="field-header">Your electic vehicle's license plate number</v-card-text>
             <v-text-field type="text" label="License plate number" v-model="vehno" clearable color='#0D47A1' id='vehno'/>
-            <span v-if="v$.password.password.$error" id="vehicle-number"> {{ "Please enter your vehicle number." }} </span>
+            <span v-if="v$.vehno.$error" id="vehicle-number"> {{ "Please enter your vehicle number." }} </span>
 
             <v-card-text id="field-header">Enter your password</v-card-text>
             <v-text-field type="password" label="Password" clearable v-model="password.password" color='#0D47A1' id='password'/>
@@ -45,50 +43,98 @@
 
             <v-card-text id="field-header">Re-enter your password</v-card-text>
             <v-text-field label="Confirm Password" clearable v-model="password.confirm" color='#0D47A1' type="password"/>
+            <span v-if="v$.password.confirm.$error" id='password-match'> {{ "Passwords do not match" }}</span>
+
+            <v-card-text id="field-header">Your contact number</v-card-text>
+            <v-text-field label="Contact Number" type="text" v-model="contact" clearable color='#0D47A1'/>
+            <span v-if="v$.contact.$error" id='contact-no'> {{ "Please enter your phone number." }}</span>
 
           </v-card-text>
 
-          <span v-if="v$.password.confirm.$error" id='password-match'> {{ "Passwords do not match" }}</span>
-
-          <v-col class="text-center">
-              <v-btn class="sign-up-btn-style" @click="
-              register(email, password.password); 
-              createUseronFirebase(email, vehno);">                  
-                <span>Sign Up</span>                 
-              </v-btn>
-          </v-col>
-          <v-col class="text-center pa-2 ma-0">
-              OR
-          </v-col>
-          <v-col class="text-center">
-              <v-btn class="sign-google-btn-style" @click="
-                signInWithGoogle(email, password)">                  
-                <span class="">Sign up with Google</span>                  
-              </v-btn>
-          </v-col>
         </v-card>
-      </v-container>
+      </v-col>
+<!-- 2nd COL HERE -->
+      <v-col id="second-col">
+        <v-card width="500" class="mx-auto mt-16 rounded-card" elevation='5' height="700" id="details">
+                <v-container>
+                    <v-row>
+                        <v-col>
+                            <div id="details1">Before we begin, tell us more about your Electric Vehicle!<br/></div>
+                            <div id="details2">This information would be used to help us give you a more personalised experience.</div>
+                        </v-col>
+                    </v-row>
+                </v-container>
+                <br>
+                <br>
+                
+                <v-card-text id="margin-tune1">
+                    <v-card-text id="field-header-details">Your electric vehicle's brand</v-card-text>
+                    <v-text-field type="text" label="Brand (eg. Tesla, MG)" v-model="brand" clearable color='#0D47A1'/>
+                    <span v-if="v$.brand.$error" id='brand'> {{ "Please enter your vehicle's brand." }}</span>
+
+                    <v-card-text id="field-header-details">Your electric vehicle's model</v-card-text>
+                    <v-text-field label="Model (eg. Model 3, ZS)" type="text" v-model="model" clearable color='#0D47A1'/>
+                    <span v-if="v$.model.$error" id='model'> {{ "Please enter your vehicle's model." }}</span>
+
+                    <v-card-text id="field-header-details">How should we address you?</v-card-text>
+                    <v-text-field label="Your username" type="text" v-model="username" clearable color='#0D47A1'/>
+                    <span v-if="v$.model.$error" id='username'> {{ "Please enter your name." }}</span>
+
+                </v-card-text>
+
+                <v-col class="text-center">
+                  <v-btn class="sign-up-btn-style" @click="
+                  register(email, password.password); 
+                  // createUseronFirebase(email, vehno, contact, brand, model, username);
+                  ">                  
+                    <span>Sign Up</span>                 
+                  </v-btn>
+                </v-col>
+                <v-col class="text-center">
+                  <div id="or-word-signup">OR</div>
+                </v-col>
+              <v-col class="text-center">
+                  <v-btn class="sign-google-btn-style" @click="
+                    signInWithGoogle();
+                    // createUseronFirebase(email, vehno, contact, brand, model, username);
+                    ">                  
+                    <span class="">Sign up with Google</span>                  
+                  </v-btn>
+                </v-col>
+                
+            </v-card>
+      </v-col>
+
+    </v-container>
   </v-app>
-  <Child :email = "emailpass"/>
 </template>
 
 <script>
-import Child from '@/views/UserDetails.vue'
 import { doc, setDoc, getFirestore } from "firebase/firestore"
 import app from "../firebase.js"
 import useValidate from '@vuelidate/core'
 import { minLength, required, sameAs, email } from '@vuelidate/validators'
-import NavBar from "../components/NavBar.vue"
+import NavBar from "@/components/NavBar.vue";
 import { ref } from "vue";
 import { getAuth, 
     createUserWithEmailAndPassword, 
     GoogleAuthProvider, 
-    signInWithPopup 
+    signInWithPopup,
+    onAuthStateChanged
 } from "firebase/auth"
 const errMsg = ref() //ERROR message
 const db = getFirestore(app);
 
 export default {
+  created() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.user = user
+        this.uid = user.uid;
+      }
+    })
+  },
     data() {
         return {
             bg_img: require('../assets/SignInPage/GirlCharging.png'),
@@ -96,33 +142,58 @@ export default {
             v$: useValidate(),
             email: "",
             vehno: "",
+            contact: "",
+            brand: "",
+            model: "",
+            username: "",
             password: {
               password: "",
               confirm: "",
             },
             errMsg: "",
-            emailpass : "Data from Parent to Child"
+            uid: "",
+            user: "",
         }
     },
     methods: {
-        async createUseronFirebase(email, vehno) {
-          console.log(email)
-          console.log(vehno)
-          await setDoc(doc(db, "USERS", email), {
-            user_email : vehno
+        async createUseronFirebase(email, vehno, contact, brand, model, username) {
+          console.log("ADADFAODIFADUBFAIUDFAIUDNHEEE")
+          console.log(this.uid)
+          this.uid = this.user.uid
+          this.email = this.user.email
+          this.v$.$validate()
+            if (!this.v$.$error) {
+            await setDoc(doc(db, "USERS", this.uid), {
+            user_email : email,
+            user_vehno : vehno,
+            user_contact : contact,
+            user_brand : brand,
+            user_model : model,
+            user_name : username,
+            user_uid : this.uid
           })
+        }
         },
         register(email, password) {
             this.v$.$validate()
             if (!this.v$.$error) {
+            setDoc(doc(db, "USERS", this.uid), {
+            user_email : email,
+            user_vehno : this.vehno,
+            user_contact : this.contact,
+            user_brand : this.brand,
+            user_model : this.model,
+            user_name : this.username,
+            user_uid : this.uid
+          })
               const auth = getAuth();
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCurrent) => {
                     alert("Sign Up Successful")
                     const user = userCurrent.user;
                     console.log(user)
-                    console.log(auth.currentUser), 
-                    this.$router.push('/userdetails')})
+                    console.log(auth.currentUser),
+                    this.$router.push('/map')})
                 .catch((error) => {
                     console.log(error.code);
                     switch (error.code) {
@@ -139,53 +210,141 @@ export default {
                             errMsg.value = "Email or password is incorrect";
                             break;
                     }
-                    alert(errMsg.value);
+                    
+                  alert(errMsg.value);
             });
+            
             }
             
         },
         signInWithGoogle() {
             const provider = new GoogleAuthProvider();
-            signInWithPopup(getAuth(), provider)
-                .then((result) => {
-                    const credential = GoogleAuthProvider.credentialFromResult(result);
-                    const token = credential.accessToken;
-                    console.log(token)
-                    // The signed-in user info.
-                    const user = result.user;
-                    console.log(user)
-                    this.$router.push('/userdetails');
-                })
-                .catch((error) => {
-                    console.log(error.message)
-                    switch (error.code) {
-                        case "auth/account-exists-with-different-credential":
-                            errMsg.value = "This email has been binded to an account.";
-                            break;
-                        case "auth/popup-blocked":
-                            errMsg.value = "Please enable your browser pop up.";
-                            break;
-                    }
-                    alert(errMsg.value);
-                })
+            // this.email = "Not_Requried@gmail.com"
+            this.password.password = "Not Required"
+            this.password.confirm = "Not Required"
+            this.v$.$validate()
+            if (!this.v$.$error) {
+              signInWithPopup(getAuth(), provider)
+                  .then((result) => {
+                      // The signed-in user info
+                      const user = result.user;
+                      this.user = user
+                      this.email = user.email
+                      this.uid = user.uid
+                      console.log(this.email)
+                      console.log(this.uid)
+                      console.log(this.vehno)
+                      console.log(this.contact)
+                      console.log(this.brand)
+                      console.log(this.model)
+                      console.log(this.username)
+
+                      setDoc(doc(db, "USERS", this.uid), {
+                      user_email : this.email,
+                      user_vehno : this.vehno,
+                      user_contact : this.contact,
+                      user_brand : this.brand,
+                      user_model : this.model,
+                      user_name : this.username,
+                      user_uid : this.uid
+                      })
+                      this.$router.push('/map')
+                  })
+                  // .then( function() {
+                  //   this.createUseronFirebase(this.email, this.vehno, this.contact, this.brand, this.model);
+                  // })
+                  .catch((error) => {
+                      console.log(error.message)
+                      switch (error.code) {
+                          case "auth/account-exists-with-different-credential":
+                              errMsg.value = "This email has been binded to an account.";
+                              break;
+                          case "auth/popup-blocked":
+                              errMsg.value = "Please enable your browser pop up.";
+                              break;
+                      }
+                      alert(errMsg.value);
+                  })
+              }
+              else{
+                signInWithPopup(getAuth(), provider)
+                    .then((result) => {
+                        // The signed-in user info
+                        const user = result.user;
+                        this.user = user
+                        this.email = user.email
+                        // this.uid = user.uid
+                        })
+                this.email = this.user.email
+                alert("Please address the Google Pop up before filling up necessary fields.")
+                }
         }
     },
     validations() {
       return {
         email: { required, email },
         vehno: { required },
+        contact: { required },
+        brand: { required },
+        model: { required }, 
+        username: { required },
         password: {
         password: { required, minLength: minLength(6) },
         confirm: { required, sameAs: sameAs(this.password.password) },
       },
       }
     },
-    components: { NavBar, Child }
+    components: { NavBar }
 }
 </script>
 
 
 <style>
+
+#margin-tune1 {
+    margin: 0;
+    padding-top: 120px;
+    padding-bottom: 0px;
+}
+
+#field-header-details {
+    line-height: 0px;
+}
+
+#details1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 35px;
+  position: absolute;
+  line-height: 40px;
+  top: 0px;
+  text-align: center;
+  font-weight: 900;
+  color: black;
+  margin-top:30px
+}
+
+#details2 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: bolder;
+  font-size: 17px;
+  position: absolute;
+  line-height: 20px;
+  top: 100px;
+  text-align: center;
+  font-weight: 300;
+  color: rgb(12, 120, 214);
+  margin-top:30px
+}
+
+#first-col {
+  position: absolute;
+  right: 350px
+}
+
+#second-col {
+  /* position: absolute; */
+  margin-left: 350px;
+}
 
 #no-account{
     margin: 0;
@@ -262,9 +421,18 @@ export default {
   border-radius: 5px;
   text-transform: none;
   width: 70%;
-  margin-top:-50px;
-  margin-bottom:-50px;
+  margin-top: 0px;
+  margin-bottom:0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
   text-decoration: none;
+}
+
+#or-word-signup {
+    font-weight: lighter;
+    font-size: 15px;
+    margin-top: 0px;
+    margin-bottom:0px;
 }
 
 .sign-google-btn-style{
@@ -275,8 +443,8 @@ export default {
   font-weight: 900;
   border-radius: 5px;
   width: 50%;
-  margin-top:-50px;
-  margin-bottom:-50px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 .rounded-card{
     border-radius:30px;
@@ -323,7 +491,7 @@ export default {
   color: red;
   position: absolute;
   line-height: 0px;
-  top: 220px;
+  top: 200px;
   left: 30px;
 }
 
@@ -332,7 +500,7 @@ export default {
   color: red;
   position: absolute;
   line-height: 0px;
-  top: 330px;
+  top: 310px;
   left: 30px;
 }
 
@@ -341,7 +509,7 @@ export default {
   color: red;
   position: absolute;
   line-height: 0px;
-  top: 440px;
+  top: 420px;
   left: 30px;
 }
 
@@ -350,9 +518,44 @@ export default {
   color: red;
   position: absolute;
   line-height: 0px;
-  top: 550px;
+  top: 530px;
   left: 30px;
 }
 
+#contact-no{
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  line-height: 0px;
+  top: 640px;
+  left: 30px;
+}
+
+#brand{
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  line-height: 0px;
+  top: 300px;
+  left: 30px;
+}
+
+#model{
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  line-height: 0px;
+  top: 410px;
+  left: 30px;
+}
+
+#username{
+  font-size: 12px;
+  color: red;
+  position: absolute;
+  line-height: 0px;
+  top: 520px;
+  left: 30px;
+}
     
 </style>

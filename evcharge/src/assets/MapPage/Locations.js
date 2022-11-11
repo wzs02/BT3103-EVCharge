@@ -3,6 +3,7 @@ var locationVar = {
   tanah_merah_ft: [
     {
       id: "SP Group: Tanah Merah Ferry Terminal",
+      region: "Tanah Merah",
       position: {
         lat: 1.3147629499435425,
         lng: 103.98895263671875,
@@ -25,6 +26,7 @@ var locationVar = {
   sp_group_jewel: [
     {
       id: "SP Group: Jewel Changi Airport",
+      region: "Changi",
       position: {
         lat: 1.3588186502456665,
         lng: 103.98931121826172,
@@ -47,6 +49,7 @@ var locationVar = {
   blue_sg_simei_s1: [
     {
       id: "Blue SG Simei Street 1",
+      region: "Simei",
       position: {
         lat: 1.3469521,
         lng: 103.9561507,
@@ -69,6 +72,7 @@ var locationVar = {
   hedges_solacharge: [
     {
       id: "Hedges Park Solacharge",
+      region: "Tampines",
       position: {
         lat: 1.353751301765442,
         lng: 103.9672622680664,
@@ -91,6 +95,7 @@ var locationVar = {
   tamp_plaza: [
     {
       id: "Tampines Plaza",
+      region: "Tampines",
       position: {
         lat: 1.3527475595474243,
         lng: 103.9432144165039,
@@ -113,6 +118,7 @@ var locationVar = {
   bedok_south: [
     {
       id: "Blue SG Bedok South",
+      region: "Bedok",
       position: {
         lat: 1.3200629949569702,
         lng: 103.94429779052734,
@@ -135,6 +141,7 @@ var locationVar = {
   ikea_tampines: [
     {
       id: "IKEA Tampines",
+      region:"Tampines",
       position: {
         lat: 1.3740664,
         lng: 103.9323985,
@@ -157,6 +164,7 @@ var locationVar = {
   i12_katong: [
     {
       id: "SP Group: i12 Katong",
+      region:"Katong",
       position: {
         lat: 1.3132948,
         lng: 103.8996129,
@@ -179,6 +187,7 @@ var locationVar = {
   ent_biz_center: [
     {
       id: "SP Group: Entrepreneur Business Centre",
+      region: "Kaki Bukit",
       position: {
         lat: 1.337632417678833,
         lng: 103.90296173095703,
@@ -201,7 +210,8 @@ var locationVar = {
   shell_pl: [
     {
       id: "Shell Paya Lebar",
-      postion: {
+      region: "Paya Lebar",
+      position: {
         lat: 1.3215305805206299,
         lng: 103.89131927490234,
         //price: $0.55/kWh
@@ -211,7 +221,7 @@ var locationVar = {
       postalCode: "Singapore 409008",
       imgName: "Map_409008",
       chargerDetails: {
-        type: ["Type 2, CCS/SAE"],
+        type: ["Type 2", "CCS/SAE"],
         system: "CCS",
         provider: "Shell",
         hours: "Open 24/7",
@@ -224,6 +234,7 @@ var locationVar = {
   amk_charge_plus: [
     {
       id: "Charge+ 260 Ang Mo Kio Street 21",
+      region: "Ang Mo Kio",
       position: {
         lat: 1.3689746856689453,
         lng: 103.83489990234375,
@@ -246,6 +257,7 @@ var locationVar = {
   juice_plus_bishan: [
     {
       id: "Juice+: Wedge Mount Industrial Building",
+      region: "Bishan",
       position: {
         lat: 1.34938645362854,
         lng: 103.84042358398438,
@@ -268,6 +280,7 @@ var locationVar = {
   shell_thomson: [
     {
       id: "Shell Thomson",
+      region: "Thomson",
       position: {
         lat: 1.3240904808044434,
         lng: 103.84191131591797,
@@ -290,6 +303,7 @@ var locationVar = {
   lhn_energy_btsc: [
     {
       id: "LHN Energy BTSC",
+      region:"Bukit Timah",
       position: {
         lat: 1.3433425,
         lng: 103.7757827,
@@ -312,6 +326,7 @@ var locationVar = {
   cdg_energie_clementi_ave4: [
     {
       id: "CDG Energie Clementi Ave 4",
+      region: "Clementi",
       position: {
         lat: 1.3193493,
         lng: 103.7651467,
@@ -334,6 +349,7 @@ var locationVar = {
   ura_centre_east_wing: [
     {
       id: "URA Centre (East Wing)",
+      region: "China Town",
       position: {
         lat: 1.2824753522872925,
         lng: 103.8479995727539,
@@ -356,6 +372,7 @@ var locationVar = {
   the_concourse: [
     {
       id: "The Concourse",
+      region: "Nicoll Highway",
       position: {
         lat: 1.3014713525772095,
         lng: 103.86231994628906,
@@ -378,6 +395,7 @@ var locationVar = {
   charge_plus_fernvale: [
     {
       id: "Charge+: Blk 400 (MSCP) Fernvale Link",
+      region: "Fernvale",
       position: {
         lat: 1.3928936,
         lng: 103.8783191,
@@ -400,6 +418,7 @@ var locationVar = {
   blue_sg_hougang: [
     {
       id: "Blue SG Blk 966A Hougang Ave 9",
+      region:"Hougang",
       position: {
         lat: 1.3750444650650024,
         lng: 103.8777847290039,
@@ -422,6 +441,7 @@ var locationVar = {
   shell_serangoon_garden: [
     {
       id: "Shell Serangoon Gardens",
+      region: "Serangoon",
       position: {
         lat: 1.3623438,
         lng: 103.8733687,
@@ -444,6 +464,7 @@ var locationVar = {
   boathouse_residence_solacharge: [
     {
       id: "Boathouse Residence Solacharge",
+      region:"Serangoon",
       position: {
         lat: 1.3749250173568726,
         lng: 103.90314483642578,
@@ -466,6 +487,7 @@ var locationVar = {
   shell_punggol: [
     {
       id: "Shell Punggol",
+      region:"Punggol",
       position: {
         lat: 1.4045712,
         lng: 103.9066554,
@@ -488,6 +510,7 @@ var locationVar = {
   westpark_biz_central: [
     {
       id: "West Park BizCentral",
+      region:"Pioneer",
       position: {
         lat: 1.3129089,
         lng: 103.6606577,
@@ -510,6 +533,7 @@ var locationVar = {
   bluecharge_lot1: [
     {
       id: "Bluecharge: Lot 1 Mall",
+      region: "Choa Chu Kang",
       position: {
         lat: 1.3797335,
         lng: 103.7375352,
@@ -532,6 +556,7 @@ var locationVar = {
   cdg_engie_bukit_batok: [
     {
       id: "CDG Engie Blk 451 Bukit Batok West Ave 6",
+      region: "Bukit Batok",
       position: {
         lat: 1.353394,
         lng: 103.7427833,
@@ -554,6 +579,7 @@ var locationVar = {
   jurong_point: [
     {
       id: "Jurong Point",
+      region:"Jurong",
       position: {
         lat: 1.3394964,
         lng: 103.705254,
@@ -576,9 +602,10 @@ var locationVar = {
   shell_dunearn_uni: [
     {
       id: "Shell Dunearn University",
+      region:"Woodlands",
       position: {
-        lat: 1.3233424,
-        lng: 103.8180094,
+        lat: 1.44861,
+        lng: 103.80914,
         // price not stated
         // 1 lot J-1772
       },
@@ -598,6 +625,7 @@ var locationVar = {
   sg_zoo: [
     {
       id: "Singapore Zoo",
+      region: "Mandai",
       position: {
         lat: 1.4037076,
         lng: 103.7940374,
@@ -620,7 +648,8 @@ var locationVar = {
   ascent_building_sp_group: [
     {
       id: "Ascent Building SP Group",
-      postion: {
+      region: "Kent Ridge",
+      position: {
         lat: 1.2920537,
         lng: 103.7842374,
         // $0.4153/kWh
@@ -642,6 +671,7 @@ var locationVar = {
   one_at_redhill_centre: [
     {
       id: "One@Redhill Centre",
+      region: "Bukit Merah",
       position: {
         lat: 1.2849739,
         lng: 103.8085048,

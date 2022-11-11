@@ -11,7 +11,7 @@
 
                 <v-col cols="4" class="menu-options">
                     <button @click="$router.push('/')" class="menu-op">About</button>
-                    <button @click="$router.push('/Book')" class="menu-op">Book</button>
+                    <button @click="$router.push('/map')" class="menu-op">Book</button>
                     <button @click="$router.push('/TesterFile')" class="menu-op">Plan</button>
                     <v-icon style="font-size: 23px;">
                         mdi-bell-outline
@@ -21,11 +21,11 @@
                         <v-menu>
                             <template v-slot:activator="{ props }">
                                 <v-btn id="profile-btn" v-bind="props">
-                                    <v-avatar size="20">
+                                    <!-- <v-avatar size="20">
                                         <v-img src='../assets/AboutPage/About_Ellipse.png'>
                                         </v-img>
-                                    </v-avatar>
-                                    <span id="userName">&emsp;John Doe</span>
+                                    </v-avatar> -->
+                                    <span id="userName">&emsp;{{ username }}</span>
                                     <v-icon id="menu-down-icon">
                                         mdi-menu-down
                                     </v-icon>
@@ -33,8 +33,7 @@
                             </template>
 
                             <v-list>
-                                <v-list-item v-for="(item, index) in items" :key="index"
-                                    @click="$router.push(item.route)">
+                                <v-list-item v-for="(item, index) in items" :key="index" @click="handleDropdownClick(item)">
                                     <v-list-item-title class="dropdownItem">
                                         {{ item.title }}
                                     </v-list-item-title>
@@ -50,29 +49,35 @@
 </template>
   
 <script>
-import { onMounted, ref } from "vue";
 import { signOut, getAuth, onAuthStateChanged } from '@firebase/auth';
 import { mdiBellOutline } from '@mdi/js';
 import { mdiMenuDown } from '@mdi/js';
+import firebaseApp from '../firebase.js';
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 
-let isLoggedIn = ref(false);
-
-let auth;
-onMounted(() => {
-    auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            isLoggedIn.value = true;
-        } else {
-            isLoggedIn.value = false;
-        }
-    });
-});
 
 export default {
-    name: 'NavBarLogin',
+    created() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("ADOAIDFAJODIFADOIFAJDI")
+        console.log(this.username)
+        this.isLoggedIn = true;
+        this.uid = user.uid;
+        this.getUsername(user.uid)
+        console.log("ADOAIDFAJODIFADOIFAJDI")
+        console.log(user.uid)
+      } else{
+        this.isLoggedIn = false;
+      }
+    })
+    },
     data() {
         return {
+            isLoggedIn: false,
+            uid: false,
+            username: "",
             mdiBellOutline,
             mdiMenuDown,
             items: [
@@ -94,21 +99,38 @@ export default {
                 {
                     title: "Log out",
                     value: 4,
-                    route: { name: 'TesterFile' } // to edit
                 }
             ]
         }
     },
     methods: {
-        signOutPress() {
-            signOut(auth).then(() => {
-                isLoggedIn.value = false;
-                this.$router.push("/")
-            })
+        handleDropdownClick(item) {
+            if (item.title != "Log out") {
+                this.$router.push(item.route)
+            } else {
+                const auth = getAuth();
+                signOut(auth).then(() => {
+                    this.isLoggedIn= false;
+                    this.$router.push("/")
+                })
+            }
+        },
+        async getUsername(uid) {
+        // const auth = getAuth()
+        const db = getFirestore(firebaseApp);
+        const userRef = collection(db, "USERS")
+        let z = await getDocs(query(userRef, where('user_uid', "==", uid)))
+        z.forEach((docs) => {
+            let data = docs.data();
+            this.username = data.user_name
+            console.log(data.user_uid)
         }
+        )
+    }
     }
 }
 </script>
+
   
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300&display=swap');
