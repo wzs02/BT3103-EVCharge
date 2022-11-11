@@ -61,7 +61,7 @@ import MapPageOffcanvas from "@/components/MapPageOffcanvas.vue"
 import firebaseApp from "../firebase.js"
 import { getFirestore, getDoc, setDoc, doc } from "firebase/firestore"
 import { ref } from 'vue'
-
+ 
 const db = getFirestore(firebaseApp)
 
 export default {
