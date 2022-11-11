@@ -71,6 +71,7 @@ import { getFirestore, getDoc, setDoc, doc } from "firebase/firestore"
 import { ref } from 'vue'
 import FilterBar from "@/components/FilterBar.vue";
 
+
 const db = getFirestore(firebaseApp)
 export default {
   name: "MapPage",
