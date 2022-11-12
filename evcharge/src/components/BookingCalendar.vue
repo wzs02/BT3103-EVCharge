@@ -1,12 +1,13 @@
 <template>
   <div>
-  </div>
-  <v-date-picker
+    <v-date-picker
     ref = "calendar"
+    v-model="attributes"
     is-expanded
     :attributes="attributes"
     :min-date="new Date()"
-     />
+    />
+  </div>
   
 </template>
 
@@ -21,43 +22,17 @@ export default {
   name: 'BookingCalendar',
   components: { },
   props: {
-    monthlyAvailabilities: Array,
+    monthlyInfo: {
+      type: Array,
+      default() {
+        return []
+      },
+    },
   },
   data () {
     return {
-      bookings: [
-        {
-          id: 1,
-          date: new Date(),
-          isAvailable: true,
-        },
-        {
-          id: 2,
-          date: new Date(2022, 10, 11),
-          isAvailable: false,
-        },
-      ],
-      // attr: [
-      //   {
-      //     key: 'available',
-      //     highlight: {
-      //       color: 'green',
-      //       fillMode: 'solid',
-      //     },
-      //     dates: [
-      //       { start: new Date(2022, 10, 11), end: new Date(2022, 10, 15) },
-      //       { start: new Date(2022, 10, 29), end: new Date(2022, 10, 30) },
-      //     ],
-      //   },
-      //   {
-      //     key: 'unavailable',
-      //     highlight: {
-      //       color: 'red',
-      //       fillMode: 'solid',
-      //     },
-      //     dates: [],
-      //   },
-      // ],
+      date: new Date(),
+      bookings: [],
     }
   },
   computed: {
@@ -102,11 +77,31 @@ export default {
         console.log(bookingValues)
         this.attr.unavailable.dates = [{ start: new Date(2022,10,1), end: new Date(2022,10,2) }]
       }
-    }
+    },
+    displayMonthInfo(arr) {
+      const daysRemaining = arr.length
+      const now = new Date()
+      var currDate = now.getDate()
+      const currMonth = now.getMonth()
+      const currYear = now.getFullYear()
+
+      for(var days = 0; days < daysRemaining; days++) {
+        var availability = arr[days]
+        if(availability) {
+          this.bookings.push({ date: new Date(currYear, currMonth, currDate), isAvailable: true })
+        } else {
+          this.bookings.push({ date: new Date(currYear, currMonth, currDate), isAvailable: false })
+        }
+        currDate = currDate + 1
+      }
+    },
   },
   created() {
-    this.getBookings();
+    this.displayMonthInfo(this.monthlyInfo)
   },
+  mounted() {
+  },
+
 };
 </script>
 
