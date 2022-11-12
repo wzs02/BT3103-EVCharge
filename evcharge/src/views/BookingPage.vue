@@ -12,19 +12,19 @@
         </v-col>
         <v-col>  
           <div class="legendindiv" v-if="this.chargerTypes.includes('CCS/SAE')">
-            <span class="dot" style="background-color: #AA8B56"></span>
+            <span class="dot" style="background-color: #0096c7"></span>
             <p class="legendtext">CCS/SAE</p>
           </div>
           <div class="legendindiv" v-if="this.chargerTypes.includes('Commando')">
-            <span class="dot" style="background-color: #4E6C50"></span>
+            <span class="dot" style="background-color: #0077b6"></span>
             <p class="legendtext">Commando</p>
           </div>
           <div class="legendindiv" v-if="this.chargerTypes.includes('J-1772')">
-            <span class="dot" style="background-color: #9F8772"></span>
+            <span class="dot" style="background-color: #023e8a"></span>
             <p class="legendtext">J-1772</p>
           </div>
           <div class="legendindiv" v-if="this.chargerTypes.includes('Type 2')">
-            <span class="dot" style="background-color: #395144"></span>
+            <span class="dot" style="background-color: #03045e"></span>
             <p class="legendtext">Type 2</p>
           </div>
         </v-col>
@@ -41,15 +41,15 @@
           <BookingCalendar v-else />
           <div class="legend">
             <div class="legendindiv">
-              <span class="dot" style="background-color: #D9ED92"></span>
+              <span class="dot" style="background-color: #46946e"></span>
               <p class="legendtext">Available</p>
             </div>
             <div class="legendindiv">
-              <span class="dot" style="background-color: #FF7575"></span>
+              <span class="dot" style="background-color: #d74749"></span>
               <p class="legendtext">Unavailable</p>
             </div>
             <div class="legendindiv">
-              <span class="dot" style="background-color: #B1DCFF"></span>
+              <span class="dot" style="background-color: #367ab8"></span>
               <p class="legendtext">Selected</p>
             </div>
           </div>
@@ -123,7 +123,7 @@ export default {
       selected_station_charger_type: "", // TO LINK UP 
       selected_station_address: "",
       selected_charger_display_num: "",
-      chargerTypeColourMap: {"Type 2": "#395144", "CCS/SAE": "#AA8B56", "Commando": "#4E6C50", "J-1772": "#9F8772"}
+      chargerTypeColourMap: {"Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a"}
     } 
   },
   methods: {
