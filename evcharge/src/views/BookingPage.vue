@@ -4,16 +4,34 @@
     <v-container>
 
       <v-row class="header">
-        <h1>Book a Charger</h1>
+        <h1>Book a Charger: <span style="color: #4285f4">{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</span></h1>
       </v-row>
-
       <v-row class="availablechargers" style="height: 10%">
-        <h3>{{ numChargerAvailable }} chargers available:</h3>
+        <v-col cols=2>
+          <h3>{{ this.numChargerAvailable }} Chargers Available:</h3>
+        </v-col>
+        <v-col>  
+          <div class="legendindiv" v-if="this.chargerTypes.includes('CCS/SAE')">
+            <span class="dot" style="background-color: #AA8B56"></span>
+            <p class="legendtext">CCS/SAE</p>
+          </div>
+          <div class="legendindiv" v-if="this.chargerTypes.includes('Commando')">
+            <span class="dot" style="background-color: #4E6C50"></span>
+            <p class="legendtext">Commando</p>
+          </div>
+          <div class="legendindiv" v-if="this.chargerTypes.includes('J-1772')">
+            <span class="dot" style="background-color: #9F8772"></span>
+            <p class="legendtext">J-1772</p>
+          </div>
+          <div class="legendindiv" v-if="this.chargerTypes.includes('Type 2')">
+            <span class="dot" style="background-color: #395144"></span>
+            <p class="legendtext">Type 2</p>
+          </div>
+        </v-col>
       </v-row>
-
       <v-row style="height: 20%">
-        <div v-for="charger in chargersMatching" :key="charger.id">
-          <v-btn class="btncharger" rounded elevation="3" @click="getMonthInfo(charger.id)">EVC{{ charger.id }}</v-btn>
+        <div v-for="charger in chargerList" :key="charger.id">
+          <v-btn class="btncharger" rounded elevation="3" @click="displayMonth(charger.id, charger.display_num)" :color="charger.display_col">{{ charger.display_num }}</v-btn>
         </div>
       </v-row>
 
@@ -23,15 +41,15 @@
           <BookingCalendar v-else />
           <div class="legend">
             <div class="legendindiv">
-              <span class="dot1"></span>
+              <span class="dot" style="background-color: #D9ED92"></span>
               <p class="legendtext">Available</p>
             </div>
             <div class="legendindiv">
-              <span class="dot3"></span>
+              <span class="dot" style="background-color: #FF7575"></span>
               <p class="legendtext">Unavailable</p>
             </div>
             <div class="legendindiv">
-              <span class="dot4"></span>
+              <span class="dot" style="background-color: #B1DCFF"></span>
               <p class="legendtext">Selected</p>
             </div>
           </div>
@@ -41,7 +59,7 @@
           <div class="dayview">
             <v-card height="600px" color="#F5F5F5">
               <BookingCalendarDay />
-              <v-card-text>You are booking for <b>{{ this.selected_station_name }}</b></v-card-text>
+              <v-card-text>You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b></v-card-text>
               <v-btn class="btn" rounded elevation="3" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
           </div>
@@ -93,15 +111,19 @@ export default {
       //chargerFromMap: this.$router.params.charger,
       chargerFromMap: ["Jalan Kayu", "DC50"],
       numChargerAvailable: 0,
+      chargerTypes: [],
+      chargerList: [],
       chargersMatching: [],
       monthlyAvailability: [],
       uid: false,
       isBookingDisabled: true,
       selected_station_id: "",
-      selected_station_name: "", 
+      selected_station_name: "No charging station selected", 
       selected_station_provider: "",
-      selected_station_charger_type: "",
+      selected_station_charger_type: "", // TO LINK UP 
       selected_station_address: "",
+      selected_charger_display_num: "",
+      chargerTypeColourMap: {"Type 2": "#395144", "CCS/SAE": "#AA8B56", "Commando": "#4E6C50", "J-1772": "#9F8772"}
     } 
   },
   methods: {
@@ -110,11 +132,34 @@ export default {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const station_data = docSnap.data()[station_id][0];
+        // Store station info
         this.selected_station_id = station_id;
         this.selected_station_name = station_data.id;
         this.selected_station_provider = station_data.chargerDetails["provider"];
-        this.selected_station_charger_type = station_data.chargerDetails["type"][0]; // assume that each station only offers 1 charging type
         this.selected_station_address = {"street": station_data.street, "postalCode": station_data.postalCode};
+        // Store charger number and type info
+        const num_lots_list = station_data.chargerDetails["lots"];
+        const charger_type_list = station_data.chargerDetails["type"];
+        this.chargerTypes = charger_type_list;
+        const type_num_lots_mapping = {};
+        const num_charger_types = Object.keys(charger_type_list).length
+        for (let i=0; i < num_charger_types; i++) {
+          type_num_lots_mapping[charger_type_list[i]] = parseInt(num_lots_list[i]);
+        }
+        const total_num_chargers = Object.values(type_num_lots_mapping).reduce((a, b) => a + b, 0);
+        this.numChargerAvailable = total_num_chargers;
+        // Create list of chargers for the selected charging station
+        const chargers_list = [];
+        let charger_num_counter = 1;
+        for (const [type, num] of Object.entries(type_num_lots_mapping).sort()) { // sort output to maintain fixed order
+          for (let i=0; i < num; i++) {
+            let charger_info = {id: station_id.concat("_", charger_num_counter.toString()), type: type,
+              display_num: charger_num_counter.toString(), display_col: this.chargerTypeColourMap[type]}
+            chargers_list.push(charger_info);
+            charger_num_counter++;
+          }
+        }
+        this.chargerList = chargers_list;
       }
     },
     async matchingChargers(chargerFromMap) {
@@ -127,10 +172,12 @@ export default {
       querySnapshot.forEach((doc) => {
         this.chargersMatching.push({ id: doc.data()["id"], location: doc.data()["location"], type: doc.data()["type"] })
       })
-      this.numChargerAvailable = this.chargersMatching.length
+      //this.numChargerAvailable = this.chargersMatching.length
     },
-    async getMonthInfo(id) {
+    async displayMonth(id, display_num) {
       var availabilityFromID = []
+      this.selected_charger_display_num = "-" + display_num.toString();
+
       const chargerID = "evc".concat(String(id))
       const bookingsRef = doc(db, "testBookings", chargerID)
       const bookingSnapshot = await getDoc(bookingsRef)
@@ -245,7 +292,6 @@ export default {
   width: 200px;
   margin-right: 50px;
   margin-bottom: 20px;
-  background-color: black;
   color: #FFFFFF;
   font-family: 'Outfit';
   font-weight: bold;
@@ -253,38 +299,7 @@ export default {
   border-radius: 15px;
 }
 
-.dot1 {
-  background-color: #46946e;
-  margin-right: 10px;
-  height: 25px;
-  width: 25px;
-  border-radius: 50%;
-  display: inline-block;
-  float: left;
-}
-
-.dot2 {
-  background-color: #FFE28C;
-  margin-right: 10px;
-  height: 25px;
-  width: 25px;
-  border-radius: 50%;
-  display: inline-block;
-  float: left;
-}
-
-.dot3 {
-  background-color: #d74749;
-  margin-right: 10px;
-  height: 25px;
-  width: 25px;
-  border-radius: 50%;
-  display: inline-block;
-  float: left;
-}
-
-.dot4 {
-  background-color: #367ab8;
+.dot {
   margin-right: 10px;
   height: 25px;
   width: 25px;
