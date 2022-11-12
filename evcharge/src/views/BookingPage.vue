@@ -4,13 +4,11 @@
     <v-container>
 
       <v-row class="header">
-        <h1>Book a Charger</h1>
+        <h1>Book a Charger: <span style="color: #4285f4">{{ this.selected_station_name }}</span></h1>
       </v-row>
-
       <v-row class="availablechargers" style="height: 10%">
-        <h3>{{ numChargerAvailable }} chargers available:</h3>
+        <h3>{{ this.numChargerAvailable }} Chargers Available:</h3>
       </v-row>
-
       <v-row style="height: 20%">
         <div v-for="charger in chargersMatching" :key="charger.id">
           <v-btn class="btncharger" rounded elevation="3" @click="displayMonth(charger.id)">EVC{{ charger.id }}</v-btn>
@@ -95,7 +93,7 @@ export default {
       selected_station_id: "",
       selected_station_name: "", 
       selected_station_provider: "",
-      selected_station_charger_type: "",
+      selected_station_charger_type: "", // TO LINK UP 
       selected_station_address: "",
     } 
   },
@@ -108,8 +106,14 @@ export default {
         this.selected_station_id = station_id;
         this.selected_station_name = station_data.id;
         this.selected_station_provider = station_data.chargerDetails["provider"];
-        this.selected_station_charger_type = station_data.chargerDetails["type"][0]; // assume that each station only offers 1 charging type
         this.selected_station_address = {"street": station_data.street, "postalCode": station_data.postalCode};
+        const num_lots_list = station_data.chargerDetails["lots"];
+        const charger_type_list = station_data.chargerDetails["type"];
+        const type_num_lots_mapping = {};
+        for (let i=0; i < Object.keys(charger_type_list).length; i++) {
+          type_num_lots_mapping[charger_type_list[i]] = parseInt(num_lots_list[i]);
+        }
+        this.numChargerAvailable = Object.values(type_num_lots_mapping).reduce((a, b) => a + b, 0);
       }
     },
     async matchingChargers(chargerFromMap) {
@@ -122,7 +126,7 @@ export default {
       querySnapshot.forEach((doc) => {
         this.chargersMatching.push({ id: doc.data()["id"], location: doc.data()["location"], type: doc.data()["type"] })
       })
-      this.numChargerAvailable = this.chargersMatching.length
+      //this.numChargerAvailable = this.chargersMatching.length
     },
     async displayMonth(id) {
       // Display monthly calendar of selected EV charger
