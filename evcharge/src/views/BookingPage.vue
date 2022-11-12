@@ -13,13 +13,14 @@
 
       <v-row style="height: 20%">
         <div v-for="charger in chargersMatching" :key="charger.id">
-          <v-btn class="btncharger" rounded elevation="3" @click="displayMonth(charger.id)">EVC{{ charger.id }}</v-btn>
+          <v-btn class="btncharger" rounded elevation="3" @click="getMonthInfo(charger.id)">EVC{{ charger.id }}</v-btn>
         </div>
       </v-row>
 
       <v-row style="height: 60%">
         <v-col cols=6>
-          <BookingCalendar :monthlyAvailabilites="this.monthlyAvailability" />
+          <BookingCalendar v-if="monthlyAvailability.length > 0" :monthlyInfo="this.monthlyAvailability" />
+          <BookingCalendar v-else />
           <div class="legend">
             <div class="legendindiv">
               <span class="dot1"></span>
@@ -128,7 +129,8 @@ export default {
       })
       this.numChargerAvailable = this.chargersMatching.length
     },
-    async displayMonth(id) {
+    async getMonthInfo(id) {
+      var availabilityFromID = []
       const chargerID = "evc".concat(String(id))
       const bookingsRef = doc(db, "testBookings", chargerID)
       const bookingSnapshot = await getDoc(bookingsRef)
@@ -153,7 +155,7 @@ export default {
         }
         if (numBooked == 0) {
           // No booked timings -> Available
-          this.monthlyAvailability.push(true)
+          availabilityFromID.push(true)
         } else {
           for(var timeslot = 0; timeslot < numBooked; timeslot++) {
             // console.log(arrOfTimings[timeslot]) // Timestamp
@@ -171,22 +173,24 @@ export default {
               // Continue iterating through remaining timeslots
             } else {
               if (String(endOfBooking) == String(firstDateNextMonth)) {
-                this.monthlyAvailability.push(false)
+                availabilityFromID.push(false)
                 break
               }
               // There is at least 1 free timeslot -> Available
-              this.monthlyAvailability.push(true)
+              availabilityFromID.push(true)
               break
             }
             if(timeslot == numBooked - 1) {
               // Have gone through all booked timings
-              this.monthlyAvailability.push(false)
+              availabilityFromID.push(false)
             }
           } 
         }
         currDate = currDate + 1
       }
-      console.log(this.monthlyAvailability)
+      this.monthlyAvailability = availabilityFromID
+      console.log(availabilityFromID) // Array
+      console.log(this.monthlyAvailability) // Proxy
     },
     checkBookingFields() {
       // TO EDIT bookingFieldValues
@@ -250,7 +254,7 @@ export default {
 }
 
 .dot1 {
-  background-color: #D9ED92;
+  background-color: #46946e;
   margin-right: 10px;
   height: 25px;
   width: 25px;
@@ -270,7 +274,7 @@ export default {
 }
 
 .dot3 {
-  background-color: #FF7575;
+  background-color: #d74749;
   margin-right: 10px;
   height: 25px;
   width: 25px;
@@ -280,7 +284,7 @@ export default {
 }
 
 .dot4 {
-  background-color: #B1DCFF;
+  background-color: #367ab8;
   margin-right: 10px;
   height: 25px;
   width: 25px;
