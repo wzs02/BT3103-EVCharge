@@ -5,6 +5,7 @@
     ref = "calendar"
     is-expanded
     :attributes="attributes"
+    :min-date="new Date()"
      />
   
 </template>
@@ -20,6 +21,7 @@ export default {
   name: 'BookingCalendar',
   components: { },
   props: {
+    monthlyAvailabilities: Array,
   },
   data () {
     return {

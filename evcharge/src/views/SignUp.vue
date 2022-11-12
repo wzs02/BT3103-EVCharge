@@ -85,7 +85,7 @@
                 <v-col class="text-center">
                   <v-btn class="sign-up-btn-style" @click="
                   register(email, password.password); 
-                  // createUseronFirebase(email, vehno, contact, brand, model, username);
+                  createUseronFirebase(email, vehno, contact, brand, model, username);
                   ">                  
                     <span>Sign Up</span>                 
                   </v-btn>
@@ -130,8 +130,11 @@ export default {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log('ON AUTH STATE CHANGED')
+        
         this.user = user
         this.uid = user.uid;
+        console.log(this.uid)
       }
     })
   },
@@ -157,9 +160,10 @@ export default {
     },
     methods: {
         async createUseronFirebase(email, vehno, contact, brand, model, username) {
-          console.log("ADADFAODIFADUBFAIUDFAIUDNHEEE")
+          console.log("CREATING USER ON FIREBASE")
           console.log(this.uid)
           this.uid = this.user.uid
+          console.log(this.uid)
           this.email = this.user.email
           this.v$.$validate()
             if (!this.v$.$error) {
@@ -177,23 +181,26 @@ export default {
         register(email, password) {
             this.v$.$validate()
             if (!this.v$.$error) {
-            setDoc(doc(db, "USERS", this.uid), {
-            user_email : email,
-            user_vehno : this.vehno,
-            user_contact : this.contact,
-            user_brand : this.brand,
-            user_model : this.model,
-            user_name : this.username,
-            user_uid : this.uid
-          })
+            console.log("REGISTERING")
+            console.log(this.uid)
+          //   setDoc(doc(db, "USERS", this.uid), {
+          //   user_email : email,
+          //   user_vehno : this.vehno,
+          //   user_contact : this.contact,
+          //   user_brand : this.brand,
+          //   user_model : this.model,
+          //   user_name : this.username,
+          //   user_uid : this.uid
+          // })
               const auth = getAuth();
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCurrent) => {
                     alert("Sign Up Successful")
                     const user = userCurrent.user;
+                    console.log("Sign Up Successful")
                     console.log(user)
                     console.log(auth.currentUser),
-                    this.$router.push('/map')})
+                    this.$router.push('/')})
                 .catch((error) => {
                     console.log(error.code);
                     switch (error.code) {
@@ -231,13 +238,13 @@ export default {
                       this.user = user
                       this.email = user.email
                       this.uid = user.uid
-                      console.log(this.email)
-                      console.log(this.uid)
-                      console.log(this.vehno)
-                      console.log(this.contact)
-                      console.log(this.brand)
-                      console.log(this.model)
-                      console.log(this.username)
+                      // console.log(this.email)
+                      // console.log(this.uid)
+                      // console.log(this.vehno)
+                      // console.log(this.contact)
+                      // console.log(this.brand)
+                      // console.log(this.model)
+                      // console.log(this.username)
 
                       setDoc(doc(db, "USERS", this.uid), {
                       user_email : this.email,
@@ -248,7 +255,7 @@ export default {
                       user_name : this.username,
                       user_uid : this.uid
                       })
-                      this.$router.push('/map')
+                      this.$router.push('/')
                   })
                   // .then( function() {
                   //   this.createUseronFirebase(this.email, this.vehno, this.contact, this.brand, this.model);
@@ -276,7 +283,7 @@ export default {
                         // this.uid = user.uid
                         })
                 this.email = this.user.email
-                alert("Please address the Google Pop up before filling up necessary fields.")
+                alert("Please address the Google pop-up before filling up necessary fields.")
                 }
         }
     },
