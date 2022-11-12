@@ -1,13 +1,13 @@
 <template>
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <v-app>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet"> 
+    <v-app> 
         <NavBar />
         <v-container class="bg-container-sign-up">
             <img v-bind:src="bg_img2" id="bg-ratio-signup">
         </v-container>
 
         <div>
-            <div style="position: relative; height: 100vh; width: 30%;display:inline-block">
+            <div id="logo-div">
                 <v-img id="circle-logo" src="../assets/SignUpPage/RoundedLogo.png">
                 </v-img>
             </div>
@@ -57,7 +57,7 @@
                                         </v-text-field>
 
                                         <v-btn block size="large" type="submit" variant="elevated" id="btn-sign-up">
-                                            Sign In
+                                            Sign Up
                                         </v-btn>
                                     </v-form>
                                 </div>
@@ -96,7 +96,7 @@ export default {
     components: { NavBar },
     data() {
         return {
-            bg_img2: require('../assets/AboutPage/Sign_Up.png'),
+            bg_img2: require('../assets/SignUpPage/Sign_Up.png'),
             form: false,
             email: null,
             password: null,
@@ -201,6 +201,13 @@ export default {
     left:40%;
     margin-top:-200px;
     margin-left:-25px;
+}
+
+#logo-div {
+    position: relative;
+    height: 100vh;
+    width: 30%;
+    display:inline-block;
 }
 
 #card-pos {

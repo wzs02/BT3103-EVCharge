@@ -141,7 +141,7 @@ export default {
     data() {
         return {
             bg_img: require('../assets/SignInPage/GirlCharging.png'),
-            bg_img2: require('../assets/AboutPage/Sign_Up.png'),
+            bg_img2: require('../assets/SignUpPage/Sign_Up.png'),
             v$: useValidate(),
             email: "",
             vehno: "",
