@@ -119,7 +119,7 @@ import { ref } from "vue";
 import { getAuth, 
     createUserWithEmailAndPassword, 
     GoogleAuthProvider, 
-    signInWithPopup,
+    signInWithPopup, 
     onAuthStateChanged
 } from "firebase/auth"
 const errMsg = ref() //ERROR message
@@ -373,6 +373,8 @@ export default {
     color:#4285f4;
     text-decoration: underline;
 }
+
+
 
 #bg-ratio-signup {
   position:fixed;

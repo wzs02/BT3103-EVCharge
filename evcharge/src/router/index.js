@@ -82,6 +82,11 @@ const router = createRouter({
       name: "PaymentErrorPage",
       component: () => import("../views/PaymentErrorPage.vue"),
     },
+    {
+      path: "/msignup",
+      name:"MSignUp",
+      component: () => import("../views/MSignUpPage.vue")
+    }
   ],
 });
 
