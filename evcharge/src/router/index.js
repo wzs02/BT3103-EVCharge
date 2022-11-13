@@ -16,7 +16,7 @@ const router = createRouter({
     },
     {
       path: "/signup",
-      name: "SignUp",
+      name: "SignUpPage",
       component: () => import("../views/SignUp.vue"),
       meta: {
         requireAuth: false,
@@ -83,9 +83,9 @@ const router = createRouter({
       component: () => import("../views/PaymentErrorPage.vue"),
     },
     {
-      path: "/msignup",
-      name:"MSignUp",
-      component: () => import("../views/MSignUpPage.vue")
+     path: "/ev-info",
+     name:"EVInfoPage",
+     component: () => import("../views/EVInfoPage.vue") 
     }
   ],
 });
