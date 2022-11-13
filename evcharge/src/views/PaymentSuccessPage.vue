@@ -7,7 +7,7 @@
 
         <div class="center">
             <v-card elevation id="card">
-                <div style="margin-top: 70px;">
+                <div style="margin-top: 40px;">
                     <p id="status-text">Payment Successful</p>
                     <div class="center-div">
                         <router-link :to="{ path: '../account-balance' }">
@@ -38,16 +38,22 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@400;700&display=swap');
 
 .bg-container {
-    position: relative;
-    text-align: center;
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
 }
 
 #bg-ratio {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    min-width: 100%;
-    min-height: 100%;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    min-width: 50%;
+    min-height: 50%;
 }
 
 .center {
@@ -67,7 +73,7 @@ export default {
 #card {
     align-items: center;
     height: 200px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 30px;
 }
 
 #status-text {
