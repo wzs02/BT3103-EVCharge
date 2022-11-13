@@ -1,568 +1,343 @@
 <template>
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <v-app>
-      <v-container>
-          <NavBar />
-      </v-container>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet"> 
+    <v-app> 
+        <NavBar />
+        <v-container class="bg-container-sign-up">
+            <img v-bind:src="bg_img2" id="bg-ratio-signup">
+        </v-container>
 
-      <v-container class="bg-container-sign-up">
-          <!-- <v-img id="nav-logo-sign-up" src="../assets/AboutPage/About_Navbar_Logo.png"></v-img> -->
-          <!-- <img v-bind:src="bg_img" id="bg-ratio"> -->
-        <img v-bind:src="bg_img2" id="bg-ratio-signup">
-        <v-col id="first-col">
-        <v-card width="500" class="mx-auto mt-16 rounded-card" elevation='5' height="700" id="details">
-          <v-container>
-          <v-row>
-              <v-col>
-                  <div id="welcome-title">Welcome to <span id="charge-text">EVCharge</span><br/></div>
-                  <div id="signup-title">Sign Up</div>
-              </v-col>
-              
-              <v-col offset="3">
-                <v-card-text id="have-account">Have an account?</v-card-text>
-                        <router-link :to="{ path: '../login' }">
-                            <button type="button" id="click-signIN">Log In</button>
-                        </router-link>
-              </v-col>
-          </v-row>
-          </v-container>
-          
-          <v-card-text>
-            <v-card-text id="field-header">Enter your email address</v-card-text>
-            <!-- <v-text-field type="text" label="Your Email" v-model="email" prepend-icon=mdi-bell-outline clearable/> -->
-            <v-text-field type="text" label="Your Email" v-model="email" clearable color='#0D47A1' id='email'/>
-            <span v-if="v$.email.$error" id="email-error"> {{ "Please enter a valid email." }} </span>
-
-            <v-card-text id="field-header">Your electic vehicle's license plate number</v-card-text>
-            <v-text-field type="text" label="License plate number" v-model="vehno" clearable color='#0D47A1' id='vehno'/>
-            <span v-if="v$.vehno.$error" id="vehicle-number"> {{ "Please enter your vehicle number." }} </span>
-
-            <v-card-text id="field-header">Enter your password</v-card-text>
-            <v-text-field type="password" label="Password" clearable v-model="password.password" color='#0D47A1' id='password'/>
-            <span v-if="v$.password.password.$error" id="password-length"> {{ "Your password must be more than 6 characters long" }} </span>
-
-            <v-card-text id="field-header">Re-enter your password</v-card-text>
-            <v-text-field label="Confirm Password" clearable v-model="password.confirm" color='#0D47A1' type="password"/>
-            <span v-if="v$.password.confirm.$error" id='password-match'> {{ "Passwords do not match" }}</span>
-
-            <v-card-text id="field-header">Your contact number</v-card-text>
-            <v-text-field label="Contact Number" type="text" v-model="contact" clearable color='#0D47A1'/>
-            <span v-if="v$.contact.$error" id='contact-no'> {{ "Please enter your phone number." }}</span>
-
-          </v-card-text>
-
-        </v-card>
-      </v-col>
-<!-- 2nd COL HERE -->
-      <v-col id="second-col">
-        <v-card width="500" class="mx-auto mt-16 rounded-card" elevation='5' height="700" id="details">
+        <div>
+            <div id="logo-div">
+                <v-img id="circle-logo" src="../assets/SignUpPage/RoundedLogo.png">
+                </v-img>
+            </div>
+            <div id = "card-pos">
                 <v-container>
                     <v-row>
                         <v-col>
-                            <div id="details1">Before we begin, tell us more about your Electric Vehicle!<br/></div>
-                            <div id="details2">This information would be used to help us give you a more personalised experience.</div>
+                            <v-card width="500" class="mx-auto mt-16 rounded-card" elevation='5' height="580"
+                                id="details">
+                                <v-row style="margin-bottom: 50px">
+                                    <v-col>
+                                        <div id="welcome-title">Welcome to <span id="charge-text">EVCharge</span><br />
+                                        </div>
+                                        <div id="signup-title">Sign Up</div>
+                                    </v-col>
+
+                                    <v-col>
+                                        <span id="have-account">Have an account?</span>
+                                        <router-link :to="{ path: '../login' }">
+                                            <button type="button" id="click-signIN">Log In</button>
+                                        </router-link>
+                                    </v-col>
+                                </v-row>
+                                <div id="card-spacing">
+                                    <v-form v-model="form" @submit.prevent="onSubmit">
+                                        <v-text-field v-model="email" :rules="emailValidFormat.concat(requiredRule)"
+                                            variant="underlined" label="Enter your email address" color="#4285f4">
+                                        </v-text-field>
+
+                                        <v-text-field v-model="licensePlateNumber" color="#4285f4" :rules="requiredRule"
+                                            variant="underlined"
+                                            label="Enter your electric vehicle's license plate number">
+                                        </v-text-field>
+
+                                        <v-text-field v-model="password"
+                                            :append-icon="showpw1 ? 'mdi-eye' : 'mdi-eye-off'" variant="underlined"
+                                            label="Enter your password" color="#4285f4"
+                                            :rules="requiredRule.concat(passwordLengthRule)"
+                                            :type="showpw1 ? 'text' : 'password'" @click:append="showpw1 = !showpw1">
+                                        </v-text-field>
+
+                                        <v-text-field v-model="secondPassword"
+                                            :append-icon="showpw2 ? 'mdi-eye' : 'mdi-eye-off'" color="#4285f4"
+                                            variant="underlined" label="Re-enter your password"
+                                            :rules="requiredRule.concat(passwordsMatchRule.concat(validateSecondPassword))"
+                                            :type="showpw2 ? 'text' : 'password'" @click:append="showpw2 = !showpw2">
+                                        </v-text-field>
+
+                                        <v-btn block size="large" type="submit" variant="elevated" id="btn-sign-up">
+                                            Sign Up
+                                        </v-btn>
+                                    </v-form>
+                                </div>
+                                <h6 id="or">OR</h6>
+                                <v-row class="center-content">
+                                    <v-btn class="sign-google-btn-style" @click="signInWithGoogle()">
+                                        <span>Sign up with Google</span>
+                                    </v-btn>
+                                </v-row>
+                            </v-card>
                         </v-col>
                     </v-row>
                 </v-container>
-                <br>
-                <br>
-                
-                <v-card-text id="margin-tune1">
-                    <v-card-text id="field-header-details">Your electric vehicle's brand</v-card-text>
-                    <v-text-field type="text" label="Brand (eg. Tesla, MG)" v-model="brand" clearable color='#0D47A1'/>
-                    <span v-if="v$.brand.$error" id='brand'> {{ "Please enter your vehicle's brand." }}</span>
-
-                    <v-card-text id="field-header-details">Your electric vehicle's model</v-card-text>
-                    <v-text-field label="Model (eg. Model 3, ZS)" type="text" v-model="model" clearable color='#0D47A1'/>
-                    <span v-if="v$.model.$error" id='model'> {{ "Please enter your vehicle's model." }}</span>
-
-                    <v-card-text id="field-header-details">How should we address you?</v-card-text>
-                    <v-text-field label="Your username" type="text" v-model="username" clearable color='#0D47A1'/>
-                    <span v-if="v$.model.$error" id='username'> {{ "Please enter your name." }}</span>
-
-                </v-card-text>
-
-                <v-col class="text-center">
-                  <v-btn class="sign-up-btn-style" @click="
-                  register(email, password.password); 
-                  createUseronFirebase(email, vehno, contact, brand, model, username);
-                  ">                  
-                    <span>Sign Up</span>                 
-                  </v-btn>
-                </v-col>
-                <v-col class="text-center">
-                  <div id="or-word-signup">OR</div>
-                </v-col>
-              <v-col class="text-center">
-                  <v-btn class="sign-google-btn-style" @click="
-                    signInWithGoogle();
-                    // createUseronFirebase(email, vehno, contact, brand, model, username);
-                    ">                  
-                    <span class="">Sign up with Google</span>                  
-                  </v-btn>
-                </v-col>
-                
-            </v-card>
-      </v-col>
-
-    </v-container>
-  </v-app>
+            </div>
+        </div>
+    </v-app>
 </template>
 
 <script>
+/*eslint-disable*/
+import NavBar from "@/components/NavBar.vue";
+import {
+    getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup,
+    onAuthStateChanged
+} from "firebase/auth";
+import { ref } from "vue";
 import { doc, setDoc, getFirestore } from "firebase/firestore"
 import app from "../firebase.js"
-import useValidate from '@vuelidate/core'
-import { minLength, required, sameAs, email } from '@vuelidate/validators'
-import NavBar from "@/components/NavBar.vue";
-import { ref } from "vue";
-import { getAuth, 
-    createUserWithEmailAndPassword, 
-    GoogleAuthProvider, 
-    signInWithPopup,
-    onAuthStateChanged
-} from "firebase/auth"
-const errMsg = ref() //ERROR message
+
 const db = getFirestore(app);
+const errMsg = ref();
 
 export default {
-  created() {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log('ON AUTH STATE CHANGED')
-        
-        this.user = user
-        this.uid = user.uid;
-        console.log(this.uid)
-      }
-    })
-  },
+    name: "SignUpPage",
+    components: { NavBar },
     data() {
         return {
-            bg_img: require('../assets/SignInPage/GirlCharging.png'),
-            bg_img2: require('../assets/AboutPage/Sign_Up.png'),
-            v$: useValidate(),
-            email: "",
-            vehno: "",
-            contact: "",
-            brand: "",
-            model: "",
-            username: "",
-            password: {
-              password: "",
-              confirm: "",
-            },
-            errMsg: "",
+            bg_img2: require('../assets/SignUpPage/Sign_Up.png'),
+            form: false,
+            email: null,
+            password: null,
+            licensePlateNumber: null,
+            secondPassword: null,
+            showpw1: false,
+            showpw2: false,
             uid: "",
             user: "",
+            errMsg: "",
+            emailValidFormat: [
+                v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
+            ],
+            requiredRule: [
+                v => !!v || "Field is required"
+            ],
+            passwordLengthRule: [
+                v => (v && v.length >= 6) || "Password must be at least 6 characters long"
+            ],
+            passwordsMatchRule: [
+                v => (v && v.length >= 6) || "Password must be at least 6 characters long",
+                v => !!v || "Passwords do not match"
+            ]
         }
     },
+    created() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.user = user
+                this.uid = user.uid;
+            }
+        })
+    },
     methods: {
-        async createUseronFirebase(email, vehno, contact, brand, model, username) {
-          console.log("CREATING USER ON FIREBASE")
-          console.log(this.uid)
-          this.uid = this.user.uid
-          console.log(this.uid)
-          this.email = this.user.email
-          this.v$.$validate()
-            if (!this.v$.$error) {
-            await setDoc(doc(db, "USERS", this.uid), {
-            user_email : email,
-            user_vehno : vehno,
-            user_contact : contact,
-            user_brand : brand,
-            user_model : model,
-            user_name : username,
-            user_uid : this.uid
-          })
-        }
+        onSubmit() {
+            if (!this.form) {
+                window.confirm("Login details invalid")
+            }
+            else {
+                this.register(this.email, this.password)
+            }
+        },
+        validateSecondPassword(value) {
+            return value == this.password || "Passwords do not match"
         },
         register(email, password) {
-            this.v$.$validate()
-            if (!this.v$.$error) {
-            console.log("REGISTERING")
-            console.log(this.uid)
-          //   setDoc(doc(db, "USERS", this.uid), {
-          //   user_email : email,
-          //   user_vehno : this.vehno,
-          //   user_contact : this.contact,
-          //   user_brand : this.brand,
-          //   user_model : this.model,
-          //   user_name : this.username,
-          //   user_uid : this.uid
-          // })
-              const auth = getAuth();
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCurrent) => {
-                    alert("Sign Up Successful")
-                    const user = userCurrent.user;
-                    console.log("Sign Up Successful")
-                    console.log(user)
-                    console.log(auth.currentUser),
-                    this.$router.push('/')})
-                .catch((error) => {
-                    console.log(error.code);
-                    switch (error.code) {
-                        case "auth/invalid-email":
-                            errMsg.value = "Invalid email";
-                            break;
-                        case "auth/user-not-found":
-                            errMsg.value = "User NOT found";
-                            break;
-                        case "auth/email-already-in-use":
-                            errMsg.value = "Email already in use";
-                            break;
-                        default:
-                            errMsg.value = "Email or password is incorrect";
-                            break;
-                    }
-                    
-                  alert(errMsg.value);
-            });
-            
-            }
-            
+            const auth = getAuth();
+            createUserWithEmailAndPassword(auth, email, password).then((result) => {
+                const docRef = doc(db, "USERS", result.user.uid)
+                const data = {
+                    user_email: email,
+                    user_uid: result.user.uid
+                }
+                setDoc(docRef, data).then(() => {
+                    window.confirm("Document has been added successfully");
+                    this.$router.push('/ev-info')
+                }).catch(error => {
+                    window.confirm(error);
+                })
+            }).catch((error) => console.log(error))
         },
         signInWithGoogle() {
             const provider = new GoogleAuthProvider();
-            // this.email = "Not_Requried@gmail.com"
-            this.password.password = "Not Required"
-            this.password.confirm = "Not Required"
-            this.v$.$validate()
-            if (!this.v$.$error) {
-              signInWithPopup(getAuth(), provider)
-                  .then((result) => {
-                      // The signed-in user info
-                      const user = result.user;
-                      this.user = user
-                      this.email = user.email
-                      this.uid = user.uid
-                      // console.log(this.email)
-                      // console.log(this.uid)
-                      // console.log(this.vehno)
-                      // console.log(this.contact)
-                      // console.log(this.brand)
-                      // console.log(this.model)
-                      // console.log(this.username)
-
-                      setDoc(doc(db, "USERS", this.uid), {
-                      user_email : this.email,
-                      user_vehno : this.vehno,
-                      user_contact : this.contact,
-                      user_brand : this.brand,
-                      user_model : this.model,
-                      user_name : this.username,
-                      user_uid : this.uid
-                      })
-                      this.$router.push('/')
-                  })
-                  // .then( function() {
-                  //   this.createUseronFirebase(this.email, this.vehno, this.contact, this.brand, this.model);
-                  // })
-                  .catch((error) => {
-                      console.log(error.message)
-                      switch (error.code) {
-                          case "auth/account-exists-with-different-credential":
-                              errMsg.value = "This email has been binded to an account.";
-                              break;
-                          case "auth/popup-blocked":
-                              errMsg.value = "Please enable your browser pop up.";
-                              break;
-                      }
-                      alert(errMsg.value);
-                  })
-              }
-              else{
-                signInWithPopup(getAuth(), provider)
-                    .then((result) => {
-                        // The signed-in user info
-                        const user = result.user;
-                        this.user = user
-                        this.email = user.email
-                        // this.uid = user.uid
-                        })
-                this.email = this.user.email
-                alert("Please address the Google pop-up before filling up necessary fields.")
+            signInWithPopup(getAuth(), provider).then((result) => {
+                const docRef = doc(db, "USERS", result.user.uid)
+                const data = {
+                    user_email: result.user.email,
+                    user_uid: result.user.uid
                 }
+                setDoc(docRef, data).then(() => {
+                    window.confirm("Document has been added successfully");
+                    this.$router.push('/ev-info')
+                }).catch(error => {
+                    window.confirm(error);
+                })
+            }).catch((error) => {
+                console.log(error.message)
+                switch (error.code) {
+                    case "auth/account-exists-with-different-credential":
+                        errMsg.value = "This email has been binded to an account.";
+                        break;
+                    case "auth/popup-blocked":
+                        errMsg.value = "Please enable your browser pop up."
+                        break;
+                }
+                alert(errMsg.value);
+            })
         }
-    },
-    validations() {
-      return {
-        email: { required, email },
-        vehno: { required },
-        contact: { required },
-        brand: { required },
-        model: { required }, 
-        username: { required },
-        password: {
-        password: { required, minLength: minLength(6) },
-        confirm: { required, sameAs: sameAs(this.password.password) },
-      },
-      }
-    },
-    components: { NavBar }
+    }
 }
 </script>
 
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@400;700&display=swap');
 
-<style>
+#circle-logo {
+    height: 300px;
+    width: 300px; 
+    position:absolute;
+    top:50%;
+    left:40%;
+    margin-top:-200px;
+    margin-left:-25px;
+}
 
-#margin-tune1 {
-    margin: 0;
-    padding-top: 120px;
+#logo-div {
+    position: relative;
+    height: 100vh;
+    width: 30%;
+    display:inline-block;
+}
+
+#card-pos {
+    position: relative; 
+    position:absolute;
+    top:50%;
+    left:35%;
+    margin-top:-350px;
+    margin-left:-25px;
+    display:inline-block;
+}
+
+#details {
+    border-radius: 30px;
+}
+.bg-container-sign-up {
+    max-width: 100%;
+    height: 900px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background-image: linear-gradient(to bottom left, rgb(68, 161, 248), white);
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+#bg-ratio-signup {
+    position: fixed;
+    height: 885px;
     padding-bottom: 0px;
+    top: 0;
+    right: 0;
+    min-width: 50%;
+    min-height: 100%;
 }
 
-#field-header-details {
-    line-height: 0px;
+#card-spacing {
+    margin-left: 40px; 
+    margin-right: 40px
 }
 
-#details1 {
-  font-family: 'Outfit', sans-serif;
-  font-size: 35px;
-  position: absolute;
-  line-height: 40px;
-  top: 0px;
-  text-align: center;
-  font-weight: 900;
-  color: black;
-  margin-top:30px
+#welcome-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: bolder;
+    font-size: 20px;
+    position: absolute;
+    line-height: 60px;
+    top: 10px;
+    left: 25px;
+    margin-left: 10px;
 }
 
-#details2 {
-  font-family: 'Outfit', sans-serif;
-  font-weight: bolder;
-  font-size: 17px;
-  position: absolute;
-  line-height: 20px;
-  top: 100px;
-  text-align: center;
-  font-weight: 300;
-  color: rgb(12, 120, 214);
-  margin-top:30px
+#charge-text {
+    font-family: 'Outfit';
+    font-weight: 700;
+    font-size: 20px;
+    background: linear-gradient(180deg, #00E0FF 0%, #0028FB 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-#first-col {
-  position: absolute;
-  right: 350px
+#signup-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: bolder;
+    font-size: 40px;
+    position: absolute;
+    line-height: 60px;
+    top:45px;
+    left: 25px;
+    margin-left: 10px;
 }
 
-#second-col {
-  /* position: absolute; */
-  margin-left: 350px;
-}
-
-#no-account{
-    margin: 0;
-    padding-top: 0px;
-    padding-bottom: 40px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: normal;
-    /* position: absolute; */
-    font-size: 14px;
-}
-
-#click-signIN{
+#click-signIN {
     font-family: 'Outfit';
     font-weight: bolder;
     position: absolute;
     left: 340px;
     top: 50px;
     font-size: 14px;
-    color:#4285f4;
+    color: #4285f4;
     text-decoration: underline;
 }
 
-#bg-ratio-signup {
-  position:fixed;
-  height: 885px;
-  padding-bottom: 0px;
-  top: 0; right: 0;min-width: 50%; min-height: 100%;
+#have-account {
+    font-family: 'Outfit', 'sans-serif';
+    float:right;
+    margin-top: 30px;
+    margin-right: 35px;
+    color: #8d8d8d;
 }
 
-#details {
-  top: 0px;
+#btn-sign-up {
+    font-family: 'Outfit', 'sans-serif';
+    color: white;
+    background-color: #4285f4;
+    font-weight: 700;
+    text-transform: none;
+    margin-bottom: 15px;
 }
 
-.bg-container-sign-up{
-    max-width: 100%;
-    height: 900px;
+v-text-field {
+    margin-bottom: 10px;
+}
+
+#or {
+    font-family: 'Outfit', 'sans-serif';
+    color: #ababab;
+    font-weight: 200px;
+    text-align: center;
+    font-size: 15px;
+    margin-top: 25px;
+    margin-bottom: 30px;
+}
+
+.sign-google-btn-style {
+    text-transform: none;
+    background-color: #6fa6ff;
+    color: #FFFFFF;
+    font-family: 'Outfit';
+    font-weight: 900;
+    width: 50%;
     margin-top: 0px;
     margin-bottom: 0px;
-    background-image: linear-gradient(to bottom left, rgb(68, 161, 248), white);
-    position: fixed;top: 0;left: 0;min-width: 100%; min-height: 100%;
+    justify-content: center;
 }
 
-#field-header {
-    line-height: 0px;
+.center-content {
+    display: flex; 
+    justify-content:center;
 }
-#nav-logo {
-  width: 140px;
-  margin-left: 150px;
-}
-/* #girl-sign-up {
-    margin-top: -450px;
-  width: 2000px;
-  top: 450px;
-  /* left: 400px; */
-  /* margin-left: 200px; */
-/* } */ */
-.bgimage {
-  background-image: src="../assets/AboutPage/Sign_Up.png";
-  background-size: cover;
-  background-position: center center;
-}
-#nav-logo-sign-up {
-    margin-top: -80px;
-  width: 340px;
-  top: 450px;
-  left: 60px;
-}
-
-.sign-up-btn-style {
-  background-color: #4285f4;
-  color: #FFFFFF;
-  font-family: 'Outfit';
-  font-weight: 900;
-  border-radius: 5px;
-  text-transform: none;
-  width: 70%;
-  margin-top: 0px;
-  margin-bottom:0px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  text-decoration: none;
-}
-
-#or-word-signup {
-    font-weight: lighter;
-    font-size: 15px;
-    margin-top: 0px;
-    margin-bottom:0px;
-}
-
-.sign-google-btn-style{
-  text-transform: none;
-  background-color: #6fa6ff;
-  color: #FFFFFF;
-  font-family: 'Outfit';
-  font-weight: 900;
-  border-radius: 5px;
-  width: 50%;
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-.rounded-card{
-    border-radius:30px;
-}
-.bg-container {
-  position: relative;
-  text-align: center;
-}
-#bg-ratio {
-  width: 100%;
-  height: 600px;
-}
-#welcome-title {
-  font-family: 'Outfit', sans-serif;
-  font-weight: bolder;
-  font-size: 20px;
-  position: absolute;
-  line-height: 60px;
-  top: 0px;
-  left: 25px;
-}
-#signup-title {
-  font-family: 'Outfit', sans-serif;
-  font-weight: bolder;
-  font-size: 40px;
-  position: absolute;
-  line-height: 60px;
-  top: 38px;
-  left: 25px;
-}
-
-#charge-text {
-  font-family: 'Outfit';
-  font-weight: 700;
-  font-size: 20px;
-  background: linear-gradient(180deg, #00E0FF 0%, #0028FB 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-#email-error{
-  font-size: 12px;
-  color: red;
-  position: absolute;
-  line-height: 0px;
-  top: 200px;
-  left: 30px;
-}
-
-#vehicle-number{
-  font-size: 12px;
-  color: red;
-  position: absolute;
-  line-height: 0px;
-  top: 310px;
-  left: 30px;
-}
-
-#password-length{
-  font-size: 12px;
-  color: red;
-  position: absolute;
-  line-height: 0px;
-  top: 420px;
-  left: 30px;
-}
-
-#password-match{
-  font-size: 12px;
-  color: red;
-  position: absolute;
-  line-height: 0px;
-  top: 530px;
-  left: 30px;
-}
-
-#contact-no{
-  font-size: 12px;
-  color: red;
-  position: absolute;
-  line-height: 0px;
-  top: 640px;
-  left: 30px;
-}
-
-#brand{
-  font-size: 12px;
-  color: red;
-  position: absolute;
-  line-height: 0px;
-  top: 300px;
-  left: 30px;
-}
-
-#model{
-  font-size: 12px;
-  color: red;
-  position: absolute;
-  line-height: 0px;
-  top: 410px;
-  left: 30px;
-}
-
-#username{
-  font-size: 12px;
-  color: red;
-  position: absolute;
-  line-height: 0px;
-  top: 520px;
-  left: 30px;
-}
-    
 </style>
