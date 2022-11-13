@@ -2,29 +2,60 @@
     <v-app>
         <NavBarLogin />
         <div id="top-up-div">
-            <p id="greeting">Hi, John!</p>
-            <p id="available-deposit">Available Deposit: $30.00</p>
+            <p id="greeting">Hi, {{ username }}!</p>
+            <p id="available-deposit">Available Deposit: ${{ this.wallet }}</p>
             <p id="notice">A minimum of $30.00 is needed to make a reservation</p>
             <stripe-checkout ref="checkoutRef" mode="payment" :pk="publishableKey" :line-items="lineItems"
                 :success-url="successURL" :cancel-url="cancelURL" @loading="v => loading = v" />
             <v-btn id="btn-style" @click="submit">Top up deposit</v-btn>
         </div>
 
-        <div id="history-div">
-            <p id="transactions-header"> Previous Transactions</p>
-        </div>
+        <div v-if="uid">
+            <div id="history-div">
+                <p id="transactions-header"> Previous Transactions</p>
+            </div>
+            <br>
+            <div>
+                <div v-if="hasPreviousTrans" class="past_booking_records">
+                    <div  v-for="transaction in pastTransList" :key="transaction.date">
+                        <PastTransactionRecord :transDetails="transaction"/>
+                    </div>
+                </div>
+                <p v-else class="bookings_record_headings">You have no past transactions</p>
+                </div>
+            </div>
     </v-app>
 </template>
 
 <script>
+
+import app from "../firebase.js"
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBarLogin from "@/components/NavBarLogin.vue";
-import { StripeCheckout } from '@vue-stripe/vue-stripe'
+import { StripeCheckout } from '@vue-stripe/vue-stripe';
+import firebaseApp from '../firebase.js';
+import { doc, updateDoc, getFirestore, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
+import PastTransactionRecord from "../components/PastTransactionRecord.vue";
+// doc, setDoc,
 
 /* Still need to fetch user name and available balance from FB */
+const db = getFirestore(app);
 
 export default {
+    created() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.uid = user.uid;
+        this.getUsername(user.uid)
+        this.getTransData(user.uid)
+      } else{
+        this.isLoggedIn = false;
+      }
+    })
+    },
     components: {
-        StripeCheckout, NavBarLogin
+        StripeCheckout, NavBarLogin, PastTransactionRecord
     },
     data() {
         this.publishableKey = "pk_test_51M0REtKs5bTKMbCfjEQWxFTwszhZIIWTWg8pCXnnEwI6RxayRk1vYDcTPGJU0kFGuf3xR7EaF3cyBdH8vT2sF9B300H51KnG9d"
@@ -37,14 +68,119 @@ export default {
                 }
             ],
             successURL: 'http://localhost:8080/#/payment-success',
-            cancelURL: 'http://localhost:8080/#/payment-error'
+            cancelURL: 'http://localhost:8080/#/payment-error',
+            username: "",
+            hasPreviousTrans: false,
+            pastTransList: [],
+            uid: false,
+            date: '',
+            time: '',
+            today: '',
+            wallet: ''
         }
     },
     methods: {
         submit() {
+            console.log("PAYMENT IS BEING MADE")
+            this.date = this.currentDate()
+            this.time = this.currentTime()
+            this.today = this.getDateTime()
+            console.log("Date", this.date)
+            console.log("Time", this.time)
+            console.log("Datetime", this.today)
+            this.createTransactiononFirebase(this.date, this.time)
             this.$refs.checkoutRef.redirectToCheckout()
-            // Add in FB here next time, should +30 to current user's account directly 
-            // FB should also contain name, date of all transactions
+        },
+        async getUsername(uid) {
+            // const auth = getAuth()
+            const db = getFirestore(firebaseApp);
+            const userRef = collection(db, "USERS")
+            let z = await getDocs(query(userRef, where('user_uid', "==", uid)))
+            z.forEach((docs) => {
+                let data = docs.data();
+                this.username = data.user_name
+            }
+            )
+        },
+        async getTransData(uid) {
+            console.log("GETTING TRANS DATA")
+            console.log(uid)
+            const db = getFirestore(firebaseApp);
+            // Get all booking records for the user
+            // , orderBy("date", "desc")
+            const userHistory = doc(db, "Transactions", this.uid)
+            const historySnap = await getDoc(userHistory)
+            console.log(historySnap.data())
+            this.wallet = 0
+
+            for (const [key, value] of Object.entries(historySnap.data())) {
+                // console.log(key, value);
+                console.log(key)
+                let docs = value
+                console.log(docs)
+                let transDetails = {};
+                transDetails.date = docs.date;
+                transDetails.time = docs.time;
+                transDetails.amount = "$30"
+                console.log(transDetails)
+                this.wallet += 30
+                this.pastTransList.push(transDetails)
+            }
+
+            this.hasPreviousTrans = this.pastTransList.length > 0;
+            console.log(this.hasPreviousTrans)
+        },
+        async createTransactiononFirebase(inputdate, inputtime) {
+            console.log("CREATING TRANSACTION ON FIREBASE")
+            console.log(this.uid)
+            console.log(db)
+            console.log(inputdate)
+            console.log(inputtime)
+            const timer = this.today
+            console.log("TIMER", timer)
+            // writes date time as the key
+            await updateDoc(doc(db, "Transactions", this.uid), 
+            {
+                [timer] : {
+                    date: inputdate,
+                    time: inputtime,
+                    uid: this.uid
+                }
+            });
+            // getting wallet amount
+            // const userTransRef = collection(db, "Transactions")
+            // let z = await getDocs(query(userTransRef, where("user_uid", "==", this.uid)));
+            // z.forEach((docs) => {
+            //     let data = docs.data();
+            //     console.log(data)
+            // })
+        },
+        currentDate() {
+            const current = new Date();
+            const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+            return date;
+        },
+        currentTime() {
+            const today = new Date();
+            if (today.getHours() > 12) {
+                var hour = today.getHours() - 12
+                var pmAM = 'PM'
+            } else {
+                hour = today.getHours()
+                pmAM = 'AM'
+            }
+            if (today.getMinutes().toString().length == 0) {
+                var minutes = "0" + today.getMinutes().toString()
+            } else {
+                minutes = today.getMinutes()
+            }
+
+            var now_time = (hour + ":" + minutes + " " + pmAM).toString()
+            return now_time;
+        },
+        getDateTime() {
+            const today = new Date();
+            return today
         }
     }
 }
@@ -97,4 +233,13 @@ export default {
     font-weight: 400;
     font-size: 36px;
 }
+
+.bookings_record_headings {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    text-align: left;
+    padding-left: 100px;
+}
+
 </style>
