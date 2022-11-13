@@ -61,12 +61,9 @@ export default {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("ADOAIDFAJODIFADOIFAJDI")
-        console.log(this.username)
         this.isLoggedIn = true;
         this.uid = user.uid;
         this.getUsername(user.uid)
-        console.log("ADOAIDFAJODIFADOIFAJDI")
         console.log(user.uid)
       } else{
         this.isLoggedIn = false;
@@ -123,7 +120,6 @@ export default {
         z.forEach((docs) => {
             let data = docs.data();
             this.username = data.user_name
-            console.log(data.user_uid)
         }
         )
     }
