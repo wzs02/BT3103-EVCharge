@@ -49,8 +49,6 @@ export default {
         this.uid = user.uid;
         this.getUsername(user.uid)
         this.getTransData(user.uid)
-      } else{
-        this.isLoggedIn = false;
       }
     })
     },
