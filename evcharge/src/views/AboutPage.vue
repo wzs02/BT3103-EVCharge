@@ -1,6 +1,11 @@
 <template>
   <v-app>
-    <NavBar />
+    <div v-if="showDisplay">
+      <NavBarLogin />
+    </div>
+    <div v-else>
+      <NavBar />
+    </div>
     <div class="bg-container">
       <img v-bind:src="bg_img" id="bg-ratio">
       <div id="bg-title">EMPOWER <br />YOUR RIDE</div>
@@ -43,11 +48,15 @@
     </div>
 
     <div id="team-profile">
-      <TeamProfile linkedIn="https://www.linkedin.com/in/tzu-zheng-lai-6aa92a229/" imgSource="About_TZ.png" memberName="Lai Tzu Zheng" />
-      <TeamProfile linkedIn="https://www.linkedin.com/in/qianyiloh/" imgSource="About_QY.png" memberName="Loh Qian Yi" />
-      <TeamProfile linkedIn="https://www.linkedin.com/in/nathanielhansy/" imgSource="About_NH.png" memberName="Nathaniel Han" />
+      <TeamProfile linkedIn="https://www.linkedin.com/in/tzu-zheng-lai-6aa92a229/" imgSource="About_TZ.png"
+        memberName="Lai Tzu Zheng" />
+      <TeamProfile linkedIn="https://www.linkedin.com/in/qianyiloh/" imgSource="About_QY.png"
+        memberName="Loh Qian Yi" />
+      <TeamProfile linkedIn="https://www.linkedin.com/in/nathanielhansy/" imgSource="About_NH.png"
+        memberName="Nathaniel Han" />
       <TeamProfile linkedIn="https://www.linkedin.com/" imgSource="About_SS.png" memberName="Shanice Sng" />
-      <TeamProfile linkedIn="https://www.linkedin.com/in/yang-yee-a88a9821a/" imgSource="About_YY.png" memberName="Yang Yee" />
+      <TeamProfile linkedIn="https://www.linkedin.com/in/yang-yee-a88a9821a/" imgSource="About_YY.png"
+        memberName="Yang Yee" />
     </div>
 
     <div id="contact-details">
@@ -63,14 +72,27 @@
 
 <script>
 import NavBar from "@/components/NavBar.vue";
+import NavBarLogin from "@/components/NavBarLogin.vue"
 import TeamProfile from '@/components/TeamProfile.vue'
 import HowTo from '@/components/HowTo.vue'
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
 export default {
   name: 'AboutPage',
-  components: { TeamProfile, HowTo, NavBar },
+  components: { TeamProfile, HowTo, NavBar, NavBarLogin },
+  created() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.uid = user.uid;
+        this.showDisplay = true;
+      }
+    })
+  },
   data() {
     return {
+      uid: "",
+      showDisplay: false,
       bg_img: require('../assets/AboutPage/About_Bg.png'),
       bg_ellipse: require('../assets/AboutPage/About_Ellipse.png'),
       bg_car: require('../assets/AboutPage/About_Car.png'),
@@ -84,7 +106,7 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@400;700&display=swap');
 
 #nav-logo {
   width: 140px;
