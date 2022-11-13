@@ -8,7 +8,9 @@
       :time-from="0 * 60"
       :time-to="24 * 60"
       :time-step="30"
-      :events="events">
+      :events="events"
+      editableEvents=true
+      snapToTime="30">
     </vue-cal>
   </div>
 </template>
@@ -60,12 +62,13 @@ export default {
   display: inline-block;
   justify-content: center;
   align-items: center;
-  background-color: #d74749;
+  background-color: #FF7575;
   color: white;
+  border-radius: 10px;
 }
 
 .vuecal__event-time {
-  color: #d74749;
+  color: #FF7575;
 }
 
 .vuecal__now-line {
