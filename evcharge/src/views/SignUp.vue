@@ -306,7 +306,8 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@400;700&display=swap');
 
 #margin-tune1 {
     margin: 0;
@@ -403,13 +404,7 @@ export default {
   width: 140px;
   margin-left: 150px;
 }
-/* #girl-sign-up {
-    margin-top: -450px;
-  width: 2000px;
-  top: 450px;
-  /* left: 400px; */
-  /* margin-left: 200px; */
-/* } */ */
+
 .bgimage {
   background-image: src="../assets/AboutPage/Sign_Up.png";
   background-size: cover;
@@ -468,12 +463,12 @@ export default {
 }
 #welcome-title {
   font-family: 'Outfit', sans-serif;
-  font-weight: bolder;
-  font-size: 20px;
-  position: absolute;
-  line-height: 60px;
-  top: 0px;
-  left: 25px;
+    font-weight: bolder;
+    font-size: 20px;
+    position: absolute;
+    line-height: 60px;
+    top: 0px;
+    left: 25px;
 }
 #signup-title {
   font-family: 'Outfit', sans-serif;

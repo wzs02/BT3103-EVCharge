@@ -24,14 +24,14 @@
                                         <div id="signup-title">Sign Up</div>
                                     </v-col>
 
-                                    <v-col offset="3">
-                                        <v-card-text id="have-account">Have an account?</v-card-text>
+                                    <v-col>
+                                        <span id="have-account">Have an account?</span>
                                         <router-link :to="{ path: '../login' }">
                                             <button type="button" id="click-signIN">Log In</button>
                                         </router-link>
                                     </v-col>
                                 </v-row>
-                                <div style="margin-left: 40px; margin-right: 40px">
+                                <div id="card-spacing">
                                     <v-form v-model="form" @submit.prevent="onSubmit">
                                         <v-text-field v-model="email" :rules="emailValidFormat.concat(requiredRule)"
                                             variant="underlined" label="Enter your email address" color="#4285f4">
@@ -62,7 +62,7 @@
                                     </v-form>
                                 </div>
                                 <h6 id="or">OR</h6>
-                                <v-row style="display: flex; justify-content:center">
+                                <v-row class="center-content">
                                     <v-btn class="sign-google-btn-style" @click="
                                     signInWithGoogle()">
                                         <span>Sign up with Google</span>
@@ -219,6 +219,10 @@ export default {
     margin-left:-25px;
     display:inline-block;
 }
+
+#details {
+    border-radius: 30px;
+}
 .bg-container-sign-up {
     max-width: 100%;
     height: 900px;
@@ -242,14 +246,20 @@ export default {
     min-height: 100%;
 }
 
+#card-spacing {
+    margin-left: 40px; 
+    margin-right: 40px
+}
+
 #welcome-title {
     font-family: 'Outfit', sans-serif;
     font-weight: bolder;
     font-size: 20px;
     position: absolute;
     line-height: 60px;
-    top: 0px;
+    top: 10px;
     left: 25px;
+    margin-left: 10px;
 }
 
 #charge-text {
@@ -268,8 +278,9 @@ export default {
     font-size: 40px;
     position: absolute;
     line-height: 60px;
-    top: 38px;
+    top:45px;
     left: 25px;
+    margin-left: 10px;
 }
 
 #click-signIN {
@@ -285,6 +296,10 @@ export default {
 
 #have-account {
     font-family: 'Outfit', 'sans-serif';
+    float:right;
+    margin-top: 30px;
+    margin-right: 35px;
+    color: #8d8d8d;
 }
 
 #btn-sign-up {
@@ -306,7 +321,8 @@ v-text-field {
     font-weight: 200px;
     text-align: center;
     font-size: 15px;
-    margin-bottom: 20px;
+    margin-top: 25px;
+    margin-bottom: 30px;
 }
 
 .sign-google-btn-style {
@@ -319,5 +335,10 @@ v-text-field {
     margin-top: 0px;
     margin-bottom: 0px;
     justify-content: center;
+}
+
+.center-content {
+    display: flex; 
+    justify-content:center;
 }
 </style>
