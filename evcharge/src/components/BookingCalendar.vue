@@ -23,9 +23,9 @@ export default {
   components: { },
   props: {
     monthlyInfo: {
-      type: Array,
+      type: Object,
       default() {
-        return []
+        return {}
       },
     },
   },
@@ -78,22 +78,25 @@ export default {
         this.attr.unavailable.dates = [{ start: new Date(2022,10,1), end: new Date(2022,10,2) }]
       }
     },
-    displayMonthInfo(arr) {
-      const daysRemaining = arr.length
-      const now = new Date()
-      var currDate = now.getDate()
-      const currMonth = now.getMonth()
-      const currYear = now.getFullYear()
-
-      for(var days = 0; days < daysRemaining; days++) {
-        var availability = arr[days]
-        if(availability) {
-          this.bookings.push({ date: new Date(currYear, currMonth, currDate), isAvailable: true })
-        } else {
-          this.bookings.push({ date: new Date(currYear, currMonth, currDate), isAvailable: false })
-        }
-        currDate = currDate + 1
+    displayMonthInfo(obj) {
+      for(var i = 0; i < Object.keys(obj).length; i++) {
+        console.log(i)
       }
+      // const daysRemaining = arr.length
+      // const now = new Date()
+      // var currDate = now.getDate()
+      // const currMonth = now.getMonth()
+      // const currYear = now.getFullYear()
+
+      // for(var days = 0; days < daysRemaining; days++) {
+      //   var availability = arr[days]
+      //   if(availability) {
+      //     this.bookings.push({ date: new Date(currYear, currMonth, currDate), isAvailable: true })
+      //   } else {
+      //     this.bookings.push({ date: new Date(currYear, currMonth, currDate), isAvailable: false })
+      //   }
+      //   currDate = currDate + 1
+      // }
     },
   },
   created() {
