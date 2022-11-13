@@ -37,7 +37,7 @@
 
       <v-row style="height: 60%">
         <v-col cols=6>
-          <BookingCalendar v-if="monthlyAvailability.length > 0" :monthlyInfo="this.monthlyAvailability" />
+          <BookingCalendar v-if="Object.keys(monthlyAvailability).length > 0" :monthlyInfo="this.monthlyAvailability" />
           <BookingCalendar v-else />
           <div class="legend">
             <div class="legendindiv">
@@ -77,9 +77,8 @@ import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBar from "@/components/NavBar.vue";
 import BookingCalendar from "@/components/BookingCalendar.vue"
 import BookingCalendarDay from "@/components/BookingCalendarDay.vue"
-import moment from 'moment'
-
-//import { writeBookings } from "@/assets/BookingPage/write_bookings.js"
+//import moment from 'moment'
+//import { bookingVar } from "@/assets/BookingPage/write_bookings.js"
 
 const db = getFirestore(firebaseApp)
 
@@ -99,6 +98,7 @@ export default {
       }
     })
     this.matchingChargers(this.chargerFromMap)
+    //this.createCollection()
   },
   mounted() {
     this.isBookingDisabled = this.checkBookingFields();
@@ -114,7 +114,7 @@ export default {
       chargerTypes: [],
       chargerList: [],
       chargersMatching: [],
-      monthlyAvailability: [],
+      monthlyAvailability: {},
       uid: false,
       isBookingDisabled: true,
       selected_station_id: "",
@@ -175,69 +175,87 @@ export default {
       //this.numChargerAvailable = this.chargersMatching.length
     },
     async displayMonth(id, display_num) {
+      console.log(id) // sg_zoo_1
+      console.log(display_num) // 1
+
       var availabilityFromID = []
       this.selected_charger_display_num = "-" + display_num.toString();
 
-      const chargerID = "evc".concat(String(id))
-      const bookingsRef = doc(db, "testBookings", chargerID)
-      const bookingSnapshot = await getDoc(bookingsRef)
-      const now = new Date()
-      var currDate = now.getDate()
-      const currMonth = now.getMonth()
-      const currYear = now.getFullYear()
-      const firstDateNextMonth = new Date(currYear, currMonth + 1, 1) 
-      
-      function daysInMonth (month, year) {
-        return new Date(year, month, 0).getDate();
-      }
+      const bookingsRef = collection(db, "testBookings")
+      const q = query(bookingsRef, where("chargerID", "==", id), orderBy("bookingDate"))
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+        const fullDate = doc.data()["bookingDate"].toDate()
+        const currDate = fullDate.getDate()
+        const currMonth = fullDate.getMonth()
+        const currYear = fullDate.getFullYear() 
+        availabilityFromID.push({ 
+          date: String(new Date(currYear, currMonth, currDate, 0, 0, 0, 0)), 
+          start: doc.data()["startTime"],
+          end: doc.data()["endTime"],
+        })
+      })
 
-      const numDaysLeft = daysInMonth(currMonth, currYear) - currDate
-
-      for(var i = 0; i < numDaysLeft; i++) { // Iterate dates from now to last date of month, both inclusive
-        var arrOfTimings = bookingSnapshot.data()[String(currDate)]
-        var numBooked = arrOfTimings.length
-        var arrOfDateObj = []
-        for(var j = 0; j < numBooked; j++) {
-          arrOfDateObj.push(String(arrOfTimings[j].toDate()))
-        }
-        if (numBooked == 0) {
-          // No booked timings -> Available
-          availabilityFromID.push(true)
+      var dateAndTime = {}
+      for(var i = 0; i < availabilityFromID.length; i++) {
+        const date = availabilityFromID[i].date
+        const start = availabilityFromID[i].start
+        const end = availabilityFromID[i].end
+        if(date in dateAndTime) {
+          dateAndTime[date].push({start: start, end: end})
         } else {
-          for(var timeslot = 0; timeslot < numBooked; timeslot++) {
-            // console.log(arrOfTimings[timeslot]) // Timestamp
-            // console.log(arrOfTimings[timeslot].toDate()) // Date
-            // console.log(moment(arrOfTimings[timeslot].toDate())) // Moment
-            // console.log(moment(arrOfTimings[timeslot].toDate()).add(30, 'm')) // Moment
-            // console.log(moment(arrOfTimings[timeslot].toDate()).add(30, 'm').toDate()) // Date
-            
-            var endOfBooking = moment(arrOfTimings[timeslot].toDate()).add(30, 'm').toDate()
-            //var currTimeslotEnds = Timestamp.fromDate(endOfBooking)
-            
-            if (arrOfDateObj.includes(String(endOfBooking))) {
-              //arrOfTimings.includes(currTimeslotEnds)
-              // Earliest available timeslot is booked -> Unavailable
-              // Continue iterating through remaining timeslots
-            } else {
-              if (String(endOfBooking) == String(firstDateNextMonth)) {
-                availabilityFromID.push(false)
-                break
-              }
-              // There is at least 1 free timeslot -> Available
-              availabilityFromID.push(true)
-              break
-            }
-            if(timeslot == numBooked - 1) {
-              // Have gone through all booked timings
-              availabilityFromID.push(false)
-            }
-          } 
+          dateAndTime[date] = [{start: start, end: end}]
         }
-        currDate = currDate + 1
       }
-      this.monthlyAvailability = availabilityFromID
-      console.log(availabilityFromID) // Array
-      console.log(this.monthlyAvailability) // Proxy
+
+      this.monthlyAvailability = dateAndTime
+      console.log(this.monthlyAvailability)
+      console.log(availabilityFromID)
+
+      // const now = new Date()
+      // var currDate = now.getDate()
+      // const currMonth = now.getMonth()
+      // const currYear = now.getFullYear()
+      //const firstDateNextMonth = new Date(currYear, currMonth + 1, 1) 
+      
+      // function daysInMonth (month, year) {
+      //   return new Date(year, month, 0).getDate();
+      // }
+
+      //const numDaysLeft = daysInMonth(currMonth, currYear) - currDate
+
+      // for(var i = 0; i < numDaysLeft; i++) { // Iterate dates from now to last date of month, both inclusive
+      //   var arrOfTimings = bookingSnapshot.data()[String(currDate)]
+      //   var numBooked = arrOfTimings.length
+      //   var arrOfDateObj = []
+      //   for(var j = 0; j < numBooked; j++) {
+      //     arrOfDateObj.push(String(arrOfTimings[j].toDate()))
+      //   }
+      //   if (numBooked == 0) { // No booked timings -> Available
+      //     availabilityFromID.push(true)
+      //   } else {
+      //     for(var timeslot = 0; timeslot < numBooked; timeslot++) {
+      //       var endOfBooking = moment(arrOfTimings[timeslot].toDate()).add(30, 'm').toDate()
+      //       if (arrOfDateObj.includes(String(endOfBooking))) {
+      //         // Earliest available timeslot is booked -> Unavailable
+      //         // Continue iterating through remaining timeslots
+      //       } else {
+      //         if (String(endOfBooking) == String(firstDateNextMonth)) {
+      //           availabilityFromID.push(false)
+      //           break
+      //         }
+      //         // There is at least 1 free timeslot -> Available
+      //         availabilityFromID.push(true)
+      //         break
+      //       }
+      //       if(timeslot == numBooked - 1) { // Have gone through all booked timings
+      //         availabilityFromID.push(false)
+      //       }
+      //     } 
+      //   }
+      //   currDate = currDate + 1
+      // }
+      // this.monthlyAvailability = availabilityFromID
     },
     checkBookingFields() {
       // TO EDIT bookingFieldValues
@@ -264,6 +282,10 @@ export default {
         this.$router.push('/login');
       }
     },
+    // async createCollection() {
+    //   await addDoc(collection(db, "testBookings"), bookingVar);
+    //   console.log("hello")
+    // },
   }
 }
 </script>
