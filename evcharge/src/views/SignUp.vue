@@ -151,7 +151,7 @@ export default {
                     user_uid: result.user.uid
                 }
                 setDoc(docRef, data).then(() => {
-                    window.confirm("Document has been added successfully");
+                    window.confirm("Sign up successful!");
                     this.$router.push('/ev-info')
                 }).catch(error => {
                     window.confirm(error);
@@ -167,7 +167,7 @@ export default {
                     user_uid: result.user.uid
                 }
                 setDoc(docRef, data).then(() => {
-                    window.confirm("Document has been added successfully");
+                    window.confirm("Sign up successful!");
                     this.$router.push('/ev-info')
                 }).catch(error => {
                     window.confirm(error);

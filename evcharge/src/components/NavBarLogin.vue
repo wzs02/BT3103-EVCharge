@@ -81,7 +81,7 @@ export default {
                 {
                     title: "Profile",
                     value: 1,
-                    route: { name: 'ProfilePage' } // to edit
+                    route: { name: 'ProfilePage' } // to edit,
                 },
                 {
                     title: "My Bookings",

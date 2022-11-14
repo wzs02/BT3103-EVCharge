@@ -34,7 +34,7 @@ import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBarLogin from "@/components/NavBarLogin.vue";
 import { StripeCheckout } from '@vue-stripe/vue-stripe';
 import firebaseApp from '../firebase.js';
-import { doc, updateDoc, getFirestore, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, getFirestore, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
 import PastTransactionRecord from "../components/PastTransactionRecord.vue";
 // doc, setDoc,
 
@@ -49,6 +49,7 @@ export default {
         this.uid = user.uid;
         this.getUsername(user.uid)
         this.getTransData(user.uid)
+        this.currentTime()
       }
     })
     },
@@ -86,8 +87,18 @@ export default {
             console.log("Date", this.date)
             console.log("Time", this.time)
             console.log("Datetime", this.today)
-            this.createTransactiononFirebase(this.date, this.time)
-            this.$refs.checkoutRef.redirectToCheckout()
+            if (this.pastTransList.length > 0) {
+                console.log('APPEND TO ENTRY')
+                this.createTransactiononFirebase(this.date, this.time)
+                // window.location.reload();
+                this.$refs.checkoutRef.redirectToCheckout()
+            } else {
+                console.log('CREATING NEW ENTRY')
+                this.createNEWTransactiononFirebase(this.date, this.time)
+                // window.location.reload();
+                this.$refs.checkoutRef.redirectToCheckout()
+            }
+            // this.$refs.checkoutRef.redirectToCheckout()
         },
         async getUsername(uid) {
             // const auth = getAuth()
@@ -108,25 +119,24 @@ export default {
             // , orderBy("date", "desc")
             const userHistory = doc(db, "Transactions", this.uid)
             const historySnap = await getDoc(userHistory)
-            console.log(historySnap.data())
+            // console.log(historySnap.data())
             this.wallet = 0
 
             for (const [key, value] of Object.entries(historySnap.data())) {
-                // console.log(key, value);
                 console.log(key)
                 let docs = value
-                console.log(docs)
+                // console.log(docs)
                 let transDetails = {};
                 transDetails.date = docs.date;
                 transDetails.time = docs.time;
                 transDetails.amount = "$30"
+                transDetails.type = "Debit"
                 console.log(transDetails)
                 this.wallet += 30
                 this.pastTransList.push(transDetails)
             }
 
             this.hasPreviousTrans = this.pastTransList.length > 0;
-            console.log(this.hasPreviousTrans)
         },
         async createTransactiononFirebase(inputdate, inputtime) {
             console.log("CREATING TRANSACTION ON FIREBASE")
@@ -142,16 +152,37 @@ export default {
                 [timer] : {
                     date: inputdate,
                     time: inputtime,
-                    uid: this.uid
+                    uid: this.uid,
+                    type: "Debit"
                 }
             });
-            // getting wallet amount
-            // const userTransRef = collection(db, "Transactions")
-            // let z = await getDocs(query(userTransRef, where("user_uid", "==", this.uid)));
-            // z.forEach((docs) => {
-            //     let data = docs.data();
-            //     console.log(data)
-            // })
+            // await setDoc(doc(db, "Transactions", this.uid), 
+            // {
+            //     [timer] : {
+            //         date: inputdate,
+            //         time: inputtime,
+            //         uid: this.uid
+            //     }
+            // });
+        },
+        async createNEWTransactiononFirebase(inputdate, inputtime) {
+            console.log("CREATING TRANSACTION ON FIREBASE")
+            console.log(this.uid)
+            console.log(db)
+            console.log(inputdate)
+            console.log(inputtime)
+            const timer = this.today
+            console.log("TIMER", timer)
+            // writes date time as the key
+            await setDoc(doc(db, "Transactions", this.uid), 
+            {
+                [timer] : {
+                    date: inputdate,
+                    time: inputtime,
+                    uid: this.uid,
+                    type: "Debit"
+                }
+            });
         },
         currentDate() {
             const current = new Date();
@@ -167,11 +198,13 @@ export default {
                 hour = today.getHours()
                 pmAM = 'AM'
             }
-            if (today.getMinutes().toString().length == 0) {
-                var minutes = "0" + today.getMinutes().toString()
-            } else {
-                minutes = today.getMinutes()
-            }
+            // console.log('TESTING TIME', today.getMinutes().toString())
+            // if ((today.getMinutes().toString()).length == 0) {
+            //     var minutes = "0" + today.getMinutes().toString()
+            // } else {
+            //     minutes = today.getMinutes()
+            // }
+            var minutes = today.getMinutes().toString()
 
             var now_time = (hour + ":" + minutes + " " + pmAM).toString()
             return now_time;
