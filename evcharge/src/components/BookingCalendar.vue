@@ -82,7 +82,6 @@ export default {
     },
     onDayClickHandler(day) {
       this.selectedDay = day.id
-      console.log(day.id)
     },
     displayMonthInfo(obj) {
       var minGap = 30

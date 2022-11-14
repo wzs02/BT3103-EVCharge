@@ -58,7 +58,7 @@
         <v-col cols=6>
           <div class="dayview">
             <v-card height="600px" color="#F5F5F5">
-              <BookingCalendarDay />
+              <BookingCalendarDay :chargerInfo="this.chargerSelected"/>
               <v-card-text>You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b></v-card-text>
               <v-btn class="btn" rounded elevation="3" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
@@ -98,7 +98,6 @@ export default {
       }
     })
     this.matchingChargers(this.chargerFromMap)
-    //this.createCollection()
   },
   mounted() {
     this.isBookingDisabled = this.checkBookingFields();
@@ -115,6 +114,7 @@ export default {
       chargerList: [],
       chargersMatching: [],
       monthlyAvailability: {},
+      chargerSelected:"",
       uid: false,
       isBookingDisabled: true,
       selected_station_id: "",
@@ -210,6 +210,9 @@ export default {
       this.monthlyAvailability = dateAndTime
       console.log(this.monthlyAvailability)
       console.log(availabilityFromID)
+
+      this.chargerSelected = id
+      console.log(this.chargerSelected)
 
       // const now = new Date()
       // var currDate = now.getDate()
