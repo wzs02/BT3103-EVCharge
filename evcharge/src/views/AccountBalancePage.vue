@@ -21,7 +21,7 @@
                         <PastTransactionRecord :transDetails="transaction"/>
                     </div>
                 </div>
-                <p v-else class="bookings_record_headings">You have no past transactions</p>
+                <p v-else class="bookings_record_headings1">You have no past transactions</p>
                 </div>
             </div>
     </v-app>
@@ -265,7 +265,7 @@ export default {
     font-size: 36px;
 }
 
-.bookings_record_headings {
+.bookings_record_headings1 {
     font-family: 'Nunito', sans-serif;
     font-weight: 700;
     font-size: 22px;
