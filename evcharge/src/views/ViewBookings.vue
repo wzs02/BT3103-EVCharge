@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <NavBarLogin />
+    <NavBarLogin :key="notifStatusTrigger"/>
     <div class="view_bookings" v-if="showDisplay">
       <h1 class="view_bookings_header">My Bookings</h1>
       <div v-if="uid">
@@ -58,6 +58,7 @@ export default {
       upcomingBookingDetails: {},
       hasPastBooking: false,
       pastBookingDetailsList: [],
+      notifStatusTrigger: 0,
     }
   },
   components: { NavBarLogin, BookingRecord, PastBookingRecord },
@@ -103,6 +104,7 @@ export default {
       await deleteDoc(doc(db, "bookings", bookingId));
       alert("Booking successfully deleted.");
       this.hasUpcomingBooking = false;
+      this.notifStatusTrigger++;
     }
   }
 }
