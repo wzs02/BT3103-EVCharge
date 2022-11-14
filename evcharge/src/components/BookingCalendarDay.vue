@@ -8,9 +8,11 @@
       :time-from="0 * 60"
       :time-to="24 * 60"
       :time-step="30"
+      :selected-date="selectedDate"
       :events="events"
       editableEvents=true
-      snapToTime="30">
+      snapToTime="30"
+      @event-drag-create="dragToBook">
     </vue-cal>
   </div>
 </template>
@@ -26,7 +28,8 @@ const db = getFirestore(firebaseApp)
 export default {
   components: { VueCal },
   data: () => ({
-    events: []
+    selectedDate: new Date(), // Day view displays this date
+    events: [],
   }),
   methods: {
     async fetchData() {
@@ -41,6 +44,10 @@ export default {
           class: 'unavailable',
         })
       })
+    },
+    dragToBook(slot) {
+      console.log(slot.start)
+      console.log(slot.end)
     },
   },
   created() {
@@ -58,18 +65,27 @@ export default {
   font-family: 'Outfit';
 }
 
+.vuecal__event {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  background-color: #B1DCFF;
+  color: black;
+  border-radius: 10px;
+}
+
 .vuecal__event.unavailable {
   display: inline-block;
   justify-content: center;
   align-items: center;
   background-color: #FF7575;
-  color: white;
+  color: #FF7575;
   border-radius: 10px;
 }
 
-.vuecal__event-time {
+/* .vuecal__event-time {
   color: #FF7575;
-}
+} */
 
 .vuecal__now-line {
   color: #4285f4;

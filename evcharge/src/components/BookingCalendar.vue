@@ -6,6 +6,7 @@
     is-expanded
     :attributes="attributes"
     :min-date="new Date()"
+    @dayclick="onDayClickHandler"
     />
   </div>
   
@@ -33,6 +34,7 @@ export default {
     return {
       date: new Date(),
       bookings: [],
+      selectedDay: "",
     }
   },
   computed: {
@@ -78,8 +80,11 @@ export default {
         this.attr.unavailable.dates = [{ start: new Date(2022,10,1), end: new Date(2022,10,2) }]
       }
     },
+    onDayClickHandler(day) {
+      this.selectedDay = day.id
+      console.log(day.id)
+    },
     displayMonthInfo(obj) {
-
       var minGap = 30
       var prev = obj[Object.keys(obj)[0]][0]["end"]
       var firstGap = null
