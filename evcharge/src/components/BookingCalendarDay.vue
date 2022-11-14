@@ -7,13 +7,14 @@
       :disable-views="['years', 'year', 'month', 'week']"
       :time-step="30"
       :selected-date="selectedDate"
-      :events="events"
+      :events="existingEvents"
       :on-event-create="onEventCreate"
-      editableEvents=true
-      snapToTime="30"
+      :editableEvents="{ title: false, drag: true, resize: true, delete: true, create: true}"
+      :snapToTime="30"
       @event-drag-create="dragToBook"
       @event-drop="dropToBook"
-      @event-duration-change="resizeToBook">
+      @event-duration-change="resizeToBook"
+      @event-delete="resetCurrEvent">
     </vue-cal>
   </div>
 </template>
@@ -32,9 +33,14 @@ export default {
     selectedDateString: String,
     selectedChargerID: String
   },
+  emits: ["timeSelected"],
   data: () => ({
     selectedDate: new Date(), // Day view displays this date
-    events: [],
+    existingEvents: [],
+    currEvent: "",
+    startTime: "",
+    endTime: "",
+    bookingDuration: 0,
   }),
   methods: {
     async fetchData(id) {
@@ -43,30 +49,44 @@ export default {
       const q = query(bookingsRef, where("chargerID", "==", id))
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
-        this.events.push({
+        this.existingEvents.push({
           start: doc.data()["startTime"].toDate(),
           end: doc.data()["endTime"].toDate(),
           title: 'Unavailable',
           class: 'unavailable',
+          content: '',
+          // NO DELETE OR MOVING
         })
       })
     },
     onEventCreate(event) {
-      console.log(event)
-
-      return true
+      if (this.currEvent == "") {
+        this.currEvent = event;
+        return true
+      } else {
+        return false
+      }
     },
     dragToBook(slot) {
-      console.log(slot.start)
-      console.log(slot.end)
+      this.startTime = slot.start
+      this.endTime = slot.end
+      this.bookingDuration = slot.endTimeMinutes - slot.startTimeMinutes;
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
     },
     resizeToBook(slot) {
-      console.log(slot.event.start)
-      console.log(slot.event.end)
+      this.startTime = slot.event.start
+      this.endTime = slot.event.end
+      this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
     },
     dropToBook(slot) {
-      console.log(slot.event.start)
-      console.log(slot.event.end)
+      this.startTime = slot.event.start
+      this.endTime = slot.event.end
+      this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+    },
+    resetCurrEvent() {
+      this.currEvent = "";
     },
     getSelectedDate(dateString) {
       if (dateString == "") {
@@ -82,11 +102,6 @@ export default {
   created() {
     this.selectedDate = this.getSelectedDate(this.selectedDateString)
     this.fetchData(this.selectedChargerID)
-  },
-  computed: {
-    test() {
-      return this.chargerInfo
-    }
   },
 }
 </script>
@@ -109,6 +124,12 @@ export default {
   border-radius: 10px;
 }
 
+.vuecal__event-time {
+  display: inline-block;
+  font-size: 18px;
+  color: black;
+}
+
 .vuecal__event.unavailable {
   display: inline-block;
   justify-content: center;
@@ -117,10 +138,6 @@ export default {
   color: #FF7575;
   border-radius: 10px;
 }
-
-/* .vuecal__event-time {
-  color: #FF7575;
-} */
 
 .vuecal__now-line {
   color: #4285f4;
