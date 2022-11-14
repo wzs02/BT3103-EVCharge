@@ -8,7 +8,8 @@
       </v-row>
       <v-row class="availableChargers" style="height: 10%">
         <v-col cols=3>
-          <h3>{{ this.numChargerAvailable }} Chargers Available:</h3>
+          <h3 v-if="this.selected_station_name != 'No charging station selected'">Please select a charger:</h3>
+          <p v-else class="validationMsg">Please select a charging station</p>
         </v-col>
         <v-col>
           <div class="legendindiv" v-if="this.chargerTypes.includes('CCS/SAE')">
@@ -55,13 +56,17 @@
         </v-col>
 
         <v-col cols=6>
-          <div class="dayview">
-            <v-card height="600px" color="#F5F5F5">
-              <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string" :selectedChargerID="this.selected_station_id"/>
-              <v-card-text>You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b></v-card-text>
+          <div class="dayview" v-if="this.selected_date_string != ''">
+            <v-card height="650px" color="#F5F5F5">
+              <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string" :selectedChargerID="this.selected_station_id" @timeSelected="updateSelectedTime($event)"/>
+              <v-card-text class="bookingInfo">
+                You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b><br>
+                <p v-html="date_time_info_string"></p>
+                </v-card-text>
               <v-btn class="btn" rounded elevation="3" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
           </div>
+          <p v-else class="validationMsg">Please select a date</p>
         </v-col>
       </v-row>
      
@@ -97,9 +102,6 @@ export default {
       }
     })
   },
-  mounted() {
-    this.isBookingDisabled = this.checkBookingFields();
-  },
   updated() {
     this.isBookingDisabled = this.checkBookingFields();
   },
@@ -118,6 +120,10 @@ export default {
       selected_station_address: "",
       selected_charger_display_num: "",
       selected_date_string: "",
+      selected_start_time: "",
+      selected_end_time:"",
+      booking_duration: "",
+      date_time_info_string: "",
       dateSelectionTrigger: 0,
       chargerTypeColourMap: {"Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a"}
     } 
@@ -167,11 +173,19 @@ export default {
       this.selected_date_string = dateString;
       this.dateSelectionTrigger++;
     },
+    updateSelectedTime(timeDetails) {
+      this.selected_start_time = timeDetails.startTime;
+      this.selected_end_time = timeDetails.endTime;
+      this.booking_duration = timeDetails.duration;
+      let time_info_string = this.selected_start_time.toTimeString().slice(0, 5) + "-" + this.selected_end_time.toTimeString().slice(0, 5)
+      let date_info_string = this.selected_start_time.toLocaleDateString('en-GB');
+      this.date_time_info_string = `on <b>${date_info_string}</b>, <b>${time_info_string}</b>`
+      this.isBookingDisabled = this.checkBookingFields();
+    },
     checkBookingFields() {
-      // TO EDIT bookingFieldValues
-      //let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address];
-      //return bookingFieldValues.some((x) => x == "");
-      return false;
+      let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address, 
+        this.selected_start_time, this.selected_end_time, this.booking_duration];
+      return bookingFieldValues.some((x) => x == "");
     },
     async makeBooking() {
       if (this.uid) {
@@ -336,6 +350,13 @@ export default {
   float: left;
 }
 
+.validationMsg {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  text-align: left;
+}
+
 .dayview {
   margin: auto;
   text-align: center;
@@ -346,13 +367,17 @@ export default {
   height: 50px;
 }
 
+.bookingInfo {
+  font-size: 18px;
+}
+
 .btn {
   width: 40%;
   background-color: #4285f4;
   color: #FFFFFF;
   font-family: 'Outfit';
   font-weight: bold;
-  font-size: 10px;
+  font-size: 20px;
   border-radius: 15px;
 }
 
