@@ -4,13 +4,13 @@
     <v-container>
 
       <v-row class="header">
-        <h1>Book a Charger: <span style="color: #4285f4">{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</span></h1>
+        <h1>Book a Charger: <span style="color: #4285f4">{{ this.selected_station_name }}</span><span style="color: #7F8487">{{ this.selected_charger_display_num }}</span></h1>
       </v-row>
-      <v-row class="availablechargers" style="height: 10%">
-        <v-col cols=2>
+      <v-row class="availableChargers" style="height: 10%">
+        <v-col cols=3>
           <h3>{{ this.numChargerAvailable }} Chargers Available:</h3>
         </v-col>
-        <v-col>  
+        <v-col>
           <div class="legendindiv" v-if="this.chargerTypes.includes('CCS/SAE')">
             <span class="dot" style="background-color: #0096c7"></span>
             <p class="legendtext">CCS/SAE</p>
@@ -31,7 +31,7 @@
       </v-row>
       <v-row style="height: 20%">
         <div v-for="charger in chargerList" :key="charger.id">
-          <v-btn class="btncharger" rounded elevation="3" @click="displayMonth(charger.id, charger.display_num)" :color="charger.display_col">{{ charger.display_num }}</v-btn>
+          <v-btn class="btncharger" rounded elevation="3" @click="displayMonth(charger.id, charger.display_num, charger.type)" :color="charger.display_col">{{ charger.display_num }}</v-btn>
         </div>
       </v-row>
 
@@ -120,7 +120,7 @@ export default {
       selected_station_id: "",
       selected_station_name: "No charging station selected", 
       selected_station_provider: "",
-      selected_station_charger_type: "", // TO LINK UP 
+      selected_station_charger_type: "",
       selected_station_address: "",
       selected_charger_display_num: "",
       chargerTypeColourMap: {"Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a"}
@@ -174,10 +174,11 @@ export default {
       })
       //this.numChargerAvailable = this.chargersMatching.length
     },
-    async displayMonth(id, display_num) {
+    async displayMonth(id, display_num, charger_type) {
 
       var availabilityFromID = []
       this.selected_charger_display_num = "-" + display_num.toString();
+      this.selected_station_charger_type = charger_type;
 
       const bookingsRef = collection(db, "testBookings")
       const q = query(bookingsRef, where("chargerID", "==", id), orderBy("bookingDate"))
@@ -269,7 +270,7 @@ export default {
           location: this.selected_station_name,
           charger_type: this.selected_station_charger_type,
           provider: this.selected_station_provider,
-          date: new Date('November 1, 2022 09:30:00'), // TO EDIT
+          date: new Date('November 17, 2022 09:30:00'), // TO EDIT
           duration: 60,
           street: this.selected_station_address["street"],
           postal_code: this.selected_station_address["postalCode"],
@@ -300,7 +301,7 @@ export default {
   font-size: 20px;
 }
 
-.availablechargers {
+.availableChargers {
   font-family: "Outfit";
   font-style: normal;
   font-weight: 100;
