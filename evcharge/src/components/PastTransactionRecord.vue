@@ -7,11 +7,13 @@
                         <th>Date</th>
                         <th>Time</th>
                         <th>Amount</th>
+                        <th>Type</th>
                     </thead>
                     <tbody class="transactions_record_values">
-                        <td class="loc_value1">{{transDetails.date}}</td>
+                        <td>{{transDetails.date}}</td>
                         <td>{{transDetails.time}}</td>
-                        <td class="svc_pdr_value1">{{transDetails.amount}}</td>
+                        <td>{{transDetails.amount}}</td>
+                        <td>{{transDetails.type}}</td>
                     </tbody>
                 </table>
             </v-col>
@@ -36,14 +38,6 @@ table {
 td {
     word-wrap: break-word;
     width: 16%;
-}
-
-td.loc_value1 {
-    width: 32%;
-}
-
-td.svc_pdr_value1 {
-    width: 18%;
 }
 
 .transactions_record_container {
