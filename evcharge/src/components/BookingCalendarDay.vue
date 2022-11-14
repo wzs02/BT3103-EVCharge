@@ -5,14 +5,13 @@
       active-view="day"
       hide-view-selector
       :disable-views="['years', 'year', 'month', 'week']"
-      :time-from="0 * 60"
-      :time-to="24 * 60"
       :time-step="30"
       :selected-date="selectedDate"
       :events="events"
       editableEvents=true
-      snapToTime="30"
-      @event-drag-create="dragToBook">
+      snapToTime=30
+      @event-drag-create="dragToBook"
+      @event-change="dragToBook">
     </vue-cal>
   </div>
 </template>
@@ -27,12 +26,15 @@ const db = getFirestore(firebaseApp)
 
 export default {
   components: { VueCal },
+  props: {
+    selectedDateString: String
+  },
   data: () => ({
     selectedDate: new Date(), // Day view displays this date
     events: [],
   }),
   methods: {
-    async fetchData() {
+    async fetchBookingData() {
       const bookingsRef = collection(db, "testBookings")
       const q = query(bookingsRef)
       const querySnapshot = await getDocs(q)
@@ -49,9 +51,20 @@ export default {
       console.log(slot.start)
       console.log(slot.end)
     },
+    getSelectedDate(dateString) {
+      if (dateString == "") {
+        return new Date();
+      } else {
+        let year = dateString.substring(0,4);
+        let month = parseInt(dateString.substring(5,7)) - 1; // get monthIndex
+        let day = dateString.substring(8,10);
+        return new Date(year, month, day);
+      }
+    }
   },
   created() {
-    this.fetchData()
+    this.selectedDate = this.getSelectedDate(this.selectedDateString)
+    this.fetchBookingData()
   },
 }
 </script>

@@ -22,6 +22,7 @@ const db = getFirestore(firebaseApp)
 export default {
   name: 'BookingCalendar',
   components: { },
+  emits: ["dateSelected"],
   props: {
     monthlyInfo: {
       type: Object,
@@ -82,6 +83,7 @@ export default {
     },
     onDayClickHandler(day) {
       this.selectedDay = day.id
+      this.$emit("dateSelected", day.id)
       console.log(day.id)
     },
     displayMonthInfo(obj) {
