@@ -8,10 +8,12 @@
       :time-step="30"
       :selected-date="selectedDate"
       :events="events"
+      :on-event-create="onEventCreate"
       editableEvents=true
-      snapToTime=30
+      snapToTime="30"
       @event-drag-create="dragToBook"
-      @event-change="dragToBook">
+      @event-drop="dropToBook"
+      @event-duration-change="resizeToBook">
     </vue-cal>
   </div>
 </template>
@@ -20,23 +22,25 @@
 import VueCal from 'vue-cal'
 import 'vue-cal/dist/vuecal.css'
 import firebaseApp from "../firebase.js";
-import { getFirestore, getDocs, collection, query } from "firebase/firestore";
+import { getFirestore, getDocs, collection, query, where} from "firebase/firestore";
 
 const db = getFirestore(firebaseApp)
 
 export default {
   components: { VueCal },
   props: {
-    selectedDateString: String
+    selectedDateString: String,
+    selectedChargerID: String
   },
   data: () => ({
     selectedDate: new Date(), // Day view displays this date
     events: [],
   }),
   methods: {
-    async fetchBookingData() {
+    async fetchData(id) {
+      console.log(id)
       const bookingsRef = collection(db, "testBookings")
-      const q = query(bookingsRef)
+      const q = query(bookingsRef, where("chargerID", "==", id))
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
         this.events.push({
@@ -47,9 +51,22 @@ export default {
         })
       })
     },
+    onEventCreate(event) {
+      console.log(event)
+
+      return true
+    },
     dragToBook(slot) {
       console.log(slot.start)
       console.log(slot.end)
+    },
+    resizeToBook(slot) {
+      console.log(slot.event.start)
+      console.log(slot.event.end)
+    },
+    dropToBook(slot) {
+      console.log(slot.event.start)
+      console.log(slot.event.end)
     },
     getSelectedDate(dateString) {
       if (dateString == "") {
@@ -64,7 +81,12 @@ export default {
   },
   created() {
     this.selectedDate = this.getSelectedDate(this.selectedDateString)
-    this.fetchBookingData()
+    this.fetchData(this.selectedChargerID)
+  },
+  computed: {
+    test() {
+      return this.chargerInfo
+    }
   },
 }
 </script>

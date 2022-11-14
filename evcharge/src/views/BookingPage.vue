@@ -31,7 +31,7 @@
       </v-row>
       <v-row style="height: 20%">
         <div v-for="charger in chargerList" :key="charger.id">
-          <v-btn class="btncharger" rounded elevation="3" @click="selectDateTime(charger.id, charger.display_num, charger.type)" :color="charger.display_col">{{ charger.display_num }}</v-btn>
+          <v-btn class="btncharger" rounded elevation="3" @click="selectCharger(charger.id, charger.display_num, charger.type)" :color="charger.display_col">{{ charger.display_num }}</v-btn>
         </div>
       </v-row>
 
@@ -57,7 +57,7 @@
         <v-col cols=6>
           <div class="dayview">
             <v-card height="600px" color="#F5F5F5">
-              <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string"/>
+              <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string" :selectedChargerID="this.selected_station_id"/>
               <v-card-text>You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b></v-card-text>
               <v-btn class="btn" rounded elevation="3" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
@@ -157,15 +157,40 @@ export default {
         this.chargerList = chargers_list;
       }
     },
-    async selectDateTime(id, display_num, charger_type) {
+    async selectCharger(id, display_num, charger_type) {
       this.selected_station_id = id;
       this.selected_charger_display_num = "-" + display_num.toString();
       this.selected_station_charger_type = charger_type;
-
+      this.dateSelectionTrigger++;
     },
     updateSelectedDate(dateString) {
       this.selected_date_string = dateString;
       this.dateSelectionTrigger++;
+    },
+    checkBookingFields() {
+      // TO EDIT bookingFieldValues
+      //let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address];
+      //return bookingFieldValues.some((x) => x == "");
+      return false;
+    },
+    async makeBooking() {
+      if (this.uid) {
+        const booking_rec = {
+          user_id: this.uid,
+          station_id: this.selected_station_id,
+          location: this.selected_station_name,
+          charger_type: this.selected_station_charger_type,
+          provider: this.selected_station_provider,
+          date: new Date('November 17, 2022 09:30:00'), // TO EDIT
+          duration: 60,
+          street: this.selected_station_address["street"],
+          postal_code: this.selected_station_address["postalCode"],
+        }
+        await addDoc(collection(db, "bookings"), booking_rec);
+        alert("Booking Success. Please view under My Bookings.")
+      } else {
+        this.$router.push('/login');
+      }
     },
     // async displayMonth(id, display_num, charger_type) {
     //   var availabilityFromID = []
@@ -204,11 +229,11 @@ export default {
     //   console.log(this.monthlyAvailability)
     //   console.log(availabilityFromID)
 
-    //   const now = new Date()
-    //   var currDate = now.getDate()
-    //   const currMonth = now.getMonth()
-    //   const currYear = now.getFullYear()
-    //   const firstDateNextMonth = new Date(currYear, currMonth + 1, 1) 
+      // const now = new Date()
+      // var currDate = now.getDate()
+      // const currMonth = now.getMonth()
+      // const currYear = now.getFullYear()
+      //const firstDateNextMonth = new Date(currYear, currMonth + 1, 1) 
       
     //   function daysInMonth (month, year) {
     //     return new Date(year, month, 0).getDate();
@@ -249,31 +274,6 @@ export default {
     //   }
     //   this.monthlyAvailability = availabilityFromID
     // },
-    checkBookingFields() {
-      // TO EDIT bookingFieldValues
-      //let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address];
-      //return bookingFieldValues.some((x) => x == "");
-      return false;
-    },
-    async makeBooking() {
-      if (this.uid) {
-        const booking_rec = {
-          user_id: this.uid,
-          station_id: this.selected_station_id,
-          location: this.selected_station_name,
-          charger_type: this.selected_station_charger_type,
-          provider: this.selected_station_provider,
-          date: new Date('November 17, 2022 09:30:00'), // TO EDIT
-          duration: 60,
-          street: this.selected_station_address["street"],
-          postal_code: this.selected_station_address["postalCode"],
-        }
-        await addDoc(collection(db, "bookings"), booking_rec);
-        alert("Booking Success. Please view under My Bookings.")
-      } else {
-        this.$router.push('/login');
-      }
-    },
   }
 }
 </script>
