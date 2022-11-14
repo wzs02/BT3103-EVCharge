@@ -24,8 +24,8 @@ export default {
   props: {
     monthlyInfo: {
       type: Object,
-      default() {
-        return {}
+      default() {         
+        return { "today": [{ end: new Date(2022, 0, 1), start: new Date(2022, 0, 1) }] }
       },
     },
   },
@@ -79,9 +79,37 @@ export default {
       }
     },
     displayMonthInfo(obj) {
-      for(var i = 0; i < Object.keys(obj).length; i++) {
-        console.log(i)
+
+      var minGap = 30
+      var prev = obj[Object.keys(obj)[0]][0]["end"]
+      var firstGap = null
+
+      for(var day = 0; day < Object.keys(obj).length; day++) { // Iterate days
+        for(var time = 0; time < obj[Object.keys(obj)[day]].length; time++) { // Iterate booked slots within day
+          
+          var curr = obj[Object.keys(obj)[day]][time]["start"]
+          var diff = curr - prev
+
+          if(diff >= minGap) {
+            firstGap = {
+              start: prev,
+              end: curr,
+            }
+            break
+          }
+
+          prev = curr
+        }
       }
+
+      if(firstGap != null) {
+        console.log("First gap at: " + firstGap.start)
+        //this.bookings.push({ date: firstGap.start, isAvailable: true })
+      } else {
+        console.log("No gaps available")
+        this.bookings.push({ date: new Date(), isAvailable: false })
+      }
+
       // const daysRemaining = arr.length
       // const now = new Date()
       // var currDate = now.getDate()
@@ -100,7 +128,13 @@ export default {
     },
   },
   created() {
-    this.displayMonthInfo(this.monthlyInfo)
+    if(Object.keys(this.monthlyInfo).length == 0) {
+      console.log("empty proxy")
+    } else {
+      this.displayMonthInfo(this.monthlyInfo)
+      console.log(this.monthlyInfo)
+    }
+    
   },
   mounted() {
   },

@@ -37,8 +37,8 @@
 
       <v-row style="height: 60%">
         <v-col cols=6>
-          <BookingCalendar v-if="Object.keys(monthlyAvailability).length > 0" :monthlyInfo="this.monthlyAvailability" />
-          <BookingCalendar v-else />
+          <BookingCalendar v-if="Object.keys(this.monthlyAvailability).length > 0" :monthlyInfo="this.monthlyAvailability" />
+          <BookingCalendar v-else :monthlyInfo="this.monthlyAvailability" />
           <div class="legend">
             <div class="legendindiv">
               <span class="dot" style="background-color: #46946e"></span>
@@ -175,8 +175,6 @@ export default {
       //this.numChargerAvailable = this.chargersMatching.length
     },
     async displayMonth(id, display_num) {
-      console.log(id) // sg_zoo_1
-      console.log(display_num) // 1
 
       var availabilityFromID = []
       this.selected_charger_display_num = "-" + display_num.toString();
