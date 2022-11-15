@@ -5,14 +5,16 @@
       active-view="day"
       hide-view-selector
       :disable-views="['years', 'year', 'month', 'week']"
-      :time-from="0 * 60"
-      :time-to="24 * 60"
       :time-step="30"
       :selected-date="selectedDate"
-      :events="events"
-      editableEvents=true
-      snapToTime="30"
-      @event-drag-create="dragToBook">
+      :events="existingEvents"
+      :on-event-create="onEventCreate"
+      :editableEvents="{ title: false, drag: true, resize: true, delete: true, create: true}"
+      :snapToTime="30"
+      @event-drag-create="dragToBook"
+      @event-drop="dropToBook"
+      @event-duration-change="resizeToBook"
+      @event-delete="resetCurrEvent">
     </vue-cal>
   </div>
 </template>
@@ -21,37 +23,85 @@
 import VueCal from 'vue-cal'
 import 'vue-cal/dist/vuecal.css'
 import firebaseApp from "../firebase.js";
-import { getFirestore, getDocs, collection, query } from "firebase/firestore";
+import { getFirestore, getDocs, collection, query, where} from "firebase/firestore";
 
 const db = getFirestore(firebaseApp)
 
 export default {
   components: { VueCal },
+  props: {
+    selectedDateString: String,
+    selectedChargerID: String
+  },
+  emits: ["timeSelected"],
   data: () => ({
     selectedDate: new Date(), // Day view displays this date
-    events: [],
+    existingEvents: [],
+    currEvent: "",
+    startTime: "",
+    endTime: "",
+    bookingDuration: 0,
   }),
   methods: {
-    async fetchData() {
+    async fetchData(id) {
+      console.log(id)
       const bookingsRef = collection(db, "testBookings")
-      const q = query(bookingsRef)
+      const q = query(bookingsRef, where("chargerID", "==", id))
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
-        this.events.push({
+        this.existingEvents.push({
           start: doc.data()["startTime"].toDate(),
           end: doc.data()["endTime"].toDate(),
           title: 'Unavailable',
           class: 'unavailable',
+          content: '',
+          // NO DELETE OR MOVING
         })
       })
     },
-    dragToBook(slot) {
-      console.log(slot.start)
-      console.log(slot.end)
+    onEventCreate(event) {
+      if (this.currEvent == "") {
+        this.currEvent = event;
+        return true
+      } else {
+        return false
+      }
     },
+    dragToBook(slot) {
+      this.startTime = slot.start
+      this.endTime = slot.end
+      this.bookingDuration = slot.endTimeMinutes - slot.startTimeMinutes;
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+    },
+    resizeToBook(slot) {
+      this.startTime = slot.event.start
+      this.endTime = slot.event.end
+      this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+    },
+    dropToBook(slot) {
+      this.startTime = slot.event.start
+      this.endTime = slot.event.end
+      this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+    },
+    resetCurrEvent() {
+      this.currEvent = "";
+    },
+    getSelectedDate(dateString) {
+      if (dateString == "") {
+        return new Date();
+      } else {
+        let year = dateString.substring(0,4);
+        let month = parseInt(dateString.substring(5,7)) - 1; // get monthIndex
+        let day = dateString.substring(8,10);
+        return new Date(year, month, day);
+      }
+    }
   },
   created() {
-    this.fetchData()
+    this.selectedDate = this.getSelectedDate(this.selectedDateString)
+    this.fetchData(this.selectedChargerID)
   },
 }
 </script>
@@ -74,6 +124,12 @@ export default {
   border-radius: 10px;
 }
 
+.vuecal__event-time {
+  display: inline-block;
+  font-size: 18px;
+  color: black;
+}
+
 .vuecal__event.unavailable {
   display: inline-block;
   justify-content: center;
@@ -82,10 +138,6 @@ export default {
   color: #FF7575;
   border-radius: 10px;
 }
-
-/* .vuecal__event-time {
-  color: #FF7575;
-} */
 
 .vuecal__now-line {
   color: #4285f4;

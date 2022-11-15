@@ -8,7 +8,8 @@
       </v-row>
       <v-row class="availableChargers" style="height: 10%">
         <v-col cols=3>
-          <h3>{{ this.numChargerAvailable }} Chargers Available:</h3>
+          <h3 v-if="this.selected_station_name != 'No charging station selected'">Please select a charger:</h3>
+          <p v-else class="validationMsg">Please select a charging station</p>
         </v-col>
         <v-col>
           <div class="legendindiv" v-if="this.chargerTypes.includes('CCS/SAE')">
@@ -31,14 +32,13 @@
       </v-row>
       <v-row style="height: 20%">
         <div v-for="charger in chargerList" :key="charger.id">
-          <v-btn class="btncharger" rounded elevation="3" @click="displayMonth(charger.id, charger.display_num, charger.type)" :color="charger.display_col">{{ charger.display_num }}</v-btn>
+          <v-btn class="btncharger" rounded elevation="3" @click="selectCharger(charger.id, charger.display_num, charger.type)" :color="charger.display_col">{{ charger.display_num }}</v-btn>
         </div>
       </v-row>
 
       <v-row style="height: 60%">
         <v-col cols=6>
-          <BookingCalendar v-if="Object.keys(this.monthlyAvailability).length > 0" :monthlyInfo="this.monthlyAvailability" />
-          <BookingCalendar v-else :monthlyInfo="this.monthlyAvailability" />
+          <BookingCalendar @dateSelected="updateSelectedDate($event)"/>
           <div class="legend">
             <div class="legendindiv">
               <span class="dot" style="background-color: #46946e"></span>
@@ -56,13 +56,17 @@
         </v-col>
 
         <v-col cols=6>
-          <div class="dayview">
-            <v-card height="600px" color="#F5F5F5">
-              <BookingCalendarDay />
-              <v-card-text>You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b></v-card-text>
+          <div class="dayview" v-if="this.selected_date_string != ''">
+            <v-card height="650px" color="#F5F5F5">
+              <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string" :selectedChargerID="this.selected_station_id" @timeSelected="updateSelectedTime($event)"/>
+              <v-card-text class="bookingInfo">
+                You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b><br>
+                <p v-html="date_time_info_string"></p>
+                </v-card-text>
               <v-btn class="btn" rounded elevation="3" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
           </div>
+          <p v-else class="validationMsg">Please select a date</p>
         </v-col>
       </v-row>
      
@@ -72,7 +76,7 @@
 
 <script>
 import firebaseApp from "../firebase.js"
-import { getFirestore, getDoc, getDocs, addDoc, doc, collection, query, where, orderBy } from "firebase/firestore"
+import { getFirestore, getDoc, addDoc, doc, collection } from "firebase/firestore"
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBar from "@/components/NavBar.vue";
 import BookingCalendar from "@/components/BookingCalendar.vue"
@@ -97,24 +101,16 @@ export default {
         this.uid = user.uid;
       }
     })
-    this.matchingChargers(this.chargerFromMap)
-    //this.createCollection()
-  },
-  mounted() {
-    this.isBookingDisabled = this.checkBookingFields();
   },
   updated() {
     this.isBookingDisabled = this.checkBookingFields();
   },
   data() {
     return {
-      //chargerFromMap: this.$router.params.charger,
-      chargerFromMap: ["Jalan Kayu", "DC50"],
       numChargerAvailable: 0,
       chargerTypes: [],
       chargerList: [],
-      chargersMatching: [],
-      monthlyAvailability: {},
+      // monthlyAvailability: {},
       uid: false,
       isBookingDisabled: true,
       selected_station_id: "",
@@ -123,6 +119,12 @@ export default {
       selected_station_charger_type: "",
       selected_station_address: "",
       selected_charger_display_num: "",
+      selected_date_string: "",
+      selected_start_time: "",
+      selected_end_time:"",
+      booking_duration: "",
+      date_time_info_string: "",
+      dateSelectionTrigger: 0,
       chargerTypeColourMap: {"Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a"}
     } 
   },
@@ -133,7 +135,6 @@ export default {
       if (docSnap.exists()) {
         const station_data = docSnap.data()[station_id][0];
         // Store station info
-        this.selected_station_id = station_id;
         this.selected_station_name = station_data.id;
         this.selected_station_provider = station_data.chargerDetails["provider"];
         this.selected_station_address = {"street": station_data.street, "postalCode": station_data.postalCode};
@@ -162,105 +163,29 @@ export default {
         this.chargerList = chargers_list;
       }
     },
-    async matchingChargers(chargerFromMap) {
-      const chargerLocation = chargerFromMap[0]
-      const chargerType = chargerFromMap[1]
-
-      const chargersRef = collection(db, "testCal")
-      const q = query(chargersRef, where("location", "==", chargerLocation), where("type", "==", chargerType), orderBy("id"))
-      const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc) => {
-        this.chargersMatching.push({ id: doc.data()["id"], location: doc.data()["location"], type: doc.data()["type"] })
-      })
-      //this.numChargerAvailable = this.chargersMatching.length
-    },
-    async displayMonth(id, display_num, charger_type) {
-
-      var availabilityFromID = []
+    async selectCharger(id, display_num, charger_type) {
+      this.selected_station_id = id;
       this.selected_charger_display_num = "-" + display_num.toString();
       this.selected_station_charger_type = charger_type;
-
-      const bookingsRef = collection(db, "testBookings")
-      const q = query(bookingsRef, where("chargerID", "==", id), orderBy("bookingDate"))
-      const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc) => {
-        const fullDate = doc.data()["bookingDate"].toDate()
-        const currDate = fullDate.getDate()
-        const currMonth = fullDate.getMonth()
-        const currYear = fullDate.getFullYear() 
-        availabilityFromID.push({ 
-          date: String(new Date(currYear, currMonth, currDate, 0, 0, 0, 0)), 
-          start: doc.data()["startTime"],
-          end: doc.data()["endTime"],
-        })
-      })
-
-      var dateAndTime = {}
-      for(var i = 0; i < availabilityFromID.length; i++) {
-        const date = availabilityFromID[i].date
-        const start = availabilityFromID[i].start
-        const end = availabilityFromID[i].end
-        if(date in dateAndTime) {
-          dateAndTime[date].push({start: start, end: end})
-        } else {
-          dateAndTime[date] = [{start: start, end: end}]
-        }
-      }
-
-      this.monthlyAvailability = dateAndTime
-      console.log(this.monthlyAvailability)
-      console.log(availabilityFromID)
-
-      // const now = new Date()
-      // var currDate = now.getDate()
-      // const currMonth = now.getMonth()
-      // const currYear = now.getFullYear()
-      //const firstDateNextMonth = new Date(currYear, currMonth + 1, 1) 
-      
-      // function daysInMonth (month, year) {
-      //   return new Date(year, month, 0).getDate();
-      // }
-
-      //const numDaysLeft = daysInMonth(currMonth, currYear) - currDate
-
-      // for(var i = 0; i < numDaysLeft; i++) { // Iterate dates from now to last date of month, both inclusive
-      //   var arrOfTimings = bookingSnapshot.data()[String(currDate)]
-      //   var numBooked = arrOfTimings.length
-      //   var arrOfDateObj = []
-      //   for(var j = 0; j < numBooked; j++) {
-      //     arrOfDateObj.push(String(arrOfTimings[j].toDate()))
-      //   }
-      //   if (numBooked == 0) { // No booked timings -> Available
-      //     availabilityFromID.push(true)
-      //   } else {
-      //     for(var timeslot = 0; timeslot < numBooked; timeslot++) {
-      //       var endOfBooking = moment(arrOfTimings[timeslot].toDate()).add(30, 'm').toDate()
-      //       if (arrOfDateObj.includes(String(endOfBooking))) {
-      //         // Earliest available timeslot is booked -> Unavailable
-      //         // Continue iterating through remaining timeslots
-      //       } else {
-      //         if (String(endOfBooking) == String(firstDateNextMonth)) {
-      //           availabilityFromID.push(false)
-      //           break
-      //         }
-      //         // There is at least 1 free timeslot -> Available
-      //         availabilityFromID.push(true)
-      //         break
-      //       }
-      //       if(timeslot == numBooked - 1) { // Have gone through all booked timings
-      //         availabilityFromID.push(false)
-      //       }
-      //     } 
-      //   }
-      //   currDate = currDate + 1
-      // }
-      // this.monthlyAvailability = availabilityFromID
+      this.dateSelectionTrigger++;
+    },
+    updateSelectedDate(dateString) {
+      this.selected_date_string = dateString;
+      this.dateSelectionTrigger++;
+    },
+    updateSelectedTime(timeDetails) {
+      this.selected_start_time = timeDetails.startTime;
+      this.selected_end_time = timeDetails.endTime;
+      this.booking_duration = timeDetails.duration;
+      let time_info_string = this.selected_start_time.toTimeString().slice(0, 5) + "-" + this.selected_end_time.toTimeString().slice(0, 5)
+      let date_info_string = this.selected_start_time.toLocaleDateString('en-GB');
+      this.date_time_info_string = `on <b>${date_info_string}</b>, <b>${time_info_string}</b>`
+      this.isBookingDisabled = this.checkBookingFields();
     },
     checkBookingFields() {
-      // TO EDIT bookingFieldValues
-      //let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address];
-      //return bookingFieldValues.some((x) => x == "");
-      return false;
+      let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address, 
+        this.selected_start_time, this.selected_end_time, this.booking_duration];
+      return bookingFieldValues.some((x) => x == "");
     },
     async makeBooking() {
       if (this.uid) {
@@ -281,9 +206,87 @@ export default {
         this.$router.push('/login');
       }
     },
-    // async createCollection() {
-    //   await addDoc(collection(db, "testBookings"), bookingVar);
-    //   console.log("hello")
+    // async displayMonth(id, display_num, charger_type) {
+    //   var availabilityFromID = []
+    //   this.selected_station_id = id;
+    //   this.selected_charger_display_num = "-" + display_num.toString();
+    //   this.selected_station_charger_type = charger_type;
+
+    //   const bookingsRef = collection(db, "testBookings")
+    //   const q = query(bookingsRef, where("chargerID", "==", id), orderBy("bookingDate"))
+    //   const querySnapshot = await getDocs(q)
+    //   querySnapshot.forEach((doc) => {
+    //     const fullDate = doc.data()["bookingDate"].toDate()
+    //     const currDate = fullDate.getDate()
+    //     const currMonth = fullDate.getMonth()
+    //     const currYear = fullDate.getFullYear() 
+    //     availabilityFromID.push({ 
+    //       date: String(new Date(currYear, currMonth, currDate, 0, 0, 0, 0)), 
+    //       start: doc.data()["startTime"],
+    //       end: doc.data()["endTime"],
+    //     })
+    //   })
+
+    //   var dateAndTime = {}
+    //   for(var i = 0; i < availabilityFromID.length; i++) {
+    //     const date = availabilityFromID[i].date
+    //     const start = availabilityFromID[i].start
+    //     const end = availabilityFromID[i].end
+    //     if(date in dateAndTime) {
+    //       dateAndTime[date].push({start: start, end: end})
+    //     } else {
+    //       dateAndTime[date] = [{start: start, end: end}]
+    //     }
+    //   }
+
+    //   this.monthlyAvailability = dateAndTime
+    //   console.log(this.monthlyAvailability)
+    //   console.log(availabilityFromID)
+
+      // const now = new Date()
+      // var currDate = now.getDate()
+      // const currMonth = now.getMonth()
+      // const currYear = now.getFullYear()
+      //const firstDateNextMonth = new Date(currYear, currMonth + 1, 1) 
+      
+    //   function daysInMonth (month, year) {
+    //     return new Date(year, month, 0).getDate();
+    //   }
+
+    //   const numDaysLeft = daysInMonth(currMonth, currYear) - currDate
+
+    //   for(var i = 0; i < numDaysLeft; i++) { // Iterate dates from now to last date of month, both inclusive
+    //     var arrOfTimings = bookingSnapshot.data()[String(currDate)]
+    //     var numBooked = arrOfTimings.length
+    //     var arrOfDateObj = []
+    //     for(var j = 0; j < numBooked; j++) {
+    //       arrOfDateObj.push(String(arrOfTimings[j].toDate()))
+    //     }
+    //     if (numBooked == 0) { // No booked timings -> Available
+    //       availabilityFromID.push(true)
+    //     } else {
+    //       for(var timeslot = 0; timeslot < numBooked; timeslot++) {
+    //         var endOfBooking = moment(arrOfTimings[timeslot].toDate()).add(30, 'm').toDate()
+    //         if (arrOfDateObj.includes(String(endOfBooking))) {
+    //           // Earliest available timeslot is booked -> Unavailable
+    //           // Continue iterating through remaining timeslots
+    //         } else {
+    //           if (String(endOfBooking) == String(firstDateNextMonth)) {
+    //             availabilityFromID.push(false)
+    //             break
+    //           }
+    //           // There is at least 1 free timeslot -> Available
+    //           availabilityFromID.push(true)
+    //           break
+    //         }
+    //         if(timeslot == numBooked - 1) { // Have gone through all booked timings
+    //           availabilityFromID.push(false)
+    //         }
+    //       } 
+    //     }
+    //     currDate = currDate + 1
+    //   }
+    //   this.monthlyAvailability = availabilityFromID
     // },
   }
 }
@@ -347,6 +350,13 @@ export default {
   float: left;
 }
 
+.validationMsg {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  text-align: left;
+}
+
 .dayview {
   margin: auto;
   text-align: center;
@@ -357,13 +367,17 @@ export default {
   height: 50px;
 }
 
+.bookingInfo {
+  font-size: 18px;
+}
+
 .btn {
   width: 40%;
   background-color: #4285f4;
   color: #FFFFFF;
   font-family: 'Outfit';
   font-weight: bold;
-  font-size: 10px;
+  font-size: 20px;
   border-radius: 15px;
 }
 
