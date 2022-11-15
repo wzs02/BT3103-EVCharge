@@ -41,7 +41,6 @@
                 </v-card>
             </v-container>
         </div>
-
     </v-app>
 </template>
 

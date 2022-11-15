@@ -1,52 +1,36 @@
 <template>
     <v-app>
-        <div v-if="showDisplay">
-            <NavBarLogin />
-            <div class="bg-container">
-                <img v-bind:src="bg_img" id="bg-ratio">
-            </div>
+        <NavBar />
+        <div class="bg-container">
+            <img v-bind:src="bg_img" id="bg-ratio">
 
             <div class="center">
                 <v-card elevation id="card">
                     <div style="margin-top: 40px;">
-                        <p id="status-text">Payment Failed</p>
+                        <p id="status-text">Please Log In to Access This Page</p>
                         <div class="center-div">
-                            <router-link :to="{ path: '../account-balance' }">
-                                <v-btn class="btn-style">Back to Account Balance</v-btn>
+                            <router-link :to="{ path: '../login' }">
+                                <v-btn class="btn-style">Log In Now</v-btn>
                             </router-link>
                         </div>
                     </div>
                 </v-card>
             </div>
         </div>
-        <div v-else>
-            <SignInToAccess />
-        </div>
     </v-app>
 </template>
 
 <script>
-import NavBarLogin from "@/components/NavBarLogin.vue";
-import SignInToAccess from "@/components/SignInToAccess.vue";
-import { getAuth, onAuthStateChanged } from '@firebase/auth';
+import NavBar from "@/components/NavBar.vue";
 
 export default {
-    name: 'PaymentErrorPage',
-    components: { NavBarLogin, SignInToAccess },
+    name: 'SignInToAccess',
+    components: { NavBar },
     data() {
         return {
-            bg_img: require('../assets/AccountBalancePage/Allura.png'),
-            showDisplay: false
+            bg_img: require('../assets/AccountBalancePage/Allura.png')
         }
     },
-    created() {
-        const auth = getAuth();
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                this.showDisplay = true;
-            }
-        })
-    }
 }
 </script>
 
@@ -88,7 +72,7 @@ export default {
 
 #card {
     align-items: center;
-    height: 200px;
+    height: 225px;
     border-radius: 30px;
 }
 
@@ -97,8 +81,9 @@ export default {
     font-weight: 600;
     text-align: center;
     font-size: 40px;
+    color: #8d8d8d;
+    line-height: 50px;
     margin-bottom: 10px;
-    color: red;
 }
 
 .center-div {

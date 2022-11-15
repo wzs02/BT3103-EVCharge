@@ -1,7 +1,13 @@
 <template>
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
     <v-app>
-        <NavBar/>
+        <div v-if="showDisplay">
+            <NavBarLogin />
+        </div>
+
+        <div v-else>
+            <NavBar />
+        </div>
 
         <div style="height: 120px"></div>
 
@@ -83,20 +89,31 @@
 <script>
 import { mdiAccount } from '@mdi/js';
 import NavBar from '../components/NavBar.vue';
+import NavBarLogin from '../components/NavBarLogin.vue';
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
 export default {
     name: 'FAQPage',
-    components: { NavBar },
+    components: { NavBar, NavBarLogin },
     data() {
         return {
-            mdiAccount
+            mdiAccount,
+            showDisplay: false
         }
+    },
+    created() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.showDisplay = true;
+            }
+        })
     }
 }
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@400;700&display=swap');
 
 #nav-logo {
     width: 140px;

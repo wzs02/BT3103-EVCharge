@@ -1,35 +1,51 @@
 <template>
     <v-app>
-        <NavBarLogin />
-        <div class="bg-container">
-            <img v-bind:src="bg_img" id="bg-ratio">
-        </div>
+        <div v-if="showDisplay">
+            <NavBarLogin />
+            <div class="bg-container">
+                <img v-bind:src="bg_img" id="bg-ratio">
+            </div>
 
-        <div class="center">
-            <v-card elevation id="card">
-                <div style="margin-top: 40px;">
-                    <p id="status-text">Payment Successful</p>
-                    <div class="center-div">
-                        <router-link :to="{ path: '../account-balance' }">
-                            <v-btn class="btn-style">Back to Account Balance</v-btn>
-                        </router-link>
+            <div class="center">
+                <v-card elevation id="card">
+                    <div style="margin-top: 40px;">
+                        <p id="status-text">Payment Successful</p>
+                        <div class="center-div">
+                            <router-link :to="{ path: '../account-balance' }">
+                                <v-btn class="btn-style">Back to Account Balance</v-btn>
+                            </router-link>
+                        </div>
                     </div>
-                </div>
-            </v-card>
+                </v-card>
+            </div>
+        </div>
+        <div v-else>
+            <SignInToAccess />
         </div>
     </v-app>
 </template>
 
 <script>
 import NavBarLogin from "@/components/NavBarLogin.vue";
+import SignInToAccess from "@/components/SignInToAccess.vue";
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
 export default {
     name: 'PaymentSuccessPage',
-    components: { NavBarLogin },
+    components: { NavBarLogin, SignInToAccess },
     data() {
         return {
-            bg_img: require('../assets/AccountBalancePage/Allura.png')
+            bg_img: require('../assets/AccountBalancePage/Allura.png'),
+            showDisplay: false
         }
+    },
+    created() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.showDisplay = true;
+            }
+        })
     }
 }
 </script>

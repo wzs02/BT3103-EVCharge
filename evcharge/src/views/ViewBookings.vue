@@ -1,53 +1,52 @@
 <template>
   <v-app>
-    <NavBarLogin />
     <div class="view_bookings" v-if="showDisplay">
+      <NavBarLogin />
       <h1 class="view_bookings_header">My Bookings</h1>
       <div v-if="uid">
         <p class="view_bookings_subheadings">Upcoming</p>
         <br>
         <div>
-          <BookingRecord v-if="hasUpcomingBooking" :bookingDetails="upcomingBookingDetails" @deleteBooking="deleteBooking($event)"/>
+          <BookingRecord v-if="hasUpcomingBooking" :bookingDetails="upcomingBookingDetails"
+            @deleteBooking="deleteBooking($event)" />
           <p v-else class="bookings_record_headings">You have no upcoming bookings</p>
         </div>
         <p class="view_bookings_subheadings">Past</p>
         <br>
         <div>
           <div v-if="hasPastBooking" class="past_booking_records">
-            <div  v-for="record in pastBookingDetailsList" :key="record.id">
-              <PastBookingRecord :bookingDetails="record"/>
+            <div v-for="record in pastBookingDetailsList" :key="record.id">
+              <PastBookingRecord :bookingDetails="record" />
             </div>
           </div>
           <p v-else class="bookings_record_headings">You have no past bookings</p>
         </div>
       </div>
-      <div v-else>
-        <p class="view_bookings_subheadings">
-          You are not logged in. Please proceeed to log in.
-        </p>
-      </div>
+    </div>
+    <div v-else>
+      <SignInToAccess />
     </div>
   </v-app>
 </template>
 
 <script>
 import firebaseApp from '../firebase.js';
-import { getFirestore, doc, collection,  getDocs, deleteDoc, query, where, orderBy } from 'firebase/firestore';
+import { getFirestore, doc, collection, getDocs, deleteDoc, query, where, orderBy } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBarLogin from "../components/NavBarLogin.vue";
 import BookingRecord from "../components/BookingRecord.vue";
 import PastBookingRecord from "../components/PastBookingRecord.vue";
+import SignInToAccess from '@/components/SignInToAccess.vue';
 
 export default {
   created() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        this.showDisplay = true;
         this.uid = user.uid;
         this.getBookingData(this.uid)
       }
-      // only render display after checking for user
-      this.showDisplay = true;
     })
   },
   data() {
@@ -60,13 +59,13 @@ export default {
       pastBookingDetailsList: [],
     }
   },
-  components: { NavBarLogin, BookingRecord, PastBookingRecord },
+  components: { NavBarLogin, BookingRecord, PastBookingRecord, SignInToAccess },
   methods: {
     async getBookingData(uid) {
       const db = getFirestore(firebaseApp);
       const userBookingRef = collection(db, "bookings")
       // Cut-off time for booking deletion. 15 min before booking start time. 
-      let cutOffTimestamp = new Date(Date.now() - 15 * 60000); 
+      let cutOffTimestamp = new Date(Date.now() - 15 * 60000);
       // Get all booking records for the user
       let z = await getDocs(query(userBookingRef, where("user_id", "==", uid), orderBy("date", "desc")));
       z.forEach((docs) => {
@@ -96,7 +95,7 @@ export default {
       this.hasUpcomingBooking = Object.keys(this.upcomingBookingDetails).length > 0;
       this.hasPastBooking = this.pastBookingDetailsList.length > 0;
     },
-    
+
     async deleteBooking(bookingId) {
       alert("You are going to delete your upcoming booking.")
       const db = getFirestore(firebaseApp);
@@ -157,10 +156,10 @@ export default {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d9d9d9; 
+  background: #d9d9d9;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #777; 
+  background: #777;
 }
 </style>

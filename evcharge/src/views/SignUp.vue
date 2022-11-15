@@ -1,6 +1,6 @@
 <template>
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet"> 
-    <v-app> 
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <v-app>
         <NavBar />
         <v-container class="bg-container-sign-up">
             <img v-bind:src="bg_img2" id="bg-ratio-signup">
@@ -11,11 +11,11 @@
                 <v-img id="circle-logo" src="../assets/SignUpPage/RoundedLogo.png">
                 </v-img>
             </div>
-            <div id = "card-pos">
+            <div id="card-pos">
                 <v-container>
                     <v-row>
                         <v-col>
-                            <v-card width="500" class="mx-auto mt-16 rounded-card" elevation='5' height="580"
+                            <v-card width="500" class="mx-auto mt-16 rounded-card" elevation='5' height="510"
                                 id="details">
                                 <v-row style="margin-bottom: 50px">
                                     <v-col>
@@ -35,11 +35,6 @@
                                     <v-form v-model="form" @submit.prevent="onSubmit">
                                         <v-text-field v-model="email" :rules="emailValidFormat.concat(requiredRule)"
                                             variant="underlined" label="Enter your email address" color="#4285f4">
-                                        </v-text-field>
-
-                                        <v-text-field v-model="licensePlateNumber" color="#4285f4" :rules="requiredRule"
-                                            variant="underlined"
-                                            label="Enter your electric vehicle's license plate number">
                                         </v-text-field>
 
                                         <v-text-field v-model="password"
@@ -99,7 +94,6 @@ export default {
             form: false,
             email: null,
             password: null,
-            licensePlateNumber: null,
             secondPassword: null,
             showpw1: false,
             showpw2: false,
@@ -148,11 +142,11 @@ export default {
                 const docRef = doc(db, "USERS", result.user.uid)
                 const data = {
                     user_email: email,
-                    user_uid: result.user.uid
+                    user_uid: result.user.uid,
                 }
                 setDoc(docRef, data).then(() => {
-                    window.confirm("Document has been added successfully");
                     this.$router.push('/ev-info')
+                    window.confirm("Your account has been successfully created");
                 }).catch(error => {
                     window.confirm(error);
                 })
@@ -164,10 +158,10 @@ export default {
                 const docRef = doc(db, "USERS", result.user.uid)
                 const data = {
                     user_email: result.user.email,
-                    user_uid: result.user.uid
+                    user_uid: result.user.uid,
                 }
                 setDoc(docRef, data).then(() => {
-                    window.confirm("Document has been added successfully");
+                    window.confirm("Your account has been successfully created");
                     this.$router.push('/ev-info')
                 }).catch(error => {
                     window.confirm(error);
@@ -194,34 +188,35 @@ export default {
 
 #circle-logo {
     height: 300px;
-    width: 300px; 
-    position:absolute;
-    top:50%;
-    left:40%;
-    margin-top:-200px;
-    margin-left:-25px;
+    width: 300px;
+    position: absolute;
+    top: 50%;
+    left: 40%;
+    margin-top: -200px;
+    margin-left: -25px;
 }
 
 #logo-div {
     position: relative;
     height: 100vh;
     width: 30%;
-    display:inline-block;
+    display: inline-block;
 }
 
 #card-pos {
-    position: relative; 
-    position:absolute;
-    top:50%;
-    left:35%;
-    margin-top:-350px;
-    margin-left:-25px;
-    display:inline-block;
+    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 35%;
+    margin-top: -350px;
+    margin-left: -25px;
+    display: inline-block;
 }
 
 #details {
     border-radius: 30px;
 }
+
 .bg-container-sign-up {
     max-width: 100%;
     height: 900px;
@@ -246,7 +241,7 @@ export default {
 }
 
 #card-spacing {
-    margin-left: 40px; 
+    margin-left: 40px;
     margin-right: 40px
 }
 
@@ -277,7 +272,7 @@ export default {
     font-size: 40px;
     position: absolute;
     line-height: 60px;
-    top:45px;
+    top: 45px;
     left: 25px;
     margin-left: 10px;
 }
@@ -295,7 +290,7 @@ export default {
 
 #have-account {
     font-family: 'Outfit', 'sans-serif';
-    float:right;
+    float: right;
     margin-top: 30px;
     margin-right: 35px;
     color: #8d8d8d;
@@ -337,7 +332,7 @@ v-text-field {
 }
 
 .center-content {
-    display: flex; 
-    justify-content:center;
+    display: flex;
+    justify-content: center;
 }
 </style>

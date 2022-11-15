@@ -10,9 +10,9 @@
                 </v-col>
 
                 <v-col cols="4" class="menu-options">
-                    <button @click="$router.push('/')" class="menu-op">About</button>
-                    <button @click="$router.push('/map')" class="menu-op">Book</button>
-                    <button @click="$router.push('/TesterFile')" class="menu-op">Plan</button>
+                    <button @click="toAbout()" class="menu-op">About</button>
+                    <button @click="toMap()" class="menu-op">Book</button>
+                    <button @click="toPlan()" class="menu-op">Plan</button>
                     <v-icon style="font-size: 23px;">
                         mdi-bell-outline
                     </v-icon>
@@ -33,7 +33,8 @@
                             </template>
 
                             <v-list>
-                                <v-list-item v-for="(item, index) in items" :key="index" @click="handleDropdownClick(item)">
+                                <v-list-item v-for="(item, index) in items" :key="index"
+                                    @click="handleDropdownClick(item)">
                                     <v-list-item-title class="dropdownItem">
                                         {{ item.title }}
                                     </v-list-item-title>
@@ -49,6 +50,7 @@
 </template>
   
 <script>
+/*eslint-disable */
 import { signOut, getAuth, onAuthStateChanged } from '@firebase/auth';
 import { mdiBellOutline } from '@mdi/js';
 import { mdiMenuDown } from '@mdi/js';
@@ -58,17 +60,17 @@ import { getFirestore, collection, query, where, getDocs } from 'firebase/firest
 
 export default {
     created() {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.isLoggedIn = true;
-        this.uid = user.uid;
-        this.getUsername(user.uid)
-        console.log(user.uid)
-      } else{
-        this.isLoggedIn = false;
-      }
-    })
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.isLoggedIn = true;
+                this.uid = user.uid;
+                this.getUsername(user.uid)
+                console.log(user.uid)
+            } else {
+                this.isLoggedIn = false;
+            }
+        })
     },
     data() {
         return {
@@ -101,28 +103,53 @@ export default {
         }
     },
     methods: {
+        async toAbout() {
+            try {
+                await this.$router.push({ name: 'AboutPage' });
+                window.location.reload()
+            } catch (err) {
+                window.confirm(err)
+            }
+        },
+        async toMap() {
+            try {
+                await this.$router.push({ name: 'MapPage' });
+                window.location.reload()
+            } catch (err) {
+                window.confirm(err)
+            }
+        },
+        async toPlan() {
+            try {
+                await this.$router.push({ name: 'PlanPageDev' });
+                window.location.reload()
+            } catch (err) {
+                window.confirm(err)
+            }
+        },
         handleDropdownClick(item) {
             if (item.title != "Log out") {
                 this.$router.push(item.route)
             } else {
                 const auth = getAuth();
                 signOut(auth).then(() => {
-                    this.isLoggedIn= false;
+                    this.isLoggedIn = false;
                     this.$router.push("/")
+                    window.location.reload()
                 })
             }
         },
         async getUsername(uid) {
-        // const auth = getAuth()
-        const db = getFirestore(firebaseApp);
-        const userRef = collection(db, "USERS")
-        let z = await getDocs(query(userRef, where('user_uid', "==", uid)))
-        z.forEach((docs) => {
-            let data = docs.data();
-            this.username = data.user_name
+            // const auth = getAuth()
+            const db = getFirestore(firebaseApp);
+            const userRef = collection(db, "USERS")
+            let z = await getDocs(query(userRef, where('user_uid', "==", uid)))
+            z.forEach((docs) => {
+                let data = docs.data();
+                this.username = data.user_name
+            }
+            )
         }
-        )
-    }
     }
 }
 </script>

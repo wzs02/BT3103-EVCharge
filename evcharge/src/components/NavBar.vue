@@ -11,7 +11,7 @@
                 <v-col cols="4" class="menu-options">
                     <button @click="$router.push('/')" class="menu-op">About</button>
                     <button @click="$router.push('/map')" class="menu-op">Book</button>
-                    <button @click="$router.push('/TesterFile')" class="menu-op">Plan</button>
+                    <button @click="$router.push('/plan-page-dev')" class="menu-op">Plan</button>
                     <button @click="$router.push('/signup')" class="menu-op">Sign Up</button>
                     <v-btn @click="this.$router.push('/login')" class="btn-style">Log In</v-btn>
                 </v-col>

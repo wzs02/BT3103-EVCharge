@@ -1,29 +1,34 @@
 <template>
     <v-app>
-        <NavBarLogin />
-        <div id="top-up-div">
-            <p id="greeting">Hi, {{ username }}!</p>
-            <p id="available-deposit">Available Deposit: ${{ this.wallet }}</p>
-            <p id="notice">A minimum of $30.00 is needed to make a reservation</p>
-            <stripe-checkout ref="checkoutRef" mode="payment" :pk="publishableKey" :line-items="lineItems"
-                :success-url="successURL" :cancel-url="cancelURL" @loading="v => loading = v" />
-            <v-btn id="btn-style" @click="submit">Top up deposit</v-btn>
-        </div>
+        <div v-if="showDisplay">
+            <NavBarLogin />
+            <div id="top-up-div">
+                <p id="greeting">Hi, {{ username }}!</p>
+                <p id="available-deposit">Available Deposit: ${{ this.wallet }}</p>
+                <p id="notice">A minimum of $30.00 is needed to make a reservation</p>
+                <stripe-checkout ref="checkoutRef" mode="payment" :pk="publishableKey" :line-items="lineItems"
+                    :success-url="successURL" :cancel-url="cancelURL" @loading="v => loading = v" />
+                <v-btn id="btn-style" @click="submit">Top up deposit</v-btn>
+            </div>
 
-        <div v-if="uid">
-            <div id="history-div">
-                <p id="transactions-header"> Previous Transactions</p>
-            </div>
-            <br>
-            <div>
-                <div v-if="hasPreviousTrans" class="past_booking_records">
-                    <div  v-for="transaction in pastTransList" :key="transaction.date">
-                        <PastTransactionRecord :transDetails="transaction"/>
+            <div v-if="uid">
+                <div id="history-div">
+                    <p id="transactions-header"> Previous Transactions</p>
+                </div>
+                <br>
+                <div>
+                    <div v-if="hasPreviousTrans" class="past_booking_records">
+                        <div v-for="transaction in pastTransList" :key="transaction.date">
+                            <PastTransactionRecord :transDetails="transaction" />
+                        </div>
                     </div>
-                </div>
-                <p v-else class="bookings_record_headings">You have no past transactions</p>
+                    <p v-else class="bookings_record_headings">You have no past transactions</p>
                 </div>
             </div>
+        </div>
+        <div v-else>
+            <SignInToAccess />
+        </div>
     </v-app>
 </template>
 
@@ -36,28 +41,30 @@ import { StripeCheckout } from '@vue-stripe/vue-stripe';
 import firebaseApp from '../firebase.js';
 import { doc, updateDoc, getFirestore, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
 import PastTransactionRecord from "../components/PastTransactionRecord.vue";
-// doc, setDoc,
+import SignInToAccess from "../components/SignInToAccess.vue"
 
 /* Still need to fetch user name and available balance from FB */
 const db = getFirestore(app);
 
 export default {
     created() {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.uid = user.uid;
-        this.getUsername(user.uid)
-        this.getTransData(user.uid)
-      }
-    })
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.uid = user.uid;
+                this.getUsername(user.uid)
+                this.getTransData(user.uid)
+                this.showDisplay = true
+            }
+        })
     },
     components: {
-        StripeCheckout, NavBarLogin, PastTransactionRecord
+        StripeCheckout, NavBarLogin, PastTransactionRecord, SignInToAccess
     },
     data() {
         this.publishableKey = "pk_test_51M0REtKs5bTKMbCfjEQWxFTwszhZIIWTWg8pCXnnEwI6RxayRk1vYDcTPGJU0kFGuf3xR7EaF3cyBdH8vT2sF9B300H51KnG9d"
         return {
+            showDisplay: false,
             loading: false,
             lineItems: [
                 {
@@ -137,14 +144,14 @@ export default {
             const timer = this.today
             console.log("TIMER", timer)
             // writes date time as the key
-            await updateDoc(doc(db, "Transactions", this.uid), 
-            {
-                [timer] : {
-                    date: inputdate,
-                    time: inputtime,
-                    uid: this.uid
-                }
-            });
+            await updateDoc(doc(db, "Transactions", this.uid),
+                {
+                    [timer]: {
+                        date: inputdate,
+                        time: inputtime,
+                        uid: this.uid
+                    }
+                });
             // getting wallet amount
             // const userTransRef = collection(db, "Transactions")
             // let z = await getDocs(query(userTransRef, where("user_uid", "==", this.uid)));
@@ -155,7 +162,7 @@ export default {
         },
         currentDate() {
             const current = new Date();
-            const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+            const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
             return date;
         },
         currentTime() {
@@ -239,5 +246,4 @@ export default {
     text-align: left;
     padding-left: 100px;
 }
-
 </style>
