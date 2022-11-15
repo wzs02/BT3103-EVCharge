@@ -45,17 +45,25 @@
           <v-col cols=6>
             <BookingCalendar @dateSelected="updateSelectedDate($event)" />
             <div class="legend">
-              <div class="legendindiv">
+              <!-- <div class="legendindiv">
                 <span class="dot" style="background-color: #46946e"></span>
                 <p class="legendtext">Available</p>
-              </div>
+              </div> -->
               <div class="legendindiv">
-                <span class="dot" style="background-color: #d74749"></span>
+                <span class="dot" style="background-color: #FF7575"></span>
                 <p class="legendtext">Unavailable</p>
               </div>
               <div class="legendindiv">
-                <span class="dot" style="background-color: #367ab8"></span>
+                <span class="dot" style="background-color: #B1DCFF"></span>
                 <p class="legendtext">Selected</p>
+              </div>
+              <div class="legendindiv">
+                <v-icon class="dot" @click="displayInfo = !displayInfo">
+                  mdi-information-outline
+                </v-icon>
+              </div>
+              <div class="legendindiv" v-if="displayInfo">
+                <p class="legendtext">Click and hold on selected time slot to delete</p>
               </div>
             </div>
           </v-col>
@@ -88,6 +96,7 @@
 import firebaseApp from "../firebase.js"
 import { getFirestore, getDoc, addDoc, doc, collection, query, where, getDocs } from "firebase/firestore"
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
+import { mdiInformationOutline } from '@mdi/js';
 import NavBarLogin from "@/components/NavBarLogin.vue";
 import BookingCalendar from "@/components/BookingCalendar.vue"
 import BookingCalendarDay from "@/components/BookingCalendarDay.vue"
@@ -143,6 +152,8 @@ export default {
       hasExistingUpcomingBooking: true,
       dateSelectionTrigger: 0,
       notifStatusTrigger: 0,
+      displayInfo: false,
+      mdiInformationOutline,
       chargerTypeColourMap: { "Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a" }
     }
   },
