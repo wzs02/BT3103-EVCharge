@@ -22,11 +22,8 @@
                             <PastTransactionRecord :transDetails="transaction" />
                         </div>
                     </div>
-                    <p v-else class="bookings_record_headings">You have no past transactions</p>
+                    <p v-else class="bookings_record_headings1">You have no past transactions</p>
                 </div>
-            </div>
-            <div v-else>
-                <p class="bookings_record_headings1">You have no past transactions</p>
             </div>
         </div>
         <div v-else>

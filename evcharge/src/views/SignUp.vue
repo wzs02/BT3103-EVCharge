@@ -145,10 +145,6 @@ export default {
                     user_uid: result.user.uid,
                 }
                 setDoc(docRef, data).then(() => {
-<<<<<<< HEAD
-=======
-                    // window.confirm("Sign up successful!");
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
                     this.$router.push('/ev-info')
                     window.confirm("Your account has been successfully created");
                 }).catch(error => {
@@ -165,11 +161,7 @@ export default {
                     user_uid: result.user.uid,
                 }
                 setDoc(docRef, data).then(() => {
-<<<<<<< HEAD
-                    window.confirm("Your account has been successfully created");
-=======
                     window.confirm("Sign up successful!");
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
                     this.$router.push('/ev-info')
                 }).catch(error => {
                     window.confirm(error);

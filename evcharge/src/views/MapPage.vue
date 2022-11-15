@@ -13,21 +13,11 @@
       </v-row>
 
 
-<<<<<<< HEAD
       <div class=Map>
         <!-- Specifying the Dimension/Specifications of the Google Map we using -->
         <!-- Check width and height for future deployment -->
         <GMapMap :center="center" :zoom="11.80" map-type-id="roadmap"
           style="position: fixed;top: 10;left: 0;min-width: 100%; min-height: 100%;">
-=======
-        <!--Creating unavailable Markers -->
-        <!---->
-       <!-- <GMapMarker :key="index" v-for="(m, index) in Unavailable_Markers" :position="m.position"
-          :icon="require('@/assets/MapPage/unavailablePins.png')" @click="center = m.position" :clickable=true
-          :draggable=false>
-        </GMapMarker>-->
-      </GMapMap>
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
 
           <!--Creating available Markers -->
           <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"
@@ -60,10 +50,10 @@
 
           <!--Creating unavailable Markers -->
           <!---->
-          <GMapMarker :key="index" v-for="(m, index) in Unavailable_Markers" :position="m.position"
-            :icon="require('@/assets/MapPage/unavailablePins.png')" @click="center = m.position" :clickable=true
-            :draggable=false>
-          </GMapMarker>
+          <!-- <GMapMarker :key="index" v-for="(m, index) in Unavailable_Markers" :position="m.position"
+          :icon="require('@/assets/MapPage/unavailablePins.png')" @click="center = m.position" :clickable=true
+          :draggable=false>
+        </GMapMarker>-->
         </GMapMap>
 
       </div>
@@ -85,8 +75,8 @@ import MapPageOffcanvas from "@/components/MapPageOffcanvas.vue"
 import firebaseApp from "../firebase.js"
 import { getFirestore, getDoc, setDoc, doc } from "firebase/firestore"
 import { ref } from 'vue'
-import FilterBar from "@/components/FilterBar.vue";
-import { getAuth, onAuthStateChanged } from '@firebase/auth';
+import FilterBar from "@/components/FilterBar.vue"
+import { getAuth, onAuthStateChanged } from '@firebase/auth';;
 
 
 const db = getFirestore(firebaseApp)
@@ -95,8 +85,8 @@ export default {
   components: { FilterBar, MapPageOffcanvas, NavBarLogin, NavBar },
   data() {
     return {
-      showDisplay: false,
       markerToOpen: null,
+      showDisplay: false,
       count: 0,
       //Defult Center of the Map Once Loaded
       center: { lat: 1.352083, lng: 103.819839 },
@@ -400,6 +390,7 @@ export default {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        this.uid = user.uid;
         this.showDisplay = true;
       }
     })

@@ -145,9 +145,10 @@ export default {
                 window.confirm(err)
             }
         },
-        handleDropdownClick(item) {
+        async handleDropdownClick(item) {
             if (item.title != "Log out") {
-                this.$router.push(item.route)
+                await this.$router.push(item.route);
+                window.location.reload()
             } else {
                 const auth = getAuth();
                 signOut(auth).then(() => {

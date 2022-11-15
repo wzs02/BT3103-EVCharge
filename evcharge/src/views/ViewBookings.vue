@@ -1,11 +1,7 @@
 <template>
   <v-app>
-<<<<<<< HEAD
-=======
-    <NavBarLogin :key="notifStatusTrigger"/>
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
     <div class="view_bookings" v-if="showDisplay">
-      <NavBarLogin />
+      <NavBarLogin :key="notifStatusTrigger" />
       <h1 class="view_bookings_header">My Bookings</h1>
       <div v-if="uid">
         <p class="view_bookings_subheadings">Upcoming</p>

@@ -89,11 +89,7 @@ export default {
                 }
 
                 setDoc(docRef, data, { merge: true }).then(() => {
-<<<<<<< HEAD
-                    window.confirm("Your details have been saved successfully");
-=======
                     window.confirm("Sign up successful!");
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
                     this.$router.push('/account-balance')
                 }).catch(error => {
                     window.confirm(error);

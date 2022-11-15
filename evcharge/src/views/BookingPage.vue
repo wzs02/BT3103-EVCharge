@@ -1,67 +1,22 @@
 <template>
   <v-app>
-<<<<<<< HEAD
     <div v-if="showDisplay">
       <NavBarLogin />
       <v-container>
+
         <v-row class="header">
-          <h1>Book a Charger: <span style="color: #4285f4">{{ this.selected_station_name }}{{
-              this.selected_charger_display_num
-          }}</span></h1>
+          <h1>Book a Charger: <span style="color: #4285f4">{{ this.selected_station_name }}</span><span
+              style="color: #7F8487">{{ this.selected_charger_display_num }}</span></h1>
         </v-row>
-        <v-row class="availablechargers" style="height: 10%">
-          <v-col cols=2>
-            <h3>{{ this.numChargerAvailable }} Chargers Available:</h3>
+        <v-row class="availableChargers" style="height: 10%">
+          <v-col cols=3>
+            <h3 v-if="this.selected_station_name != 'No charging station selected'">Please select a charger</h3>
+            <p v-else class="validationMsg">Please select a charging station</p>
           </v-col>
           <v-col>
             <div class="legendindiv" v-if="this.chargerTypes.includes('CCS/SAE')">
               <span class="dot" style="background-color: #0096c7"></span>
               <p class="legendtext">CCS/SAE</p>
-=======
-    <NavBar />
-    <v-container>
-
-      <v-row class="header">
-        <h1>Book a Charger: <span style="color: #4285f4">{{ this.selected_station_name }}</span><span style="color: #7F8487">{{ this.selected_charger_display_num }}</span></h1>
-      </v-row>
-      <v-row class="availableChargers" style="height: 10%">
-        <v-col cols=3>
-          <h3 v-if="this.selected_station_name != 'No charging station selected'">Please select a charger</h3>
-          <p v-else class="validationMsg">Please select a charging station</p>
-        </v-col>
-        <v-col>
-          <div class="legendindiv" v-if="this.chargerTypes.includes('CCS/SAE')">
-            <span class="dot" style="background-color: #0096c7"></span>
-            <p class="legendtext">CCS/SAE</p>
-          </div>
-          <div class="legendindiv" v-if="this.chargerTypes.includes('Commando')">
-            <span class="dot" style="background-color: #0077b6"></span>
-            <p class="legendtext">Commando</p>
-          </div>
-          <div class="legendindiv" v-if="this.chargerTypes.includes('J-1772')">
-            <span class="dot" style="background-color: #023e8a"></span>
-            <p class="legendtext">J-1772</p>
-          </div>
-          <div class="legendindiv" v-if="this.chargerTypes.includes('Type 2')">
-            <span class="dot" style="background-color: #03045e"></span>
-            <p class="legendtext">Type 2</p>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row style="height: 20%">
-        <div v-for="charger in chargerList" :key="charger.id">
-          <v-btn class="btncharger" rounded elevation="3" @click="selectCharger(charger.id, charger.display_num, charger.type)" :color="charger.display_col">{{ charger.display_num }}</v-btn>
-        </div>
-      </v-row>
-
-      <v-row style="height: 60%">
-        <v-col cols=6>
-          <BookingCalendar @dateSelected="updateSelectedDate($event)"/>
-          <div class="legend">
-            <div class="legendindiv">
-              <span class="dot" style="background-color: #46946e"></span>
-              <p class="legendtext">Available</p>
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
             </div>
             <div class="legendindiv" v-if="this.chargerTypes.includes('Commando')">
               <span class="dot" style="background-color: #0077b6"></span>
@@ -79,17 +34,16 @@
         </v-row>
         <v-row style="height: 20%">
           <div v-for="charger in chargerList" :key="charger.id">
-            <v-btn class="btncharger" rounded elevation="3" @click="displayMonth(charger.id, charger.display_num)"
-              :color="charger.display_col">{{ charger.display_num }}</v-btn>
+            <v-btn class="btncharger" rounded elevation="3"
+              @click="selectCharger(charger.id, charger.display_num, charger.type)" :color="charger.display_col">{{
+                  charger.display_num
+              }}</v-btn>
           </div>
         </v-row>
 
-<<<<<<< HEAD
         <v-row style="height: 60%">
           <v-col cols=6>
-            <BookingCalendar v-if="Object.keys(monthlyAvailability).length > 0"
-              :monthlyInfo="this.monthlyAvailability" />
-            <BookingCalendar v-else />
+            <BookingCalendar @dateSelected="updateSelectedDate($event)" />
             <div class="legend">
               <div class="legendindiv">
                 <span class="dot" style="background-color: #46946e"></span>
@@ -107,39 +61,26 @@
           </v-col>
 
           <v-col cols=6>
-            <div class="dayview">
-              <v-card height="600px" color="#F5F5F5">
-                <BookingCalendarDay />
-                <v-card-text>You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num
-                }}</b></v-card-text>
+            <div class="dayview" v-if="this.selected_date_string != ''">
+              <v-card height="650px" color="#F5F5F5">
+                <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string"
+                  :selectedChargerID="this.selected_charger_id" @timeSelected="updateSelectedTime($event)" />
+                <v-card-text class="bookingInfo">
+                  You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b><br>
+                  <p v-html="date_time_info_string"></p>
+                </v-card-text>
                 <v-btn class="btn" rounded elevation="3" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
               </v-card>
             </div>
+            <p v-else class="validationMsg">Please select a date</p>
           </v-col>
         </v-row>
+
       </v-container>
     </div>
     <div v-else>
       <SignInToAccess />
     </div>
-=======
-        <v-col cols=6>
-          <div class="dayview" v-if="this.selected_date_string != ''">
-            <v-card height="650px" color="#F5F5F5">
-              <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string" :selectedChargerID="this.selected_charger_id" @timeSelected="updateSelectedTime($event)"/>
-              <v-card-text class="bookingInfo">
-                You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b><br>
-                <p v-html="date_time_info_string"></p>
-                </v-card-text>
-              <v-btn class="btn" rounded elevation="3" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
-            </v-card>
-          </div>
-          <p v-else class="validationMsg">Please select a date</p>
-        </v-col>
-      </v-row>
-     
-    </v-container>
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
   </v-app>
 </template>
 
@@ -160,11 +101,6 @@ export default {
   name: 'BookingPage',
   components: { NavBarLogin, BookingCalendar, BookingCalendarDay, SignInToAccess },
   created() {
-    let station_id = localStorage.getItem("stationID");
-    if (station_id != null) {
-      this.getStationData(station_id);
-      localStorage.removeItem("stationID")
-    }
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -172,48 +108,38 @@ export default {
         this.showDisplay = true
       }
     })
+    let station_id = localStorage.getItem("stationID");
+    if (station_id != null) {
+      this.getStationData(station_id);
+      localStorage.removeItem("stationID")
+    }
   },
   updated() {
     this.isBookingDisabled = this.checkBookingFields();
   },
   data() {
     return {
-<<<<<<< HEAD
-      //chargerFromMap: this.$router.params.charger,
       showDisplay: false,
-      chargerFromMap: ["Jalan Kayu", "DC50"],
-=======
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
       numChargerAvailable: 0,
       chargerTypes: [],
       chargerList: [],
       // monthlyAvailability: {},
       uid: false,
       isBookingDisabled: true,
-<<<<<<< HEAD
-      selected_station_id: "",
-      selected_station_name: "No charging station selected",
-=======
       selected_charger_id: "",
-      selected_station_name: "No charging station selected", 
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
+      selected_station_name: "No charging station selected",
       selected_station_provider: "",
       selected_station_charger_type: "",
       selected_station_address: "",
       selected_charger_display_num: "",
-<<<<<<< HEAD
-      chargerTypeColourMap: { "Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a" }
-    }
-=======
       selected_date_string: "",
       selected_start_time: "",
-      selected_end_time:"",
+      selected_end_time: "",
       booking_duration: "",
       date_time_info_string: "",
       dateSelectionTrigger: 0,
-      chargerTypeColourMap: {"Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a"}
-    } 
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
+      chargerTypeColourMap: { "Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a" }
+    }
   },
   methods: {
     async getStationData(station_id) {
@@ -255,33 +181,6 @@ export default {
     async selectCharger(id, display_num, charger_type) {
       this.selected_charger_id = id;
       this.selected_charger_display_num = "-" + display_num.toString();
-<<<<<<< HEAD
-
-      const bookingsRef = collection(db, "testBookings")
-      const q = query(bookingsRef, where("chargerID", "==", id), orderBy("bookingDate"))
-      const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc) => {
-        const fullDate = doc.data()["bookingDate"].toDate()
-        const currDate = fullDate.getDate()
-        const currMonth = fullDate.getMonth()
-        const currYear = fullDate.getFullYear()
-        availabilityFromID.push({
-          date: String(new Date(currYear, currMonth, currDate, 0, 0, 0, 0)),
-          start: doc.data()["startTime"],
-          end: doc.data()["endTime"],
-        })
-      })
-
-      var dateAndTime = {}
-      for (var i = 0; i < availabilityFromID.length; i++) {
-        const date = availabilityFromID[i].date
-        const start = availabilityFromID[i].start
-        const end = availabilityFromID[i].end
-        if (date in dateAndTime) {
-          dateAndTime[date].push({ start: start, end: end })
-        } else {
-          dateAndTime[date] = [{ start: start, end: end }]
-=======
       this.selected_station_charger_type = charger_type;
       this.dateSelectionTrigger++;
     },
@@ -304,8 +203,8 @@ export default {
       this.isBookingDisabled = this.checkBookingFields();
     },
     checkBookingFields() {
-      let bookingFieldValues = [this.selected_charger_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address, 
-        this.selected_start_time, this.selected_end_time, this.booking_duration];
+      let bookingFieldValues = [this.selected_charger_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address,
+      this.selected_start_time, this.selected_end_time, this.booking_duration];
       return bookingFieldValues.some((x) => x == "");
     },
     async makeBooking() {
@@ -321,7 +220,6 @@ export default {
           duration: this.booking_duration,
           street: this.selected_station_address["street"],
           postal_code: this.selected_station_address["postalCode"],
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
         }
         await addDoc(collection(db, "bookings"), booking_rec);
         alert("Booking success");
@@ -367,22 +265,15 @@ export default {
     //   console.log(this.monthlyAvailability)
     //   console.log(availabilityFromID)
 
-      // const now = new Date()
-      // var currDate = now.getDate()
-      // const currMonth = now.getMonth()
-      // const currYear = now.getFullYear()
-      //const firstDateNextMonth = new Date(currYear, currMonth + 1, 1) 
-<<<<<<< HEAD
+    // const now = new Date()
+    // var currDate = now.getDate()
+    // const currMonth = now.getMonth()
+    // const currYear = now.getFullYear()
+    //const firstDateNextMonth = new Date(currYear, currMonth + 1, 1) 
 
-      // function daysInMonth (month, year) {
-      //   return new Date(year, month, 0).getDate();
-      // }
-=======
-      
     //   function daysInMonth (month, year) {
     //     return new Date(year, month, 0).getDate();
     //   }
->>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
 
     //   const numDaysLeft = daysInMonth(currMonth, currYear) - currDate
 
