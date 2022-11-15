@@ -5,7 +5,7 @@
             <div id="top-up-div">
                 <p id="greeting">Hi, {{ username }}!</p>
                 <p id="available-deposit">Available Deposit: ${{ this.wallet }}</p>
-                <p id="notice">A minimum of $30.00 is needed to make a reservation</p>
+                <p id="notice">A minimum of $30.00 is needed to make a booking</p>
                 <stripe-checkout ref="checkoutRef" mode="payment" :pk="publishableKey" :line-items="lineItems"
                     :success-url="successURL" :cancel-url="cancelURL" @loading="v => loading = v" />
                 <v-btn id="btn-style" @click="submit">Top up deposit</v-btn>

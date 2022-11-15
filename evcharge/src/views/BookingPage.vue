@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <div v-if="showDisplay">
-      <NavBarLogin />
+      <NavBarLogin :key="notifStatusTrigger"/>
       <v-container>
 
         <v-row class="header">
@@ -9,7 +9,7 @@
               style="color: #7F8487">{{ this.selected_charger_display_num }}</span></h1>
         </v-row>
         <v-row class="availableChargers" style="height: 10%">
-          <v-col cols=3>
+          <v-col cols=4>
             <h3 v-if="this.selected_station_name != 'No charging station selected'">Please select a charger</h3>
             <p v-else class="validationMsg">Please select a charging station</p>
           </v-col>
@@ -142,6 +142,7 @@ export default {
       hasInsufficientDeposit: true,
       hasExistingUpcomingBooking: true,
       dateSelectionTrigger: 0,
+      notifStatusTrigger: 0,
       chargerTypeColourMap: { "Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a" }
     }
   },
@@ -267,6 +268,7 @@ export default {
         }
         await addDoc(collection(db, "bookings"), booking_rec);
         alert("Booking success. View your booking under My Bookings.");
+        this.notifStatusTrigger++;
         this.$router.push('/view_bookings');
       }
     },

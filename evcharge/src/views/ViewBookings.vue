@@ -31,7 +31,7 @@
 
 <script>
 import firebaseApp from '../firebase.js';
-import { getFirestore, doc, collection, getDocs, deleteDoc, query, where, orderBy } from 'firebase/firestore';
+import { getFirestore, doc, collection, getDocs, deleteDoc, query, where, orderBy, getDoc, updateDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBarLogin from "../components/NavBarLogin.vue";
 import BookingRecord from "../components/BookingRecord.vue";
@@ -64,9 +64,8 @@ export default {
   methods: {
     async getBookingData(uid) {
       const db = getFirestore(firebaseApp);
-      const userBookingRef = collection(db, "bookings")
-      // Cut-off time for booking deletion. 15 min before booking start time. 
-      let cutOffTimestamp = new Date(Date.now() - 15 * 60000);
+      const userBookingRef = collection(db, "bookings") 
+      let currentTimestamp = new Date(Date.now());
       // Get all booking records for the user
       let z = await getDocs(query(userBookingRef, where("user_id", "==", uid), orderBy("start_timestamp", "desc")));
       z.forEach((docs) => {
@@ -85,7 +84,7 @@ export default {
         bookingDetails.charger_type = data.charger_type;
         bookingDetails.svc_pdr = data.provider;
         // Check if it is an upcoming booking
-        if (startTimestamp > cutOffTimestamp) {
+        if (startTimestamp > currentTimestamp ) {
           // Only 1 upcoming booking is permitted per user to prevent slot hogging.
           this.upcomingBookingDetails = bookingDetails;
         } else {
@@ -98,13 +97,50 @@ export default {
     },
 
     async deleteBooking(bookingId) {
-      alert("You are going to delete your upcoming booking")
       const db = getFirestore(firebaseApp);
-      await deleteDoc(doc(db, "bookings", bookingId));
-      alert("Booking successfully deleted");
+      const docRef = doc(db, "bookings", bookingId);
+      const docSnap = await getDoc(docRef);
+      // Cut-off time for booking deletion without penalty. 15 min before booking start time.
+      let startTimestamp = docSnap.data().start_timestamp;
+      let cutOffTimestamp = new Date(startTimestamp - 15 * 60000);
+      let currentTimestamp = new Date(Date.now());
+      if (currentTimestamp > cutOffTimestamp) {
+        alert("You are going to delete your upcoming booking. A $30 penalty will be incurred.")
+        await deleteDoc(doc(db, "bookings", bookingId));
+        const timer = this.today
+        await updateDoc(doc(db, "Transactions", this.uid),
+          {
+              [timer]: {
+                  date: new Date(Date.now()).toLocaleDateString('en-GB'),
+                  time: this.currentTime(),
+                  uid: this.uid,
+                  type: "No-show Penalty"
+              }
+          });
+        alert("$30 deposit deducted as penalty");
+        alert("Booking successfully deleted");
+      } else {
+        alert("You are going to delete your upcoming booking")
+        await deleteDoc(doc(db, "bookings", bookingId));
+        alert("Booking successfully deleted");
+      }
       this.hasUpcomingBooking = false;
       this.notifStatusTrigger++;
-    }
+    },
+    currentTime() {
+      const today = new Date();
+      if (today.getHours() > 12) {
+          var hour = today.getHours() - 12
+          var pmAM = 'PM'
+      } else {
+          hour = today.getHours()
+          pmAM = 'AM'
+      }
+      var minutes = today.getMinutes().toString()
+
+      var now_time = (hour + ":" + minutes + " " + pmAM).toString()
+      return now_time;
+    },
   }
 }
 </script>
