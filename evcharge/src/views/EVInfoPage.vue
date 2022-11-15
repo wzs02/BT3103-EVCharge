@@ -72,7 +72,8 @@ export default {
     methods: {
         onSubmit() {
             if (!this.form) {
-                window.confirm("Login details invalid")
+                // window.confirm("Login details invalid")
+                conosle.log('Login details invalid.')
             }
             else {
                 const docRef = doc(db, "USERS", this.uid)
@@ -83,7 +84,7 @@ export default {
                 }
 
                 setDoc(docRef, data, { merge: true }).then(() => {
-                    window.confirm("Document has been added successfully");
+                    window.confirm("Sign up successful!");
                     this.$router.push('/account-balance')
                 }).catch(error => {
                     window.confirm(error);

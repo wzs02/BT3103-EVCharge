@@ -130,7 +130,7 @@ export default {
                 transDetails.date = docs.date;
                 transDetails.time = docs.time;
                 transDetails.amount = "$30"
-                transDetails.type = "Debit"
+                transDetails.type = "Top Up"
                 console.log(transDetails)
                 this.wallet += 30
                 this.pastTransList.push(transDetails)
@@ -266,7 +266,7 @@ export default {
 }
 
 .bookings_record_headings1 {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Nunito', 'sans-serif';
     font-weight: 700;
     font-size: 22px;
     text-align: left;

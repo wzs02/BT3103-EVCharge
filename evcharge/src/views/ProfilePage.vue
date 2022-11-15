@@ -24,31 +24,31 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col">
-                                <label class="form-label">Name: <strong>{{ currusername }}</strong></label>
+                                <label class="form-label"><strong>Name: </strong> {{ currusername }} </label>
                             </div>
                         </div>
                         
                         <div class="row mb-3">
                             <div class="col">
-                                <label class="form-label">Email: <strong>{{ curremail }}</strong></label>
+                                <label class="form-label"><strong>Email: </strong>{{ curremail }}</label>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col">
-                                <label class="form-label">Plate Number: <strong>{{ currplate }}</strong></label>
+                                <label class="form-label"><strong>Plate Number: </strong>{{ currplate }}</label>
                             </div>
                         </div>
                         
                         <div class="row mb-3">
                             <div class="col">
-                                <label class="form-label">Vehicle Brand: <strong>{{ currbrand }}</strong></label>
+                                <label class="form-label"><strong>Vehicle Brand: </strong>{{ currbrand }}</label>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col">
-                                <label class="form-label">Vehicle Model: <strong>{{ currmodel }}</strong></label>
+                                <label class="form-label"><strong>Vehicle Model: </strong>{{ currmodel }}</label>
                             </div>
                         </div>
 
@@ -68,28 +68,28 @@
 
                         <div class="col-md-6">
                           <div class="mb-4">
-                            <label class="form-label">Name</label>
+                            <label class="form-label"><strong>Name</strong></label>
                             <input id= "myInput" class="form-control" type="text" placeholder="How do we address you?" v-model="username">
                           </div>
                         </div>
                         
                         <div class="col-sm-6 col-md-6">
                           <div class="mb-4">
-                            <label class="form-label">Vehicle Plate Number</label>
+                            <label class="form-label"><strong>Vehicle Plate Number</strong></label>
                             <input class="form-control" type="text" placeholder="Your EV's License Plate Number" v-model="plate">
                           </div>
                         </div>
 
                         <div class="col-sm-6 col-md-6">
                           <div class="mb-4">
-                            <label class="form-label">Vehicle Brand</label>
+                            <label class="form-label"><strong>Vehicle Brand</strong></label>
                             <input class="form-control" type="text" placeholder="Your EV's brand" v-model="brand">
                           </div>
                         </div>
 
                         <div class="col-sm-6 col-md-6">
                           <div class="mb-4">
-                            <label class="form-label">Vehicle Model</label>
+                            <label class="form-label"><strong>Vehicle Model</strong></label>
                             <input class="form-control" type="text" placeholder="Your EV's model" v-model="model">
                           </div>
                         </div>
@@ -217,7 +217,9 @@ export default {
   box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 8%);
   z-index: 2;
   background-color: #4285f4;
-  color: white
+  color: white;
+  font-family: 'Nunito', 'sans-serif';
+  padding-top: 20px;
 }
 .card {
   position: relative;
@@ -230,16 +232,17 @@ export default {
   border: none;
   box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
   border-radius: 1rem;
+  font-family: 'Nunito', 'sans-serif';
 }
 .bg-gray-100 {
   background-color: #f8f9fa !important;
 }
-body{
-  font-family: 'Poppins'!important;
+/* body{
+  font-family: 'Nunito'!important;
 }
 .text-primary {
-  color: #4650dd !important;
-}
+  color: #dd4646 !important;
+} */
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
 
   line-height: 1.2;
