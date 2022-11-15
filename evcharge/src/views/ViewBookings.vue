@@ -72,8 +72,7 @@ export default {
         let data = docs.data();
         // Process time display
         let startTimestamp = data.start_timestamp.toDate();
-        let duration = data.duration; // booking duration in minutes
-        let endTimestamp = new Date(startTimestamp.getTime() + duration * 60000)
+        let endTimestamp = data.end_timestamp.toDate();
         let timeString = startTimestamp.toTimeString().slice(0, 5) + "-" + endTimestamp.toTimeString().slice(0, 5)
         // Update bookingDetails object containing booking record information
         let bookingDetails = {};
@@ -100,9 +99,9 @@ export default {
       const db = getFirestore(firebaseApp);
       const docRef = doc(db, "bookings", bookingId);
       const docSnap = await getDoc(docRef);
-      // Cut-off time for booking deletion without penalty. 15 min before booking start time.
       let startTimestamp = docSnap.data().start_timestamp;
-      let cutOffTimestamp = new Date(startTimestamp - 15 * 60000);
+      // Cut-off time for booking deletion without penalty. 15 min before booking start time.
+      let cutOffTimestamp = new Date(startTimestamp.toDate() - 15 * 60000);
       let currentTimestamp = new Date(Date.now());
       if (currentTimestamp > cutOffTimestamp) {
         alert("You are going to delete your upcoming booking. A $30 penalty will be incurred.")
@@ -119,13 +118,15 @@ export default {
           });
         alert("$30 deposit deducted as penalty");
         alert("Booking successfully deleted");
+        this.hasUpcomingBooking = false;
+        this.notifStatusTrigger++;
       } else {
         alert("You are going to delete your upcoming booking")
         await deleteDoc(doc(db, "bookings", bookingId));
         alert("Booking successfully deleted");
+        this.hasUpcomingBooking = false;
+        this.notifStatusTrigger++;
       }
-      this.hasUpcomingBooking = false;
-      this.notifStatusTrigger++;
     },
     currentTime() {
       const today = new Date();

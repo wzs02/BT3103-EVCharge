@@ -146,7 +146,6 @@ export default {
       selected_date_string: "",
       selected_start_time: "",
       selected_end_time: "",
-      booking_duration: "",
       date_time_info_string: "",
       hasInsufficientDeposit: true,
       hasExistingUpcomingBooking: true,
@@ -205,14 +204,12 @@ export default {
       this.dateSelectionTrigger++;
       this.selected_start_time = "";
       this.selected_end_time = "";
-      this.booking_duration = "";
       this.date_time_info_string = "";
       this.isBookingDisabled = this.checkBookingFields();
     },
     updateSelectedTime(timeDetails) {
       this.selected_start_time = timeDetails.startTime;
       this.selected_end_time = timeDetails.endTime;
-      this.booking_duration = timeDetails.duration;
       if (this.selected_start_time  && this.selected_end_time) {
         let time_info_string = this.selected_start_time.toTimeString().slice(0, 5) + "-" + this.selected_end_time.toTimeString().slice(0, 5)
         let date_info_string = this.selected_start_time.toLocaleDateString('en-GB');
@@ -251,8 +248,8 @@ export default {
     },
     checkBookingFields() {
       let bookingFieldValues = [this.selected_charger_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address, 
-        this.selected_start_time, this.selected_end_time, this.booking_duration];
-      return bookingFieldValues.some((x) => x == "") && (this.selected_end_time <= this.selected_start_time);
+        this.selected_start_time, this.selected_end_time];
+      return bookingFieldValues.some((x) => x == "");
     },
     async makeBooking() {
       if (this.uid == false) {
@@ -273,7 +270,6 @@ export default {
           provider: this.selected_station_provider,
           start_timestamp: this.selected_start_time,
           end_timestamp: this.selected_end_time,
-          duration: this.booking_duration,
           street: this.selected_station_address["street"],
           postal_code: this.selected_station_address["postalCode"],
         }

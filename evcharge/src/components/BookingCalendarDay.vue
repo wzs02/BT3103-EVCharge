@@ -9,7 +9,7 @@
       :selected-date="selectedDate"
       :events="existingEvents"
       :on-event-create="onEventCreate"
-      :editableEvents="{ title: false, drag: true, resize: true, delete: true, create: true}"
+      :editableEvents="{ title: false, drag: false, resize: true, delete: true, create: true}"
       :snapToTime="30"
       @event-drag-create="dragToBook"
       @event-drop="dropToBook"
@@ -40,7 +40,6 @@ export default {
     currEvent: "",
     startTime: "",
     endTime: "",
-    bookingDuration: 0,
   }),
   methods: {
     async fetchExistingBookings(id, dateString) {
@@ -67,6 +66,8 @@ export default {
     },
     onEventCreate(event) {
       if (this.currEvent == "") {
+        event.id = this.existingEvents.length + 1
+        this.existingEvents.push(event);
         this.currEvent = event;
         return true
       }
@@ -76,17 +77,17 @@ export default {
       if (slot != false) {
         this.startTime = slot.start;
         this.endTime = slot.end;
-        this.bookingDuration = slot.endTimeMinutes - slot.startTimeMinutes;
-        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
       }
     },
     resizeToBook(slot) {
       if (slot.event != false) {
-        slot.event = this.checkOverlappingEvents(slot.event);
-        this.startTime = slot.event.start;
-        this.endTime = slot.event.end;
-        this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
-        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+        let eventToChange = this.existingEvents.find(ee => ee.id == slot.originalEvent.id);
+        //eventToChange.end = slot.originalEvent.end;
+        this.checkOverlappingEvents(eventToChange);
+        this.startTime = eventToChange.start;
+        this.endTime = eventToChange.end;
+        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
       }
     },
     dropToBook(slot) {
@@ -94,16 +95,14 @@ export default {
         slot.event = this.checkOverlappingEvents(slot.event);
         this.startTime = slot.event.start;
         this.endTime = slot.event.end;
-        this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
-        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
       }
     },
     resetCurrEvent() {
       this.currEvent = "";
       this.startTime = "";
       this.endTime = "";
-      this.bookingDuration = "";
-      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
     },
     checkOverlappingEvents(currEvent) {
       let currEventStart = currEvent.start;
