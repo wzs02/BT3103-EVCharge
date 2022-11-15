@@ -64,39 +64,63 @@ export default {
           resizable: false,
         })
       })
-      console.log(this.existingEvents);
     },
     onEventCreate(event) {
       if (this.currEvent == "") {
         this.currEvent = event;
         return true
-      } else {
-        return false
       }
+      return false
     },
     dragToBook(slot) {
-      this.startTime = slot.start
-      this.endTime = slot.end
-      this.bookingDuration = slot.endTimeMinutes - slot.startTimeMinutes;
-      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+      if (slot != false) {
+        this.startTime = slot.start;
+        this.endTime = slot.end;
+        this.bookingDuration = slot.endTimeMinutes - slot.startTimeMinutes;
+        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+      }
     },
     resizeToBook(slot) {
-      this.startTime = slot.event.start
-      this.endTime = slot.event.end
-      this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
-      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+      if (slot.event != false) {
+        slot.event = this.checkOverlappingEvents(slot.event);
+        this.startTime = slot.event.start;
+        this.endTime = slot.event.end;
+        this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
+        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+      }
     },
     dropToBook(slot) {
-      this.startTime = slot.event.start
-      this.endTime = slot.event.end
-      this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
-      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+      if (slot.event != false) {
+        slot.event = this.checkOverlappingEvents(slot.event);
+        this.startTime = slot.event.start;
+        this.endTime = slot.event.end;
+        this.bookingDuration = slot.event.endTimeMinutes - slot.event.startTimeMinutes;
+        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
+      }
     },
     resetCurrEvent() {
       this.currEvent = "";
+      this.startTime = "";
+      this.endTime = "";
+      this.bookingDuration = "";
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime, duration: this.bookingDuration});
     },
-    checkOverlappingEvents() {
-
+    checkOverlappingEvents(currEvent) {
+      let currEventStart = currEvent.start;
+      let currEventEnd = currEvent.end;
+      this.existingEvents.forEach(event => {
+        if (currEventEnd > event.start && currEventStart < event.end) {
+          if (currEventEnd < event.end && currEventStart < event.start) {
+            currEvent.end = event.start;
+          } else if (currEventStart >= event.start && currEventEnd <= event.end) {
+            this.resetCurrEvent();
+            currEvent = false;
+          } else {
+            currEvent.start = event.end;
+          }
+          return currEvent;
+        }});
+      return currEvent;
     },
     getSelectedDate(dateString) {
       if (dateString == "") {

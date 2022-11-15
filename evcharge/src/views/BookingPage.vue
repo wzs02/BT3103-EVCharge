@@ -186,9 +186,13 @@ export default {
       this.selected_start_time = timeDetails.startTime;
       this.selected_end_time = timeDetails.endTime;
       this.booking_duration = timeDetails.duration;
-      let time_info_string = this.selected_start_time.toTimeString().slice(0, 5) + "-" + this.selected_end_time.toTimeString().slice(0, 5)
-      let date_info_string = this.selected_start_time.toLocaleDateString('en-GB');
-      this.date_time_info_string = `on <b>${date_info_string}</b>, <b>${time_info_string}</b>`
+      if (this.selected_start_time  && this.selected_end_time) {
+        let time_info_string = this.selected_start_time.toTimeString().slice(0, 5) + "-" + this.selected_end_time.toTimeString().slice(0, 5)
+        let date_info_string = this.selected_start_time.toLocaleDateString('en-GB');
+        this.date_time_info_string = `on <b>${date_info_string}</b>, <b>${time_info_string}</b>`
+      } else {
+        this.date_time_info_string = ""
+      }
       this.isBookingDisabled = this.checkBookingFields();
     },
     async checkIfInsufficientDeposit(uid) {
@@ -227,15 +231,12 @@ export default {
       if (this.uid == false) {
         alert("You are not logged in. Please proceeed to log in.");
         this.$router.push('/login');
-        return
       } else if (this.hasInsufficientDeposit) {
         alert("Insufficient deposit amount in account. A $30 deposit amount is required for booking. Please top up.");
         this.$router.push('/account-balance');
-        return
       } else if (this.hasExistingUpcomingBooking) {
         alert("You have an existing booking. Please delete your existing booking before making a new booking.");
         this.$router.push('/view_bookings');
-        return
       } else {
         const booking_rec = {
           user_id: this.uid,
@@ -252,7 +253,6 @@ export default {
         await addDoc(collection(db, "bookings"), booking_rec);
         alert("Booking success. View your booking under My Bookings.");
         this.$router.push('/view_bookings');
-        return
       }
     },
     // async displayMonth(id, display_num, charger_type) {
