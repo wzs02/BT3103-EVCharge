@@ -10,15 +10,14 @@
                 </v-col>
 
                 <v-col cols="4" class="menu-options">
-                    <button @click="$router.push('/')" class="menu-op">About</button>
-                    <button @click="$router.push('/map')" class="menu-op">Book</button>
-                    <button @click="$router.push('/TesterFile')" class="menu-op">Plan</button>
+                    <button @click="toAbout()" class="menu-op">About</button>
+                    <button @click="toMap()" class="menu-op">Book</button>
+                    <button @click="toPlan()" class="menu-op">Plan</button>
                     <v-badge color="#4285F4" dot :model-value="hasUpcomingBooking">
                         <v-icon style="font-size: 23px;" @click="displayNotif = true">
                             mdi-bell-outline
                         </v-icon>
                     </v-badge>
-                    
                     <div class="text-center">
                         <v-menu>
                             <template v-slot:activator="{ props }">
@@ -35,7 +34,8 @@
                             </template>
 
                             <v-list>
-                                <v-list-item v-for="(item, index) in items" :key="index" @click="handleDropdownClick(item)">
+                                <v-list-item v-for="(item, index) in items" :key="index"
+                                    @click="handleDropdownClick(item)">
                                     <v-list-item-title class="dropdownItem">
                                         {{ item.title }}
                                     </v-list-item-title>
@@ -65,6 +65,7 @@
 </template>
   
 <script>
+/*eslint-disable */
 import { signOut, getAuth, onAuthStateChanged } from '@firebase/auth';
 import { mdiBellOutline } from '@mdi/js';
 import { mdiMenuDown } from '@mdi/js';
@@ -74,18 +75,17 @@ import { getFirestore, collection, query, where, getDocs, orderBy, limit } from 
 
 export default {
     created() {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.isLoggedIn = true;
-        this.uid = user.uid;
-        this.getUsername(user.uid)
-        this.getUpcomingBooking(user.uid)
-        //console.log(user.uid)
-      } else{
-        this.isLoggedIn = false;
-      }
-    })
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.isLoggedIn = true;
+                this.uid = user.uid;
+                this.getUsername(user.uid)
+                this.getUpcomingBooking(user.uid)
+            } else {
+                this.isLoggedIn = false;
+            }
+        })
     },
     data() {
         return {
@@ -121,14 +121,40 @@ export default {
         }
     },
     methods: {
-        handleDropdownClick(item) {
+        async toAbout() {
+            try {
+                await this.$router.push({ name: 'AboutPage' });
+                window.location.reload()
+            } catch (err) {
+                window.confirm(err)
+            }
+        },
+        async toMap() {
+            try {
+                await this.$router.push({ name: 'MapPage' });
+                window.location.reload()
+            } catch (err) {
+                window.confirm(err)
+            }
+        },
+        async toPlan() {
+            try {
+                await this.$router.push({ name: 'PlanPageDev' });
+                window.location.reload()
+            } catch (err) {
+                window.confirm(err)
+            }
+        },
+        async handleDropdownClick(item) {
             if (item.title != "Log out") {
-                this.$router.push(item.route)
+                await this.$router.push(item.route);
+                window.location.reload()
             } else {
                 const auth = getAuth();
                 signOut(auth).then(() => {
-                    this.isLoggedIn= false;
+                    this.isLoggedIn = false;
                     this.$router.push("/")
+                    window.location.reload()
                 })
             }
         },
@@ -150,7 +176,7 @@ export default {
             z.forEach((docs) => {
                 let data = docs.data();
                 let startTimestamp = data.start_timestamp.toDate()
-                // Compare date of latest booking with current date 
+                // Compare date of latest booking with current date
                 if (startTimestamp > new Date(Date.now())) {
                     const location = data.location;
                     const date = startTimestamp.toLocaleDateString('en-GB');

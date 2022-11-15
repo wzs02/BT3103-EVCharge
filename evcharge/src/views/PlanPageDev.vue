@@ -2,37 +2,42 @@
     <v-app>
         <div v-if="showDisplay">
             <NavBarLogin />
-            <div class="bg-container">
-                <img v-bind:src="bg_img" id="bg-ratio">
-            </div>
+        </div>
+        <div v-else>
+            <NavBar />
+        </div>
+        <div class="bg-container">
+            <img v-bind:src="bg_img" id="bg-ratio">
 
             <div class="center">
                 <v-card elevation id="card">
                     <div style="margin-top: 40px;">
-                        <p id="status-text">Payment Failed</p>
                         <div class="center-div">
-                            <router-link :to="{ path: '../account-balance' }">
-                                <v-btn class="btn-style">Back to Account Balance</v-btn>
+                            <p id="status-text">The Plan page is still under development</p>
+                        </div>
+                        <div class="center-div">
+                            <p id="update-text">Please check back later for more updates</p>
+                        </div>
+                        <div class="center-div">
+                            <router-link :to="{ path: '../map' }">
+                                <v-btn class="btn-style">Back</v-btn>
                             </router-link>
                         </div>
                     </div>
                 </v-card>
             </div>
         </div>
-        <div v-else>
-            <SignInToAccess />
-        </div>
     </v-app>
 </template>
 
 <script>
 import NavBarLogin from "@/components/NavBarLogin.vue";
-import SignInToAccess from "@/components/SignInToAccess.vue";
+import NavBar from "@/components/NavBar.vue"
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
 export default {
-    name: 'PaymentErrorPage',
-    components: { NavBarLogin, SignInToAccess },
+    name: 'PlanPageDev',
+    components: { NavBarLogin, NavBar },
     data() {
         return {
             bg_img: require('../assets/AccountBalancePage/Allura.png'),
@@ -88,7 +93,7 @@ export default {
 
 #card {
     align-items: center;
-    height: 200px;
+    height: 250px;
     border-radius: 30px;
 }
 
@@ -97,13 +102,22 @@ export default {
     font-weight: 600;
     text-align: center;
     font-size: 40px;
+    color: #8d8d8d;
+    line-height: 50px;
     margin-bottom: 10px;
-    color: red;
+    width: 400px;
+}
+
+#update-text {
+    font-family: 'Outfit', 'sans-serif';
+    margin-bottom: 10px;
+    width: 400px;
+    text-align: center;
 }
 
 .center-div {
     display: flex;
-    justify-content: center
+    justify-content: center;
 }
 
 .btn-style {
@@ -112,6 +126,7 @@ export default {
     font-family: 'Outfit', sans-serif;
     font-weight: bold;
     text-transform: none;
+    margin-bottom: 30px;
 }
 
 a {

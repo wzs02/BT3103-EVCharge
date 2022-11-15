@@ -21,6 +21,9 @@
                         <v-text-field v-model="vehicle_model" :rules="requiredRule" variant="underlined"
                             label="Enter your vehicle's model" placeholder="Model 3, ZS" color="#4285f4">
                         </v-text-field>
+                        <v-text-field v-model="licensePlateNumber" color="#4285f4" :rules="requiredRule"
+                            variant="underlined" label="Enter your electric vehicle's license plate number">
+                        </v-text-field>
                         <div style="height: 20px"></div>
                         <v-btn block size="large" type="submit" variant="elevated" id="btn-sign-in">
                             Continue
@@ -52,12 +55,13 @@ export default {
             form: false,
             user: "",
             uid: "",
+            licensePlateNumber: "",
             vehicle_brand: "",
             vehicle_model: "",
             owner_name: "",
             requiredRule: [
                 v => !!v || "Field is required"
-            ],
+            ]
         }
     },
     created() {
@@ -72,18 +76,20 @@ export default {
     methods: {
         onSubmit() {
             if (!this.form) {
-                window.confirm("Login details invalid")
+                // window.confirm("Login details invalid")
+                conosle.log('Login details invalid.')
             }
             else {
                 const docRef = doc(db, "USERS", this.uid)
                 const data = {
                     user_name: this.owner_name,
                     user_brand: this.vehicle_brand,
-                    user_model: this.vehicle_model
+                    user_model: this.vehicle_model,
+                    user_plate: this.licensePlateNumber
                 }
 
                 setDoc(docRef, data, { merge: true }).then(() => {
-                    window.confirm("Document has been added successfully");
+                    window.confirm("Sign up successful!");
                     this.$router.push('/account-balance')
                 }).catch(error => {
                     window.confirm(error);

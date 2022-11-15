@@ -1,29 +1,34 @@
 <template>
     <v-app>
-        <NavBarLogin />
-        <div id="top-up-div">
-            <p id="greeting">Hi, {{ username }}!</p>
-            <p id="available-deposit">Available Deposit: ${{ this.wallet }}</p>
-            <p id="notice">A minimum of $30.00 is needed to make a reservation</p>
-            <stripe-checkout ref="checkoutRef" mode="payment" :pk="publishableKey" :line-items="lineItems"
-                :success-url="successURL" :cancel-url="cancelURL" @loading="v => loading = v" />
-            <v-btn id="btn-style" @click="submit">Top up deposit</v-btn>
-        </div>
+        <div v-if="showDisplay">
+            <NavBarLogin />
+            <div id="top-up-div">
+                <p id="greeting">Hi, {{ username }}!</p>
+                <p id="available-deposit">Available Deposit: ${{ this.wallet }}</p>
+                <p id="notice">A minimum of $30.00 is needed to make a reservation</p>
+                <stripe-checkout ref="checkoutRef" mode="payment" :pk="publishableKey" :line-items="lineItems"
+                    :success-url="successURL" :cancel-url="cancelURL" @loading="v => loading = v" />
+                <v-btn id="btn-style" @click="submit">Top up deposit</v-btn>
+            </div>
 
-        <div v-if="uid">
-            <div id="history-div">
-                <p id="transactions-header"> Previous Transactions</p>
-            </div>
-            <br>
-            <div>
-                <div v-if="hasPreviousTrans" class="past_booking_records">
-                    <div  v-for="transaction in pastTransList" :key="transaction.date">
-                        <PastTransactionRecord :transDetails="transaction"/>
+            <div v-if="uid">
+                <div id="history-div">
+                    <p id="transactions-header"> Previous Transactions</p>
+                </div>
+                <br>
+                <div>
+                    <div v-if="hasPreviousTrans" class="past_booking_records">
+                        <div v-for="transaction in pastTransList" :key="transaction.date">
+                            <PastTransactionRecord :transDetails="transaction" />
+                        </div>
                     </div>
-                </div>
-                <p v-else class="bookings_record_headings1">You have no past transactions</p>
+                    <p v-else class="bookings_record_headings1">You have no past transactions</p>
                 </div>
             </div>
+        </div>
+        <div v-else>
+            <SignInToAccess />
+        </div>
     </v-app>
 </template>
 
@@ -36,29 +41,31 @@ import { StripeCheckout } from '@vue-stripe/vue-stripe';
 import firebaseApp from '../firebase.js';
 import { doc, setDoc, updateDoc, getFirestore, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
 import PastTransactionRecord from "../components/PastTransactionRecord.vue";
-// doc, setDoc,
+import SignInToAccess from "../components/SignInToAccess.vue"
 
 /* Still need to fetch user name and available balance from FB */
 const db = getFirestore(app);
 
 export default {
     created() {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.uid = user.uid;
-        this.getUsername(user.uid)
-        this.getTransData(user.uid)
-        this.currentTime()
-      }
-    })
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.uid = user.uid;
+                this.getUsername(user.uid)
+                this.getTransData(user.uid)
+                this.showDisplay = true
+                this.currentTime()
+            }
+        })
     },
     components: {
-        StripeCheckout, NavBarLogin, PastTransactionRecord
+        StripeCheckout, NavBarLogin, PastTransactionRecord, SignInToAccess
     },
     data() {
         this.publishableKey = "pk_test_51M0REtKs5bTKMbCfjEQWxFTwszhZIIWTWg8pCXnnEwI6RxayRk1vYDcTPGJU0kFGuf3xR7EaF3cyBdH8vT2sF9B300H51KnG9d"
         return {
+            showDisplay: false,
             loading: false,
             lineItems: [
                 {
@@ -90,15 +97,12 @@ export default {
             if (this.pastTransList.length > 0) {
                 console.log('APPEND TO ENTRY')
                 this.createTransactiononFirebase(this.date, this.time)
-                // window.location.reload();
                 this.$refs.checkoutRef.redirectToCheckout()
             } else {
                 console.log('CREATING NEW ENTRY')
                 this.createNEWTransactiononFirebase(this.date, this.time)
-                // window.location.reload();
                 this.$refs.checkoutRef.redirectToCheckout()
             }
-            // this.$refs.checkoutRef.redirectToCheckout()
         },
         async getUsername(uid) {
             // const auth = getAuth()
@@ -130,7 +134,7 @@ export default {
                 transDetails.date = docs.date;
                 transDetails.time = docs.time;
                 transDetails.amount = "$30"
-                transDetails.type = "Debit"
+                transDetails.type = docs.type;
                 console.log(transDetails)
                 this.wallet += 30
                 this.pastTransList.push(transDetails)
@@ -147,23 +151,23 @@ export default {
             const timer = this.today
             console.log("TIMER", timer)
             // writes date time as the key
-            await updateDoc(doc(db, "Transactions", this.uid), 
-            {
-                [timer] : {
-                    date: inputdate,
-                    time: inputtime,
-                    uid: this.uid,
-                    type: "Debit"
-                }
-            });
-            // await setDoc(doc(db, "Transactions", this.uid), 
-            // {
-            //     [timer] : {
-            //         date: inputdate,
-            //         time: inputtime,
-            //         uid: this.uid
-            //     }
-            // });
+            await updateDoc(doc(db, "Transactions", this.uid),
+                {
+                    [timer]: {
+                        date: inputdate,
+                        time: inputtime,
+                        uid: this.uid
+                    }
+                });
+            await updateDoc(doc(db, "Transactions", this.uid),
+                {
+                    [timer]: {
+                        date: inputdate,
+                        time: inputtime,
+                        uid: this.uid,
+                        type: "Top Up"
+                    }
+                });
         },
         async createNEWTransactiononFirebase(inputdate, inputtime) {
             console.log("CREATING TRANSACTION ON FIREBASE")
@@ -174,19 +178,19 @@ export default {
             const timer = this.today
             console.log("TIMER", timer)
             // writes date time as the key
-            await setDoc(doc(db, "Transactions", this.uid), 
-            {
-                [timer] : {
-                    date: inputdate,
-                    time: inputtime,
-                    uid: this.uid,
-                    type: "Debit"
-                }
-            });
+            await setDoc(doc(db, "Transactions", this.uid),
+                {
+                    [timer]: {
+                        date: inputdate,
+                        time: inputtime,
+                        uid: this.uid,
+                        type: "Top Up"
+                    }
+                });
         },
         currentDate() {
             const current = new Date();
-            const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+            const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
             return date;
         },
         currentTime() {
@@ -198,12 +202,6 @@ export default {
                 hour = today.getHours()
                 pmAM = 'AM'
             }
-            // console.log('TESTING TIME', today.getMinutes().toString())
-            // if ((today.getMinutes().toString()).length == 0) {
-            //     var minutes = "0" + today.getMinutes().toString()
-            // } else {
-            //     minutes = today.getMinutes()
-            // }
             var minutes = today.getMinutes().toString()
 
             var now_time = (hour + ":" + minutes + " " + pmAM).toString()
@@ -266,11 +264,10 @@ export default {
 }
 
 .bookings_record_headings1 {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Nunito', 'sans-serif';
     font-weight: 700;
     font-size: 22px;
     text-align: left;
     padding-left: 100px;
 }
-
 </style>

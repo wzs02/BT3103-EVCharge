@@ -41,12 +41,14 @@
                                                     <span id="no-account-text">Don't have an account?</span>
                                                 </v-row>
                                                 <v-row style="margin-top: 5px;">
-                                                    <router-link :to="{ path: '../signup' }" id="sign-up-link">Sign Up
+                                                    <router-link :to="{ path: '../signup' }" id="sign-up-link">Sign
+                                                        Up
                                                     </router-link>
                                                 </v-row>
                                             </v-col>
                                             <v-col>
-                                                <router-link :to="{ path: '../forgetpw' }" id="forgot-pw-link">Forgot
+                                                <router-link :to="{ path: '../forgetpw' }" id="forgot-pw-link">
+                                                    Forgot
                                                     Password
                                                 </router-link>
                                             </v-col>
@@ -84,6 +86,7 @@ export default {
             bg_img2: require('../assets/SignInPage/SignInBG.png'),
             email: "",
             password: "",
+            showDisplay: false,
             form: false,
             showpw1: false,
             emailValidFormat: [
@@ -330,7 +333,7 @@ a {
 }
 
 .center-content {
-    display: flex; 
-    justify-content:center;
+    display: flex;
+    justify-content: center;
 }
 </style>
