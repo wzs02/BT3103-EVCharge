@@ -60,9 +60,9 @@
             <v-card height="650px" color="#F5F5F5">
               <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string" :selectedChargerID="this.selected_charger_id" @timeSelected="updateSelectedTime($event)"/>
               <v-card-text class="bookingInfo">
-                You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b><br>
+                You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b><br><br>
                 <p v-html="date_time_info_string"></p>
-                </v-card-text>
+              </v-card-text>
               <v-btn class="btn" rounded elevation="3" @click="makeBooking" :disabled="isBookingDisabled">Book</v-btn>
             </v-card>
           </div>
@@ -76,7 +76,7 @@
 
 <script>
 import firebaseApp from "../firebase.js"
-import { getFirestore, getDoc, addDoc, doc, collection } from "firebase/firestore"
+import { getFirestore, getDoc, addDoc, doc, collection, query, where, getDocs } from "firebase/firestore"
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBar from "@/components/NavBar.vue";
 import BookingCalendar from "@/components/BookingCalendar.vue"
@@ -99,6 +99,8 @@ export default {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.uid = user.uid;
+        this.checkIfInsufficientDeposit(this.uid);
+        this.checkIfExistingUpcomingBooking(this.uid);
       }
     })
   },
@@ -124,6 +126,8 @@ export default {
       selected_end_time:"",
       booking_duration: "",
       date_time_info_string: "",
+      hasInsufficientDeposit: true,
+      hasExistingUpcomingBooking: true,
       dateSelectionTrigger: 0,
       chargerTypeColourMap: {"Type 2": "#03045e", "CCS/SAE": "#0096c7", "Commando": "#0077b6", "J-1772": "#023e8a"}
     } 
@@ -187,13 +191,52 @@ export default {
       this.date_time_info_string = `on <b>${date_info_string}</b>, <b>${time_info_string}</b>`
       this.isBookingDisabled = this.checkBookingFields();
     },
+    async checkIfInsufficientDeposit(uid) {
+      const db = getFirestore(firebaseApp);
+      const userHistory = doc(db, "Transactions", uid)
+      const historySnap = await getDoc(userHistory);
+      var depositAmt = 0;
+      for (const [key, value] of Object.entries(historySnap.data())) {
+          console.log(key);
+          if (value.type == "Top Up") {
+            depositAmt += 30;
+          } else {
+            depositAmt -= 30;
+          }    
+      }
+      this.hasInsufficientDeposit = depositAmt < 30;
+    },
+    async checkIfExistingUpcomingBooking(uid) {
+      const db = getFirestore(firebaseApp);
+      const bookingsRef = collection(db, "bookings");
+      let now = new Date(Date.now());
+      const q = query(bookingsRef, where("user_id", "==", uid), where("start_timestamp", ">=", now));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.docs.length > 0) {
+        this.hasExistingUpcomingBooking = true;
+      } else {
+        this.hasExistingUpcomingBooking = false;
+      }
+    },
     checkBookingFields() {
       let bookingFieldValues = [this.selected_charger_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address, 
         this.selected_start_time, this.selected_end_time, this.booking_duration];
-      return bookingFieldValues.some((x) => x == "");
+      return bookingFieldValues.some((x) => x == "") && (this.selected_end_time <= this.selected_start_time);
     },
     async makeBooking() {
-      if (this.uid) {
+      if (this.uid == false) {
+        alert("You are not logged in. Please proceeed to log in.");
+        this.$router.push('/login');
+        return
+      } else if (this.hasInsufficientDeposit) {
+        alert("Insufficient deposit amount in account. A $30 deposit amount is required for booking. Please top up.");
+        this.$router.push('/account-balance');
+        return
+      } else if (this.hasExistingUpcomingBooking) {
+        alert("You have an existing booking. Please delete your existing booking before making a new booking.");
+        this.$router.push('/view_bookings');
+        return
+      } else {
         const booking_rec = {
           user_id: this.uid,
           charger_id: this.selected_charger_id,
@@ -207,10 +250,9 @@ export default {
           postal_code: this.selected_station_address["postalCode"],
         }
         await addDoc(collection(db, "bookings"), booking_rec);
-        alert("Booking success");
+        alert("Booking success. View your booking under My Bookings.");
         this.$router.push('/view_bookings');
-      } else {
-        this.$router.push('/login');
+        return
       }
     },
     // async displayMonth(id, display_num, charger_type) {
