@@ -20,7 +20,7 @@
                                     <v-col>
                                         <div id="welcome-title">Welcome to <span id="charge-text">EVCharge</span><br />
                                         </div>
-                                        <div id="signup-title">Sign In</div>
+                                        <div id="signup-title">Log In</div>
                                     </v-col>
                                 </v-row>
                                 <div style="height: 80px;"></div>
@@ -52,7 +52,7 @@
                                             </v-col>
                                         </v-row>
                                         <v-btn block size="large" type="submit" variant="elevated" id="btn-sign-in">
-                                            Sign In
+                                            Log In
                                         </v-btn>
                                     </v-form>
                                 </div>
@@ -61,7 +61,7 @@
                                 </v-col>
                                 <v-row class="center-content">
                                     <v-btn id="sign-in-google-btn-style" @click="signInWithGoogle(email, password)">
-                                        <span class="">Sign In with Google</span>
+                                        <span class="">Log In with Google</span>
                                     </v-btn>
                                 </v-row>
                             </v-card>
