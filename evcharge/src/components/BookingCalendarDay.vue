@@ -43,21 +43,28 @@ export default {
     bookingDuration: 0,
   }),
   methods: {
-    async fetchData(id) {
-      console.log(id)
-      const bookingsRef = collection(db, "testBookings")
-      const q = query(bookingsRef, where("chargerID", "==", id))
+    async fetchExistingBookings(id, dateString) {
+      let year = dateString.substring(0,4);
+      let month = parseInt(dateString.substring(5,7)) - 1; // get monthIndex
+      let day = dateString.substring(8,10);
+      let thisDateStart = new Date(year, month, day, 0);
+      let thisDateEnd = new Date(year, month, day, 23, 30);
+      const bookingsRef = collection(db, "bookings")
+      const q = query(bookingsRef, where("charger_id", "==", id),
+        where("start_timestamp", ">=", thisDateStart), where("start_timestamp", "<=", thisDateEnd));
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
+        let data = doc.data()
         this.existingEvents.push({
-          start: doc.data()["startTime"].toDate(),
-          end: doc.data()["endTime"].toDate(),
-          title: 'Unavailable',
+          start: data.start_timestamp.toDate(),
+          end: data.end_timestamp.toDate(),
           class: 'unavailable',
-          content: '',
-          // NO DELETE OR MOVING
+          background: true,
+          deletable: false,
+          resizable: false,
         })
       })
+      console.log(this.existingEvents);
     },
     onEventCreate(event) {
       if (this.currEvent == "") {
@@ -88,6 +95,9 @@ export default {
     resetCurrEvent() {
       this.currEvent = "";
     },
+    checkOverlappingEvents() {
+
+    },
     getSelectedDate(dateString) {
       if (dateString == "") {
         return new Date();
@@ -101,7 +111,7 @@ export default {
   },
   created() {
     this.selectedDate = this.getSelectedDate(this.selectedDateString)
-    this.fetchData(this.selectedChargerID)
+    this.fetchExistingBookings(this.selectedChargerID, this.selectedDateString)
   },
 }
 </script>

@@ -58,7 +58,7 @@
         <v-col cols=6>
           <div class="dayview" v-if="this.selected_date_string != ''">
             <v-card height="650px" color="#F5F5F5">
-              <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string" :selectedChargerID="this.selected_station_id" @timeSelected="updateSelectedTime($event)"/>
+              <BookingCalendarDay :key="this.dateSelectionTrigger" :selectedDateString="this.selected_date_string" :selectedChargerID="this.selected_charger_id" @timeSelected="updateSelectedTime($event)"/>
               <v-card-text class="bookingInfo">
                 You are booking for <b>{{ this.selected_station_name }}{{ this.selected_charger_display_num }}</b><br>
                 <p v-html="date_time_info_string"></p>
@@ -113,7 +113,7 @@ export default {
       // monthlyAvailability: {},
       uid: false,
       isBookingDisabled: true,
-      selected_station_id: "",
+      selected_charger_id: "",
       selected_station_name: "No charging station selected", 
       selected_station_provider: "",
       selected_station_charger_type: "",
@@ -164,7 +164,7 @@ export default {
       }
     },
     async selectCharger(id, display_num, charger_type) {
-      this.selected_station_id = id;
+      this.selected_charger_id = id;
       this.selected_charger_display_num = "-" + display_num.toString();
       this.selected_station_charger_type = charger_type;
       this.dateSelectionTrigger++;
@@ -188,7 +188,7 @@ export default {
       this.isBookingDisabled = this.checkBookingFields();
     },
     checkBookingFields() {
-      let bookingFieldValues = [this.selected_station_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address, 
+      let bookingFieldValues = [this.selected_charger_id, this.selected_station_name, this.selected_station_charger_type, this.selected_station_provider, this.selected_station_address, 
         this.selected_start_time, this.selected_end_time, this.booking_duration];
       return bookingFieldValues.some((x) => x == "");
     },
@@ -196,7 +196,7 @@ export default {
       if (this.uid) {
         const booking_rec = {
           user_id: this.uid,
-          station_id: this.selected_station_id,
+          charger_id: this.selected_charger_id,
           location: this.selected_station_name,
           charger_type: this.selected_station_charger_type,
           provider: this.selected_station_provider,
@@ -215,7 +215,7 @@ export default {
     },
     // async displayMonth(id, display_num, charger_type) {
     //   var availabilityFromID = []
-    //   this.selected_station_id = id;
+    //   this.selected_charger_id = id;
     //   this.selected_charger_display_num = "-" + display_num.toString();
     //   this.selected_station_charger_type = charger_type;
 
