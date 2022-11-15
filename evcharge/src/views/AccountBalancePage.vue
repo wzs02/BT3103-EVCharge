@@ -17,8 +17,8 @@
                 </div>
                 <br>
                 <div>
-                    <div v-if="hasPreviousTrans" class="past_booking_records">
-                        <div v-for="transaction in pastTransList" :key="transaction.date">
+                    <div v-if="hasPreviousTrans">
+                        <div v-for="transaction in pastTransList" :key="transaction.date + transaction.time">
                             <PastTransactionRecord :transDetails="transaction" />
                         </div>
                     </div>
