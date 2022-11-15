@@ -146,14 +146,14 @@ export default {
             const db = getFirestore(firebaseApp);
             const userBookingRef = collection(db, "bookings");
             // Get latest booking for user (only can have 1 upcoming booking per user)
-            let z = await getDocs(query(userBookingRef, where("user_id", "==", uid), orderBy("date", "desc"), limit(1)));
+            let z = await getDocs(query(userBookingRef, where("user_id", "==", uid), orderBy("start_timestamp", "desc"), limit(1)));
             z.forEach((docs) => {
                 let data = docs.data();
-                let startTimestamp = data.date.toDate()
+                let startTimestamp = data.start_timestamp.toDate()
                 // Compare date of latest booking with current date 
                 if (startTimestamp > new Date(Date.now())) {
                     const location = data.location;
-                    const date = data.date.toDate().toLocaleDateString('en-GB');
+                    const date = startTimestamp.toLocaleDateString('en-GB');
                     const time = startTimestamp.toTimeString().slice(0, 5);
                     this.notifMsg = `You have an upcoming booking on <b>${date}</b>, <b>${time}</b><br>at <b>${location}</b>`
                     this.hasUpcomingBooking = true;

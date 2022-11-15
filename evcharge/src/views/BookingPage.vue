@@ -8,7 +8,7 @@
       </v-row>
       <v-row class="availableChargers" style="height: 10%">
         <v-col cols=3>
-          <h3 v-if="this.selected_station_name != 'No charging station selected'">Please select a charger:</h3>
+          <h3 v-if="this.selected_station_name != 'No charging station selected'">Please select a charger</h3>
           <p v-else class="validationMsg">Please select a charging station</p>
         </v-col>
         <v-col>
@@ -172,6 +172,11 @@ export default {
     updateSelectedDate(dateString) {
       this.selected_date_string = dateString;
       this.dateSelectionTrigger++;
+      this.selected_start_time = "";
+      this.selected_end_time = "";
+      this.booking_duration = "";
+      this.date_time_info_string = "";
+      this.isBookingDisabled = this.checkBookingFields();
     },
     updateSelectedTime(timeDetails) {
       this.selected_start_time = timeDetails.startTime;
@@ -195,13 +200,15 @@ export default {
           location: this.selected_station_name,
           charger_type: this.selected_station_charger_type,
           provider: this.selected_station_provider,
-          date: new Date('November 17, 2022 09:30:00'), // TO EDIT
-          duration: 60,
+          start_timestamp: this.selected_start_time,
+          end_timestamp: this.selected_end_time,
+          duration: this.booking_duration,
           street: this.selected_station_address["street"],
           postal_code: this.selected_station_address["postalCode"],
         }
         await addDoc(collection(db, "bookings"), booking_rec);
-        alert("Booking Success. Please view under My Bookings.")
+        alert("Booking success");
+        this.$router.push('/view_bookings');
       } else {
         this.$router.push('/login');
       }
