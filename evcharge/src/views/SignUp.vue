@@ -27,7 +27,7 @@
                                     <v-col>
                                         <span id="have-account">Have an account?</span>
                                         <router-link :to="{ path: '../login' }">
-                                            <button type="button" id="click-signIN">Log In</button>
+                                            <button type="button" id="click-signIN">Login</button>
                                         </router-link>
                                     </v-col>
                                 </v-row>
@@ -59,7 +59,7 @@
                                 <h6 id="or">OR</h6>
                                 <v-row class="center-content">
                                     <v-btn class="sign-google-btn-style" @click="signInWithGoogle()">
-                                        <span>Sign up with Google</span>
+                                        <span>Sign Up with Google</span>
                                     </v-btn>
                                 </v-row>
                             </v-card>
@@ -127,7 +127,7 @@ export default {
     methods: {
         onSubmit() {
             if (!this.form) {
-                window.confirm("Login details invalid")
+                console.log("Fields not filled up!")
             }
             else {
                 this.register(this.email, this.password)
@@ -145,6 +145,10 @@ export default {
                     user_uid: result.user.uid,
                 }
                 setDoc(docRef, data).then(() => {
+<<<<<<< HEAD
+=======
+                    // window.confirm("Sign up successful!");
+>>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
                     this.$router.push('/ev-info')
                     window.confirm("Your account has been successfully created");
                 }).catch(error => {
@@ -161,7 +165,11 @@ export default {
                     user_uid: result.user.uid,
                 }
                 setDoc(docRef, data).then(() => {
+<<<<<<< HEAD
                     window.confirm("Your account has been successfully created");
+=======
+                    window.confirm("Sign up successful!");
+>>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
                     this.$router.push('/ev-info')
                 }).catch(error => {
                     window.confirm(error);

@@ -64,10 +64,20 @@ const router = createRouter({
       component: () => import("../views/EVInfoPage.vue"),
     },
     {
-      path: '/plan-page-dev',
+      path: "/plan-page-dev",
       name: "PlanPageDev",
-      component: () => import("../views/PlanPageDev.vue")
-    }
+      component: () => import("../views/PlanPageDev.vue"),
+    },
+    {
+      path: "/profile",
+      name: "ProfilePage",
+      component: () => import("../views/ProfilePage.vue"),
+    },
+    {
+      path: "/ev-info",
+      name: "EvInfo",
+      component: () => import("../views/EVInfoPage.vue"),
+    },
   ],
 });
 

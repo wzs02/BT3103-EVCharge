@@ -2,7 +2,7 @@
     <v-container>
         <v-row>
 
-            <v-col cols=4 class="filter">
+            <v-col cols=6 class="filter">
                 <h4>Filter By Region</h4>
                 <Multiselect
                     v-model="selected1"
@@ -15,7 +15,7 @@
                 </Multiselect>
             </v-col>
 
-            <v-col cols=4 class="filter">
+            <v-col cols=6 class="filter">
                 <h4>Filter By Charger Type</h4>
                 <Multiselect
                     v-model="selected2"
@@ -28,16 +28,6 @@
                 </Multiselect>
             </v-col>
 
-            <v-col cols=4 class="filter">
-                <h4>Filter By Timing</h4>
-                <Multiselect
-                    v-model="selected3"
-                    :options="timing"
-                    :multiple="true"
-                    :close-on-select="false"
-                    placeholder="Enter Timing">
-                </Multiselect>
-            </v-col>
 
         </v-row>
 

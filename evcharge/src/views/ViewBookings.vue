@@ -1,5 +1,9 @@
 <template>
   <v-app>
+<<<<<<< HEAD
+=======
+    <NavBarLogin :key="notifStatusTrigger"/>
+>>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
     <div class="view_bookings" v-if="showDisplay">
       <NavBarLogin />
       <h1 class="view_bookings_header">My Bookings</h1>
@@ -57,6 +61,7 @@ export default {
       upcomingBookingDetails: {},
       hasPastBooking: false,
       pastBookingDetailsList: [],
+      notifStatusTrigger: 0,
     }
   },
   components: { NavBarLogin, BookingRecord, PastBookingRecord, SignInToAccess },
@@ -67,11 +72,11 @@ export default {
       // Cut-off time for booking deletion. 15 min before booking start time. 
       let cutOffTimestamp = new Date(Date.now() - 15 * 60000);
       // Get all booking records for the user
-      let z = await getDocs(query(userBookingRef, where("user_id", "==", uid), orderBy("date", "desc")));
+      let z = await getDocs(query(userBookingRef, where("user_id", "==", uid), orderBy("start_timestamp", "desc")));
       z.forEach((docs) => {
         let data = docs.data();
         // Process time display
-        let startTimestamp = data.date.toDate()
+        let startTimestamp = data.start_timestamp.toDate();
         let duration = data.duration; // booking duration in minutes
         let endTimestamp = new Date(startTimestamp.getTime() + duration * 60000)
         let timeString = startTimestamp.toTimeString().slice(0, 5) + "-" + endTimestamp.toTimeString().slice(0, 5)
@@ -79,7 +84,7 @@ export default {
         let bookingDetails = {};
         bookingDetails.id = docs.id;
         bookingDetails.location = data.location;
-        bookingDetails.date = data.date.toDate().toLocaleDateString('en-GB');
+        bookingDetails.date = startTimestamp.toLocaleDateString('en-GB');
         bookingDetails.time = timeString;
         bookingDetails.charger_type = data.charger_type;
         bookingDetails.svc_pdr = data.provider;
@@ -97,11 +102,12 @@ export default {
     },
 
     async deleteBooking(bookingId) {
-      alert("You are going to delete your upcoming booking.")
+      alert("You are going to delete your upcoming booking")
       const db = getFirestore(firebaseApp);
       await deleteDoc(doc(db, "bookings", bookingId));
-      alert("Booking successfully deleted.");
+      alert("Booking successfully deleted");
       this.hasUpcomingBooking = false;
+      this.notifStatusTrigger++;
     }
   }
 }

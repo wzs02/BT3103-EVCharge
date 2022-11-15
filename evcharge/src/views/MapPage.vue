@@ -13,11 +13,21 @@
       </v-row>
 
 
+<<<<<<< HEAD
       <div class=Map>
         <!-- Specifying the Dimension/Specifications of the Google Map we using -->
         <!-- Check width and height for future deployment -->
         <GMapMap :center="center" :zoom="11.80" map-type-id="roadmap"
           style="position: fixed;top: 10;left: 0;min-width: 100%; min-height: 100%;">
+=======
+        <!--Creating unavailable Markers -->
+        <!---->
+       <!-- <GMapMarker :key="index" v-for="(m, index) in Unavailable_Markers" :position="m.position"
+          :icon="require('@/assets/MapPage/unavailablePins.png')" @click="center = m.position" :clickable=true
+          :draggable=false>
+        </GMapMarker>-->
+      </GMapMap>
+>>>>>>> 5b0e8c53741bb7e7f0aa6f9d06ea353b1998927b
 
           <!--Creating available Markers -->
           <GMapMarker :key="index" v-for="(m, index) in Available_Markers.value" :position="m.position"

@@ -25,6 +25,9 @@
                     <p v-else class="bookings_record_headings">You have no past transactions</p>
                 </div>
             </div>
+            <div v-else>
+                <p class="bookings_record_headings1">You have no past transactions</p>
+            </div>
         </div>
         <div v-else>
             <SignInToAccess />
@@ -39,7 +42,7 @@ import { getAuth, onAuthStateChanged } from '@firebase/auth';
 import NavBarLogin from "@/components/NavBarLogin.vue";
 import { StripeCheckout } from '@vue-stripe/vue-stripe';
 import firebaseApp from '../firebase.js';
-import { doc, updateDoc, getFirestore, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, getFirestore, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
 import PastTransactionRecord from "../components/PastTransactionRecord.vue";
 import SignInToAccess from "../components/SignInToAccess.vue"
 
@@ -55,6 +58,7 @@ export default {
                 this.getUsername(user.uid)
                 this.getTransData(user.uid)
                 this.showDisplay = true
+                this.currentTime()
             }
         })
     },
@@ -93,8 +97,15 @@ export default {
             console.log("Date", this.date)
             console.log("Time", this.time)
             console.log("Datetime", this.today)
-            this.createTransactiononFirebase(this.date, this.time)
-            this.$refs.checkoutRef.redirectToCheckout()
+            if (this.pastTransList.length > 0) {
+                console.log('APPEND TO ENTRY')
+                this.createTransactiononFirebase(this.date, this.time)
+                this.$refs.checkoutRef.redirectToCheckout()
+            } else {
+                console.log('CREATING NEW ENTRY')
+                this.createNEWTransactiononFirebase(this.date, this.time)
+                this.$refs.checkoutRef.redirectToCheckout()
+            }
         },
         async getUsername(uid) {
             // const auth = getAuth()
@@ -115,25 +126,24 @@ export default {
             // , orderBy("date", "desc")
             const userHistory = doc(db, "Transactions", this.uid)
             const historySnap = await getDoc(userHistory)
-            console.log(historySnap.data())
+            // console.log(historySnap.data())
             this.wallet = 0
 
             for (const [key, value] of Object.entries(historySnap.data())) {
-                // console.log(key, value);
                 console.log(key)
                 let docs = value
-                console.log(docs)
+                // console.log(docs)
                 let transDetails = {};
                 transDetails.date = docs.date;
                 transDetails.time = docs.time;
                 transDetails.amount = "$30"
+                transDetails.type = docs.type;
                 console.log(transDetails)
                 this.wallet += 30
                 this.pastTransList.push(transDetails)
             }
 
             this.hasPreviousTrans = this.pastTransList.length > 0;
-            console.log(this.hasPreviousTrans)
         },
         async createTransactiononFirebase(inputdate, inputtime) {
             console.log("CREATING TRANSACTION ON FIREBASE")
@@ -152,13 +162,34 @@ export default {
                         uid: this.uid
                     }
                 });
-            // getting wallet amount
-            // const userTransRef = collection(db, "Transactions")
-            // let z = await getDocs(query(userTransRef, where("user_uid", "==", this.uid)));
-            // z.forEach((docs) => {
-            //     let data = docs.data();
-            //     console.log(data)
-            // })
+            await updateDoc(doc(db, "Transactions", this.uid),
+                {
+                    [timer]: {
+                        date: inputdate,
+                        time: inputtime,
+                        uid: this.uid,
+                        type: "Top Up"
+                    }
+                });
+        },
+        async createNEWTransactiononFirebase(inputdate, inputtime) {
+            console.log("CREATING TRANSACTION ON FIREBASE")
+            console.log(this.uid)
+            console.log(db)
+            console.log(inputdate)
+            console.log(inputtime)
+            const timer = this.today
+            console.log("TIMER", timer)
+            // writes date time as the key
+            await setDoc(doc(db, "Transactions", this.uid),
+                {
+                    [timer]: {
+                        date: inputdate,
+                        time: inputtime,
+                        uid: this.uid,
+                        type: "Top Up"
+                    }
+                });
         },
         currentDate() {
             const current = new Date();
@@ -174,11 +205,7 @@ export default {
                 hour = today.getHours()
                 pmAM = 'AM'
             }
-            if (today.getMinutes().toString().length == 0) {
-                var minutes = "0" + today.getMinutes().toString()
-            } else {
-                minutes = today.getMinutes()
-            }
+            var minutes = today.getMinutes().toString()
 
             var now_time = (hour + ":" + minutes + " " + pmAM).toString()
             return now_time;
@@ -239,8 +266,8 @@ export default {
     font-size: 36px;
 }
 
-.bookings_record_headings {
-    font-family: 'Nunito', sans-serif;
+.bookings_record_headings1 {
+    font-family: 'Nunito', 'sans-serif';
     font-weight: 700;
     font-size: 22px;
     text-align: left;

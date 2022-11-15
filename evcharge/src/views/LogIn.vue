@@ -104,7 +104,7 @@ export default {
     methods: {
         onSubmit() {
             if (!this.form) {
-                window.confirm("Login details invalid")
+                console.log("Login details invalid")
             }
             else {
                 this.signIn(this.email, this.password)
