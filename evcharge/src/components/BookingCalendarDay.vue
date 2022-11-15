@@ -7,12 +7,11 @@
       :disable-views="['years', 'year', 'month', 'week']"
       :time-step="30"
       :selected-date="selectedDate"
-      :events="existingEvents"
+      :events="allEvents"
       :on-event-create="onEventCreate"
       :editableEvents="{ title: false, drag: false, resize: true, delete: true, create: true}"
       :snapToTime="30"
       @event-drag-create="dragToBook"
-      @event-drop="dropToBook"
       @event-duration-change="resizeToBook"
       @event-delete="resetCurrEvent">
     </vue-cal>
@@ -36,7 +35,8 @@ export default {
   emits: ["timeSelected"],
   data: () => ({
     selectedDate: new Date(), // Day view displays this date
-    existingEvents: [],
+    preexistingEvents: [],
+    allEvents: [],
     currEvent: "",
     startTime: "",
     endTime: "",
@@ -54,7 +54,7 @@ export default {
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
         let data = doc.data()
-        this.existingEvents.push({
+        this.allEvents.push({
           start: data.start_timestamp.toDate(),
           end: data.end_timestamp.toDate(),
           class: 'unavailable',
@@ -62,64 +62,74 @@ export default {
           deletable: false,
           resizable: false,
         })
-      })
+      });
+      this.preexistingEvents = [...this.allEvents];
     },
     onEventCreate(event) {
       if (this.currEvent == "") {
-        event.id = this.existingEvents.length + 1
-        this.existingEvents.push(event);
+        event.id = this.allEvents.length + 1
+        this.allEvents.push(event);
         this.currEvent = event;
         return true
       }
       return false
     },
-    dragToBook(slot) {
-      if (slot != false) {
-        this.startTime = slot.start;
-        this.endTime = slot.end;
+    dragToBook(event) {
+      if (this.checkOverlappingEvents(event)) {
+        this.startTime = "";
+        this.endTime = "";
+        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
+      } else {
+        this.startTime = event.start;
+        this.endTime = event.end;
         this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
       }
     },
     resizeToBook(slot) {
-      if (slot.event != false) {
-        let eventToChange = this.existingEvents.find(ee => ee.id == slot.originalEvent.id);
-        //eventToChange.end = slot.originalEvent.end;
-        this.checkOverlappingEvents(eventToChange);
+      let eventToChange = this.allEvents.find(ee => ee.id == slot.originalEvent.id);
+      if (this.checkOverlappingEvents(eventToChange)) {
+        this.startTime = "";
+        this.endTime = "";
+        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
+      } else {
         this.startTime = eventToChange.start;
         this.endTime = eventToChange.end;
         this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
       }
     },
-    dropToBook(slot) {
-      if (slot.event != false) {
-        slot.event = this.checkOverlappingEvents(slot.event);
-        this.startTime = slot.event.start;
-        this.endTime = slot.event.end;
-        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
-      }
-    },
+    // dropToBook(slot) {
+    //   if (slot.event != false) {
+    //     slot.event = this.checkOverlappingEvents(slot.event);
+    //     this.startTime = slot.event.start;
+    //     this.endTime = slot.event.end;
+    //     this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
+    //   }
+    // },
     resetCurrEvent() {
       this.currEvent = "";
       this.startTime = "";
       this.endTime = "";
+      this.allEvents.pop();
       this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
     },
     checkOverlappingEvents(currEvent) {
       let currEventStart = currEvent.start;
       let currEventEnd = currEvent.end;
-      this.existingEvents.forEach(event => {
+      this.preexistingEvents.forEach(event => {
         if (currEventEnd > event.start && currEventStart < event.end) {
-          if (currEventEnd < event.end && currEventStart < event.start) {
-            currEvent.end = event.start;
-          } else if (currEventStart >= event.start && currEventEnd <= event.end) {
-            this.resetCurrEvent();
-            currEvent = false;
-          } else {
-            currEvent.start = event.end;
-          }
-          return currEvent;
+          this.allEvents.pop();
+          this.currEvent = "";
+        //   if (currEventEnd < event.end && currEventStart < event.start) {
+        //     currEvent.end = event.start;
+        //   } else if (currEventStart >= event.start && currEventEnd <= event.end) {
+        //     this.resetCurrEvent();
+        //     currEvent = false;
+        //   } else {
+        //     currEvent.start = event.end;
+        //   }
+          return true;
         }});
-      return currEvent;
+      return false;
     },
     getSelectedDate(dateString) {
       if (dateString == "") {
