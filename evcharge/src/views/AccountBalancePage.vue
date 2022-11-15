@@ -130,7 +130,7 @@ export default {
                 transDetails.date = docs.date;
                 transDetails.time = docs.time;
                 transDetails.amount = "$30"
-                transDetails.type = "Top Up"
+                transDetails.type = docs.type;
                 console.log(transDetails)
                 this.wallet += 30
                 this.pastTransList.push(transDetails)
@@ -153,7 +153,7 @@ export default {
                     date: inputdate,
                     time: inputtime,
                     uid: this.uid,
-                    type: "Debit"
+                    type: "Top Up"
                 }
             });
             // await setDoc(doc(db, "Transactions", this.uid), 
@@ -180,7 +180,7 @@ export default {
                     date: inputdate,
                     time: inputtime,
                     uid: this.uid,
-                    type: "Debit"
+                    type: "Top Up"
                 }
             });
         },
