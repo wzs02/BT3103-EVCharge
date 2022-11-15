@@ -106,10 +106,9 @@ export default {
       if (currentTimestamp > cutOffTimestamp) {
         alert("You are going to delete your upcoming booking. A $30 penalty will be incurred.")
         await deleteDoc(doc(db, "bookings", bookingId));
-        const timer = this.today
         await updateDoc(doc(db, "Transactions", this.uid),
           {
-              [timer]: {
+              [new Date()]: {
                   date: new Date(Date.now()).toLocaleDateString('en-GB'),
                   time: this.currentTime(),
                   uid: this.uid,
@@ -118,15 +117,13 @@ export default {
           });
         alert("$30 deposit deducted as penalty");
         alert("Booking successfully deleted");
-        this.hasUpcomingBooking = false;
-        this.notifStatusTrigger++;
       } else {
         alert("You are going to delete your upcoming booking")
         await deleteDoc(doc(db, "bookings", bookingId));
         alert("Booking successfully deleted");
-        this.hasUpcomingBooking = false;
-        this.notifStatusTrigger++;
       }
+      this.hasUpcomingBooking = false;
+      this.notifStatusTrigger++;
     },
     currentTime() {
       const today = new Date();
