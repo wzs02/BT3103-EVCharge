@@ -45,10 +45,10 @@
 
         <!--Creating unavailable Markers -->
         <!---->
-        <GMapMarker :key="index" v-for="(m, index) in Unavailable_Markers" :position="m.position"
+       <!-- <GMapMarker :key="index" v-for="(m, index) in Unavailable_Markers" :position="m.position"
           :icon="require('@/assets/MapPage/unavailablePins.png')" @click="center = m.position" :clickable=true
           :draggable=false>
-        </GMapMarker>
+        </GMapMarker>-->
       </GMapMap>
 
     </div>
@@ -211,7 +211,7 @@ export default {
       console.log(charger)
       const docRef = doc(db, "MapPage", "chargerLocations");
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists() && charger.length > 0) {
         const markerKeyValues = docSnap.data();
         let station_id_list = Object.keys(markerKeyValues) // list of station ids (field names)
