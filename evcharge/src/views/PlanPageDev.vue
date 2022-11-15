@@ -93,25 +93,25 @@ export default {
 
 #card {
     align-items: center;
-    height: 250px;
+    height: 230px;
     border-radius: 30px;
 }
 
 #status-text {
-    font-family: 'Outfit', 'sans-serif';
+    font-family: 'Nunito', 'sans-serif';
     font-weight: 600;
     text-align: center;
-    font-size: 40px;
+    font-size: 25px;
     color: #8d8d8d;
     line-height: 50px;
     margin-bottom: 10px;
-    width: 400px;
 }
 
 #update-text {
     font-family: 'Outfit', 'sans-serif';
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     width: 400px;
+    font-size: 20px;
     text-align: center;
 }
 
@@ -121,12 +121,12 @@ export default {
 }
 
 .btn-style {
-    background-color: #fff;
-    color: #000;
-    font-family: 'Outfit', sans-serif;
+    background-color: #4285f4;
+    color: #FFFFFF;
+    font-family: 'Outfit';
+    font-size: 18px;
     font-weight: bold;
-    text-transform: none;
-    margin-bottom: 30px;
+    border-radius: 15px;
 }
 
 a {
