@@ -35,9 +35,14 @@ table {
     table-layout: fixed;
 }
 
+th {
+    word-wrap: break-word;
+    padding-left:50px
+}
+
 td {
     word-wrap: break-word;
-    width: 16%;
+    padding-left:50px
 }
 
 .transactions_record_container {
