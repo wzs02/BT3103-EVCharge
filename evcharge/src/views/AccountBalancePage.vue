@@ -136,7 +136,11 @@ export default {
                 transDetails.amount = "$30"
                 transDetails.type = docs.type;
                 console.log(transDetails)
-                this.wallet += 30
+                if (docs.type == "Top Up") {
+                    this.wallet += 30
+                } else {
+                    this.wallet -= 30
+                }
                 this.pastTransList.push(transDetails)
             }
 
@@ -151,14 +155,6 @@ export default {
             const timer = this.today
             console.log("TIMER", timer)
             // writes date time as the key
-            await updateDoc(doc(db, "Transactions", this.uid),
-                {
-                    [timer]: {
-                        date: inputdate,
-                        time: inputtime,
-                        uid: this.uid
-                    }
-                });
             await updateDoc(doc(db, "Transactions", this.uid),
                 {
                     [timer]: {
