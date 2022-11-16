@@ -8,7 +8,7 @@
         <br>
         <div>
           <BookingRecord v-if="hasUpcomingBooking" :bookingDetails="upcomingBookingDetails"
-            @deleteBooking="deleteBooking($event)" />
+            @deleteBooking="handleDeleteButtonClick($event)" />
           <p v-else class="bookings_record_headings">You have no upcoming bookings</p>
         </div>
         <p class="view_bookings_subheadings">Past</p>
@@ -26,6 +26,17 @@
     <div v-else>
       <SignInToAccess />
     </div>
+    <v-snackbar v-model="displayDeleteWarning" :timeout="-1" vertical location="top" color="grey-lighten-4" elevation=24>
+        <p class="notifText" v-html="deleteWarningMsg"></p>
+        <template v-slot:actions>
+            <v-btn @click="handleProceedWithDelete" color="red">
+                Delete
+            </v-btn>
+            <v-btn @click="displayDeleteWarning=false" color="#4285F4">
+                Cancel
+            </v-btn>
+        </template>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -57,6 +68,9 @@ export default {
       upcomingBookingDetails: {},
       hasPastBooking: false,
       pastBookingDetailsList: [],
+      displayDeleteWarning: false,
+      deleteWarningMsg: "",
+      bookingIdToBeDeleted: "",
       notifStatusTrigger: 0,
     }
   },
@@ -94,7 +108,22 @@ export default {
       this.hasUpcomingBooking = Object.keys(this.upcomingBookingDetails).length > 0;
       this.hasPastBooking = this.pastBookingDetailsList.length > 0;
     },
-
+    async verifyDeleteBooking(bookingId) {
+      const db = getFirestore(firebaseApp);
+      const docRef = doc(db, "bookings", bookingId);
+      const docSnap = await getDoc(docRef);
+      let startTimestamp = docSnap.data().start_timestamp;
+      // Cut-off time for booking deletion without penalty. 15 min before booking start time.
+      let cutOffTimestamp = new Date(startTimestamp.toDate() - 15 * 60000);
+      let currentTimestamp = new Date(Date.now());
+      if (currentTimestamp > cutOffTimestamp) {
+        this.deleteWarningMsg = "You are going to delete your upcoming booking. A $30 penalty will be incurred.";
+        this.displayDeleteWarning = true;
+      } else {
+        this.deleteWarningMsg = "You are going to delete your upcoming booking";
+        this.displayDeleteWarning = true;
+      }
+    },
     async deleteBooking(bookingId) {
       const db = getFirestore(firebaseApp);
       const docRef = doc(db, "bookings", bookingId);
@@ -104,7 +133,6 @@ export default {
       let cutOffTimestamp = new Date(startTimestamp.toDate() - 15 * 60000);
       let currentTimestamp = new Date(Date.now());
       if (currentTimestamp > cutOffTimestamp) {
-        alert("You are going to delete your upcoming booking. A $30 penalty will be incurred.")
         await deleteDoc(doc(db, "bookings", bookingId));
         await updateDoc(doc(db, "Transactions", this.uid),
           {
@@ -117,13 +145,21 @@ export default {
           });
         alert("$30 deposit deducted as penalty");
         alert("Booking successfully deleted");
+        this.hasUpcomingBooking = false;
       } else {
-        alert("You are going to delete your upcoming booking")
         await deleteDoc(doc(db, "bookings", bookingId));
         alert("Booking successfully deleted");
+        this.hasUpcomingBooking = false;
       }
-      this.hasUpcomingBooking = false;
       this.notifStatusTrigger++;
+    },
+    handleDeleteButtonClick(bookingId) {
+      this.bookingIdToBeDeleted = bookingId;
+      this.verifyDeleteBooking(bookingId);
+    },
+    handleProceedWithDelete() {
+      this.displayDeleteWarning = false;
+      this.deleteBooking(this.bookingIdToBeDeleted);
     },
     currentTime() {
       const today = new Date();
@@ -181,6 +217,11 @@ export default {
   overflow-y: scroll;
   max-height: 450px;
   max-width: 1050px;
+}
+
+.notifText {
+    font-family: 'Outfit';
+    font-size: 18px;
 }
 
 ::-webkit-scrollbar {

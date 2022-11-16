@@ -111,7 +111,7 @@ export default {
           currEventInList.end = "";
           this.allEvents.pop();
           this.currEvent = "";
-          alert("Selected booking time slot cannot overlap with existing bookings")
+          alert("Selected booking time slot cannot overlap existing bookings")
         //   if (currEventEnd < event.end && currEventStart < event.start) {
         //     currEvent.end = event.start;
         //   } else if (currEventStart >= event.start && currEventEnd <= event.end) {
