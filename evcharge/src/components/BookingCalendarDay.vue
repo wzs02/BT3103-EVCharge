@@ -182,6 +182,8 @@ export default {
   border-radius: 10px;
 }
 
+.vuecal__event.unavailable .vuecal__event-time {display: none;}
+
 .vuecal__now-line {
   color: #4285f4;
 }
