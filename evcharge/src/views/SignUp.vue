@@ -150,7 +150,21 @@ export default {
                 }).catch(error => {
                     window.confirm(error);
                 })
-            }).catch((error) => console.log(error))
+            }).catch((error) => {
+                console.log(error.message)
+                switch (error.code) {
+                    case "auth/account-exists-with-different-credential":
+                        errMsg.value = "This email has been binded to an account.";
+                        break;
+                    case "auth/popup-blocked":
+                        errMsg.value = "Please enable your browser pop up."
+                        break;
+                    case "auth/email-already-in-use":
+                        errMsg.value = "Email is already in use by an existing user."
+                        break;
+                }
+                alert(errMsg.value);
+            })
         },
         signInWithGoogle() {
             const provider = new GoogleAuthProvider();
