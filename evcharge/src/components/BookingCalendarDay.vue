@@ -75,27 +75,17 @@ export default {
       return false
     },
     dragToBook(event) {
-      if (this.checkOverlappingEvents(event)) {
-        this.startTime = "";
-        this.endTime = "";
-        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
-      } else {
-        this.startTime = event.start;
-        this.endTime = event.end;
-        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
-      }
+      this.checkOverlappingEvents(event)
+      this.startTime = event.start;
+      this.endTime = event.end;
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
     },
     resizeToBook(slot) {
-      let eventToChange = this.allEvents.find(ee => ee.id == slot.originalEvent.id);
-      if (this.checkOverlappingEvents(eventToChange)) {
-        this.startTime = "";
-        this.endTime = "";
-        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
-      } else {
-        this.startTime = eventToChange.start;
-        this.endTime = eventToChange.end;
-        this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
-      }
+      let eventToCheck = this.allEvents.find(ee => ee.id == slot.originalEvent.id);
+      this.checkOverlappingEvents(eventToCheck)
+      this.startTime = eventToCheck.start;
+      this.endTime = eventToCheck.end;
+      this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
     },
     // dropToBook(slot) {
     //   if (slot.event != false) {
@@ -112,13 +102,16 @@ export default {
       this.allEvents.pop();
       this.$emit("timeSelected", {startTime: this.startTime, endTime: this.endTime});
     },
-    checkOverlappingEvents(currEvent) {
-      let currEventStart = currEvent.start;
-      let currEventEnd = currEvent.end;
+    checkOverlappingEvents(currEventInList) {
+      let currEventStart = currEventInList.start;
+      let currEventEnd = currEventInList.end;
       this.preexistingEvents.forEach(event => {
         if (currEventEnd > event.start && currEventStart < event.end) {
+          currEventInList.start = "";
+          currEventInList.end = "";
           this.allEvents.pop();
           this.currEvent = "";
+          alert("Selected booking time slot cannot overlap with existing bookings")
         //   if (currEventEnd < event.end && currEventStart < event.start) {
         //     currEvent.end = event.start;
         //   } else if (currEventStart >= event.start && currEventEnd <= event.end) {
