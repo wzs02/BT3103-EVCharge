@@ -42,7 +42,7 @@
         </v-row>
 
         <v-row style="height: 60%">
-          <v-col cols=6>
+          <v-col cols=6 class="monthview">
             <BookingCalendar @dateSelected="updateSelectedDate($event)" />
             <div class="legend">
               <!-- <div class="legendindiv">
@@ -382,10 +382,12 @@ export default {
   font-style: normal;
   font-weight: 100;
   font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .btncharger {
-  height: 50%;
+  height: 50px;
   width: 200px;
   margin-right: 50px;
   margin-bottom: 20px;
@@ -424,14 +426,20 @@ export default {
 }
 
 .validationMsg {
+  margin-top: 20px;
   font-family: 'Nunito', sans-serif;
   font-weight: 400;
   font-size: 20px;
   text-align: left;
 }
 
+.monthview {
+  margin-top: 20px;
+}
+
 .dayview {
   margin: auto;
+  margin-top: 20px;
   text-align: center;
   font-family: "Nunito";
   font-style: normal;
