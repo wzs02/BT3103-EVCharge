@@ -119,17 +119,21 @@ export default {
             console.log("GETTING TRANS DATA")
             console.log(uid)
             const db = getFirestore(firebaseApp);
-            // Get all booking records for the user
-            // , orderBy("date", "desc")
-            const userHistory = doc(db, "Transactions", this.uid)
-            const historySnap = await getDoc(userHistory)
-            // console.log(historySnap.data())
-            this.wallet = 0
-
-            for (const [key, value] of Object.entries(historySnap.data())) {
-                console.log(key)
+            const userHistory = doc(db, "Transactions", this.uid);
+            const historySnap = await getDoc(userHistory);
+            const transactionData = historySnap.data();
+            // Sort according to descending order of date
+            let orderedKeys = Object.keys(transactionData).sort();
+            orderedKeys.reverse();
+            let orderedTransactionsList = [];
+            orderedKeys.forEach((key) => {
+                orderedTransactionsList.push(transactionData[key]);
+            })
+            // Initialise wallet value
+            this.wallet = 0;
+            // Add transaction entries
+            for (const value of orderedTransactionsList) {
                 let docs = value
-                // console.log(docs)
                 let transDetails = {};
                 transDetails.date = docs.date;
                 transDetails.time = docs.time;
